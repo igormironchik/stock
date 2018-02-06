@@ -41,7 +41,8 @@ namespace Stock {
 // datagramType
 //
 
-DatagramType datagramType( const QNetworkDatagram & d )
+DatagramType
+datagramType( const QNetworkDatagram & d )
 {
 	const QByteArray data = QByteArray::fromBase64( d.data() );
 	QDataStream s( data );
@@ -77,7 +78,8 @@ DatagramType datagramType( const QNetworkDatagram & d )
 // readDatagram
 //
 
-void readDatagram( const QNetworkDatagram & d, Messages::MyIP & msg )
+void
+readDatagram( const QNetworkDatagram & d, Messages::MyIP & msg )
 {
 	const QByteArray data = QByteArray::fromBase64( d.data() );
 	QDataStream s( data );
@@ -121,7 +123,8 @@ void readDatagram( const QNetworkDatagram & d, Messages::MyIP & msg )
 // writeTellIpDatargam
 //
 
-void writeTellIpDatargam( QUdpSocket * s )
+void
+writeTellIpDatargam( QUdpSocket * s )
 {
 	QByteArray array;
 	QDataStream stream( &array, QIODevice::WriteOnly );
@@ -156,7 +159,9 @@ void writeTellIpDatargam( QUdpSocket * s )
 // writeMyIpDatargam
 //
 
-void writeMyIpDatargam( QUdpSocket * s, const QString & host, quint16 port )
+void
+writeMyIpDatargam( QUdpSocket * s, const QString & host, quint16 port,
+	const QHostAddress & receiverHost, quint16 receiverPort )
 {
 	QByteArray array;
 	QDataStream stream( &array, QIODevice::WriteOnly );
@@ -180,7 +185,8 @@ void writeMyIpDatargam( QUdpSocket * s, const QString & host, quint16 port )
 
 		stream << str;
 
-		s->writeDatagram( QNetworkDatagram( array ) );
+		s->writeDatagram( QNetworkDatagram( array, receiverHost,
+			receiverPort ) );
 	}
 	catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & x )
 	{

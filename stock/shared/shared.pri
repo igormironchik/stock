@@ -11,3 +11,5 @@ SOURCES += $$PWD/tcp_socket.cpp \
 	$$PWD/exceptions.cpp
 
 OTHER_FILES += $$PWD/messages.cfgfile
+
+INCLUDEPATH += $$PWD

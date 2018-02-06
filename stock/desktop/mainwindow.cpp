@@ -26,6 +26,7 @@
 #include "config.hpp"
 #include "options.hpp"
 #include "server.hpp"
+#include "datagrams.hpp"
 
 // Qt include.
 #include <QMenuBar>
@@ -259,7 +260,7 @@ MainWindow::startNetwork()
 	{
 		d->m_udp = new QUdpSocket( this );
 
-		if( !d->m_udp->bind( d->m_cfg.port() ) )
+		if( !d->m_udp->bind( host, d->m_cfg.port() ) )
 			cantStartNetwork();
 
 		connect( d->m_udp, &QUdpSocket::readyRead,
@@ -303,7 +304,14 @@ MainWindow::cantStartNetwork()
 void
 MainWindow::readPendingDatagrams()
 {
+	while( d->m_udp->hasPendingDatagrams() )
+	{
+		QNetworkDatagram datagram = d->m_udp->receiveDatagram();
 
+		if( datagramType( datagram ) == DatagramType::TellIP )
+			writeMyIpDatargam( d->m_udp, d->m_cfg.host(), d->m_cfg.port(),
+				datagram.senderAddress(), datagram.senderPort() );
+	}
 }
 
 void

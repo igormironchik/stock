@@ -50,7 +50,8 @@ enum class DatagramType {
 //
 
 //! \return Type of the datagram.
-DatagramType datagramType( const QNetworkDatagram & d );
+DatagramType
+datagramType( const QNetworkDatagram & d );
 
 
 //
@@ -58,7 +59,8 @@ DatagramType datagramType( const QNetworkDatagram & d );
 //
 
 //! Read MyIP datagram.
-void readDatagram( const QNetworkDatagram & d, Messages::MyIP & msg );
+void
+readDatagram( const QNetworkDatagram & d, Messages::MyIP & msg );
 
 
 //
@@ -66,7 +68,8 @@ void readDatagram( const QNetworkDatagram & d, Messages::MyIP & msg );
 //
 
 //! Write TellIP datagram.
-void writeTellIpDatargam( QUdpSocket * s );
+void
+writeTellIpDatargam( QUdpSocket * s );
 
 
 //
@@ -74,7 +77,9 @@ void writeTellIpDatargam( QUdpSocket * s );
 //
 
 //! Write MyIP datagram.
-void writeMyIpDatargam( QUdpSocket * s, const QString & host, quint16 port );
+void
+writeMyIpDatargam( QUdpSocket * s, const QString & host, quint16 port,
+	const QHostAddress & receiverHost, quint16 receiverPort );
 
 } /* namespace Stock */
 
