@@ -22,6 +22,8 @@
 
 // Qt include.
 #include <QApplication>
+#include <QTranslator>
+#include <QLocale>
 
 // Stock include.
 #include "mainwindow.hpp"
@@ -42,6 +44,10 @@ int main( int argc, char ** argv )
 	appIcon.addFile( ":/img/icon_32x32.png" );
 	appIcon.addFile( ":/img/icon_22x22.png" );
 	app.setWindowIcon( appIcon );
+
+	QTranslator appTranslator;
+	appTranslator.load( "./tr/stock_" + QLocale::system().name() );
+	app.installTranslator( &appTranslator );
 
 	Stock::MainWindow w;
 	w.setMinimumSize( 650, 550 );

@@ -1,0 +1,118 @@
+
+{forGeneration STOCK_MESSAGES_HPP
+
+	{namespace Stock
+
+		{namespace Messages
+
+			|#
+				Tell IP.
+			#|
+			{class TellMeYourIP
+				{base tagNoValue}
+			} || class TellMeYourIP
+
+
+			|#
+				My IP.
+			#|
+			{class MyIP
+				{base tagNoValue}
+
+				{tagScalar
+					{valueType QString}
+					{name ip}
+					{required}
+				}
+
+				{tagScalar
+					{valueType "unsigned int"}
+					{name port}
+					{required}
+				}
+			} || class MyIP
+
+
+			|#
+				Add product.
+			#|
+			{class AddProduct
+				{base tagNoValue}
+
+				{tagScalar
+					{valueType QString}
+					{name code}
+					{required}
+				}
+
+				{tagScalar
+					{valueType QString}
+					{name place}
+					{required}
+				}
+
+				{tagScalar
+					{valueType "long long"}
+					{name count}
+					{required}
+				}
+			} || class AddProduct
+
+
+			|#
+				Give list of products on place
+			#|
+			{class GiveListOfProducts
+				{base tagNoValue}
+
+				{tagScalar
+					{valueType QString}
+					{name place}
+					{required}
+				}
+			} || class GiveListOfProducts
+
+
+			|#
+				Product.
+			#|
+			{class Product
+				{base tagNoValue}
+
+				{tagScalar
+					{valueType QString}
+					{name code}
+					{required}
+				}
+
+				{tagScalar
+					{valueType "long long"}
+					{name count}
+					{required}
+				}
+
+				{tagScalar
+					{valueType QString}
+					{name desc}
+					{required}
+				}
+			} || class Product
+
+
+			|#
+				List of products.
+			#|
+			{class ListOfProducts
+				{base tagNoValue}
+
+				{tagVectorOfTags
+					{valueType Stock::Messages::Product}
+					{name product}
+				}
+			} || class ListOfProducts
+
+		} || namespace Messages
+
+	} || namespace Stock
+
+} || forGeneration

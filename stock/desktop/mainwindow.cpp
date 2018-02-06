@@ -25,6 +25,7 @@
 #include "view.hpp"
 #include "config.hpp"
 #include "options.hpp"
+#include "server.hpp"
 
 // Qt include.
 #include <QMenuBar>
@@ -39,6 +40,7 @@
 #include <QMessageBox>
 #include <QTextCodec>
 #include <QHostAddress>
+#include <QUdpSocket>
 
 // cfgfile include.
 #include <cfgfile/all.hpp>
@@ -54,7 +56,10 @@ class MainWindowPrivate {
 public:
 	MainWindowPrivate( MainWindow * parent )
 		:	m_view( Q_NULLPTR )
+		,	m_udp( Q_NULLPTR )
+		,	m_srv( Q_NULLPTR )
 		,	m_tray( Q_NULLPTR )
+		,	m_notifyOnOptionsChanges( true )
 		,	q( parent )
 	{
 	}
@@ -64,10 +69,16 @@ public:
 
 	//! Tree view.
 	View * m_view;
+	//! UDP.
+	QUdpSocket * m_udp;
+	//! Server.
+	Server * m_srv;
 	//! System tray.
 	QSystemTrayIcon * m_tray;
 	//! Configuration.
 	Cfg m_cfg;
+	//! Notify on option changes?
+	bool m_notifyOnOptionsChanges;
 	//! Parent.
 	MainWindow * q;
 }; // class MainWindowPrivate
@@ -95,7 +106,9 @@ void MainWindowPrivate::init()
 		m_tray = new QSystemTrayIcon( q );
 
 		QMenu * menu = new QMenu( q );
-		menu->addAction( MainWindow::tr( "Open Stock" ), q, &MainWindow::showWindow );
+		menu->addAction( QIcon(  ":/img/icon_22x22.png" ),
+			MainWindow::tr( "Open Stock" ), q, &MainWindow::showWindow );
+		menu->addSeparator();
 		menu->addAction( QIcon( ":/img/application-exit_22x22.png" ),
 			MainWindow::tr( "&Quit" ), q, &MainWindow::quit );
 
@@ -216,6 +229,8 @@ MainWindow::appStarted()
 
 				QApplication::quit();
 			}
+
+			startNetwork();
 		}
 		else
 		{
@@ -227,26 +242,68 @@ MainWindow::appStarted()
 	}
 	else
 	{
+		d->m_notifyOnOptionsChanges = false;
+
 		options();
 
-		QHostAddress host;
-
-		if( host.setAddress( d->m_cfg.host() ) )
-		{
-
-		}
-		else
-		{
-			QFile file( c_appCfgFileName );
-			file.remove();
-
-			QMessageBox::critical( this, tr( "Incorrect host..." ),
-				tr( "Please configure application. "
-					"Host address is incorrect: \"%1\"" ).arg( d->m_cfg.host() ) );
-
-			QApplication::quit();
-		}
+		startNetwork();
 	}
+}
+
+void
+MainWindow::startNetwork()
+{
+	QHostAddress host;
+
+	if( host.setAddress( d->m_cfg.host() ) )
+	{
+		d->m_udp = new QUdpSocket( this );
+
+		if( !d->m_udp->bind( d->m_cfg.port() ) )
+			cantStartNetwork();
+
+		connect( d->m_udp, &QUdpSocket::readyRead,
+			this, &MainWindow::readPendingDatagrams );
+
+		d->m_srv = new Server( this );
+
+		if( !d->m_srv->listen( host, d->m_cfg.port() ) )
+			cantStartNetwork();
+	}
+	else
+	{
+		QFile file( c_appCfgFileName );
+		file.remove();
+
+		QMessageBox::critical( this, tr( "Incorrect host..." ),
+			tr( "Please configure application. "
+				"Host address is incorrect: \"%1\"" ).arg( d->m_cfg.host() ) );
+
+		QApplication::quit();
+	}
+}
+
+void
+MainWindow::cantStartNetwork()
+{
+	QMessageBox::critical( this, tr( "Application already started..." ),
+		tr( "Seems that application is already started. "
+			"But possibly that port %1 is in use by another "
+			"application, in such case, please, reconfigure "
+			"application. Possibly application can't start if options are "
+			"wrong, in such case, please, reconfigure application too. "
+			"To reconfigure application, please, edit \"%2\" file in "
+			"installation directory or just delete this file." )
+				.arg( QString::number( d->m_cfg.port() ) )
+				.arg( c_appCfgFileName ) );
+
+	QApplication::quit();
+}
+
+void
+MainWindow::readPendingDatagrams()
+{
+
 }
 
 void
@@ -277,16 +334,27 @@ MainWindow::options()
 			{
 				file.close();
 
+				d->m_notifyOnOptionsChanges = false;
+
 				QMessageBox::critical( this, tr( "Couldn't write configuration..." ),
 					tr( "Couldn't write configuration.\n\n%1" ).arg( x.desc() ) );
 			}
 		}
 		else
 		{
+			d->m_notifyOnOptionsChanges = false;
+
 			QMessageBox::critical( this, tr( "Couldn't write configuration..." ),
 				tr( "Couldn't open configuration file for writting." ) );
 		}
+
+		if( d->m_notifyOnOptionsChanges )
+			QMessageBox::information( this, tr( "Settings..." ),
+				tr( "New settings will be applied after restart of the "
+					"application." ) );
 	}
+
+	d->m_notifyOnOptionsChanges = true;
 }
 
 void

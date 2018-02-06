@@ -9,12 +9,14 @@ DEFINES += CFGFILE_QT_SUPPORT
 
 HEADERS = mainwindow.hpp \
     view.hpp \
-	options.hpp
+	options.hpp \
+	server.hpp
 
 SOURCES = mainwindow.cpp \
     main.cpp \
     view.cpp \
-	options.cpp
+	options.cpp \
+	server.cpp
     
 RESOURCES = resources.qrc
 
@@ -25,8 +27,10 @@ win32 {
 OTHER_FILES += config.cfgfile
 
 include( ../../3rdparty/cfgfile/cfgfile/cfgfile.pri )
+include( ../shared/shared.pri )
 
-TO_GENERATE = config.cfgfile
+TO_GENERATE = config.cfgfile \
+	../shared/messages.cfgfile
 
 QMAKE_EXTRA_COMPILERS += generate_cfg
 generate_cfg.name = CONF_GEN

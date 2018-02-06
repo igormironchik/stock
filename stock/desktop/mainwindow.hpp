@@ -63,6 +63,14 @@ private slots:
 	void appStarted();
 	//! Options.
 	void options();
+	//! Read UDP datagrams.
+	void readPendingDatagrams();
+
+private:
+	//! Start network.
+	void startNetwork();
+	//! Can't start network.
+	void cantStartNetwork();
 
 protected:
 	void closeEvent( QCloseEvent * e ) Q_DECL_OVERRIDE;
