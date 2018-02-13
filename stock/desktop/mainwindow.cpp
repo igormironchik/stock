@@ -50,8 +50,6 @@
 // cfgfile include.
 #include <cfgfile/all.hpp>
 
-#include <QDebug>
-
 
 namespace Stock {
 

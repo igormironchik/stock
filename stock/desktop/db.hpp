@@ -26,6 +26,7 @@
 // Qt include.
 #include <QScopedPointer>
 #include <QVector>
+#include <QString>
 
 
 namespace Stock {
@@ -35,12 +36,23 @@ namespace Stock {
 //
 
 //! Record in the database.
-struct Record Q_DECL_FINAL {
+struct DbRecord Q_DECL_FINAL {
 	QString m_code;
 	QString m_place;
 	quint64 m_count;
 	QString m_desc;
 }; // struct Record
+
+
+//
+// Result
+//
+
+//! Result of DB operation.
+struct DbResult Q_DECL_FINAL {
+	bool m_ok;
+	QString m_error;
+}; // struct Result
 
 
 //
@@ -56,12 +68,12 @@ public:
 	~Db();
 
 	//! \return All records.
-	QVector< Record > records() const;
+	QVector< DbRecord > records( DbResult * res = Q_NULLPTR ) const;
 	//! Change product.
-	void changeProduct( const Record & r ) const;
+	DbResult changeProduct( const DbRecord & r ) const;
 	//! Totally delete product. If you want to clear position on the place
 	//! use changeProduct() with m_count = 0.
-	void deleteProduct( const QString & code );
+	DbResult deleteProduct( const QString & code );
 
 private:
 	Q_DISABLE_COPY( Db )

@@ -30,6 +30,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QVariant>
+#include <QSqlError>
 
 
 namespace Stock {
@@ -98,104 +99,180 @@ Db::~Db()
 {
 }
 
-QVector< Record >
-Db::records() const
+QVector< DbRecord >
+Db::records( DbResult * res ) const
 {
-	QVector< Record > res;
+	QVector< DbRecord > records;
 
 	QSqlQuery select( "SELECT t1.code, t1.place, t1.amount, t2.desc "
 		"FROM places AS t1, products AS t2 WHERE t1.code = t2.code" );
 
+	if( res && select.lastError().isValid() )
+	{
+		*res = { false, select.lastError().text() };
+
+		return records;
+	}
+
 	while( select.next() )
 	{
-		res.push_back( { select.value( 0 ).toString(),
+		records.push_back( { select.value( 0 ).toString(),
 			select.value( 1 ).toString(),
 			select.value( 2 ).toULongLong(),
 			select.value( 3 ).toString() } );
 	}
 
-	return res;
+	if( res )
+		*res = { true, QString() };
+
+	return records;
 }
 
-void
-Db::changeProduct( const Record & r ) const
+
+//
+// DbException
+//
+
+struct DbException {};
+
+DbResult
+Db::changeProduct( const DbRecord & r ) const
 {
 	if( !r.m_code.isEmpty() )
 	{
-		QSqlQuery s1( "SELECT desc FROM products WHERE code = ?" );
-		s1.addBindValue( r.m_code );
-		s1.exec();
+		try {
+			if( !d->m_connection.transaction() )
+				return { false, d->m_connection.lastError().text() };
 
-		if( s1.next() )
-		{
-			if( s1.value( 0 ).toString() != r.m_desc )
+			QSqlQuery s1( "SELECT desc FROM products WHERE code = ?" );
+			s1.addBindValue( r.m_code );
+
+			if( !s1.exec() )
+				throw DbException();
+
+			if( s1.next() )
 			{
-				QSqlQuery update( "UPDATE products SET desc = ? WHERE code = ?" );
-				update.addBindValue( r.m_desc );
-				update.addBindValue( r.m_code );
-				update.exec();
-			}
-		}
-		else
-		{
-			QSqlQuery insert( "INSERT INTO products( code, desc ) VALUES( ?, ? )" );
-			insert.addBindValue( r.m_code );
-			insert.addBindValue( r.m_desc );
-			insert.exec();
-		}
-
-		if( !r.m_place.isEmpty() )
-		{
-			QSqlQuery s2( "SELECT COUNT( * ) FROM places "
-				"WHERE code = ? AND place = ?" );
-			s2.addBindValue( r.m_code );
-			s2.addBindValue( r.m_place );
-			s2.exec();
-			s2.next();
-
-			if( s2.value( 0 ).toULongLong() > 0 )
-			{
-				if( r.m_count > 0 )
+				if( s1.value( 0 ).toString() != r.m_desc )
 				{
-					QSqlQuery update( "UPDATE places SET amount = ? "
-						"WHERE code = ? AND place = ?" );
-					update.addBindValue( r.m_count );
+					s1.finish();
+
+					QSqlQuery update( "UPDATE products SET desc = ? WHERE code = ?" );
+					update.addBindValue( r.m_desc );
 					update.addBindValue( r.m_code );
-					update.addBindValue( r.m_place );
-					update.exec();
-				}
-				else
-				{
-					QSqlQuery del( "DELETE FROM places "
-						"WHERE code = ? AND place = ?" );
-					del.addBindValue( r.m_code );
-					del.addBindValue( r.m_place );
-					del.exec();
+
+					if( !update.exec() )
+						throw DbException();
 				}
 			}
-			else if( r.m_count > 0 )
+			else
 			{
-				QSqlQuery insert( "INSERT INTO places( code, place, amount ) "
-					"VALUES( ?, ?, ? )" );
+				s1.finish();
+
+				QSqlQuery insert( "INSERT INTO products( code, desc ) VALUES( ?, ? )" );
 				insert.addBindValue( r.m_code );
-				insert.addBindValue( r.m_place );
-				insert.addBindValue( r.m_count );
-				insert.exec();
+				insert.addBindValue( r.m_desc );
+
+				if( !insert.exec() )
+					throw DbException();
 			}
+
+			if( !r.m_place.isEmpty() )
+			{
+				QSqlQuery s2( "SELECT COUNT( * ) FROM places "
+					"WHERE code = ? AND place = ?" );
+				s2.addBindValue( r.m_code );
+				s2.addBindValue( r.m_place );
+
+				if( !s2.exec() )
+					throw DbException();
+
+				s2.next();
+
+				if( s2.value( 0 ).toULongLong() > 0 )
+				{
+					s2.finish();
+
+					if( r.m_count > 0 )
+					{
+						QSqlQuery update( "UPDATE places SET amount = ? "
+							"WHERE code = ? AND place = ?" );
+						update.addBindValue( r.m_count );
+						update.addBindValue( r.m_code );
+						update.addBindValue( r.m_place );
+
+						if( !update.exec() )
+							throw DbException();
+					}
+					else
+					{
+						QSqlQuery del( "DELETE FROM places "
+							"WHERE code = ? AND place = ?" );
+						del.addBindValue( r.m_code );
+						del.addBindValue( r.m_place );
+
+						if( !del.exec() )
+							throw DbException();
+					}
+				}
+				else if( r.m_count > 0 )
+				{
+					s2.finish();
+
+					QSqlQuery insert( "INSERT INTO places( code, place, amount ) "
+						"VALUES( ?, ?, ? )" );
+					insert.addBindValue( r.m_code );
+					insert.addBindValue( r.m_place );
+					insert.addBindValue( r.m_count );
+
+					if( !insert.exec() )
+						throw DbException();
+				}
+			}
+
+			if( !d->m_connection.commit() )
+				throw DbException();
+		}
+		catch( const DbException & )
+		{
+			d->m_connection.rollback();
+
+			return { false, d->m_connection.lastError().text() };
 		}
 	}
+
+	return { true, QString() };
 }
 
-void
+DbResult
 Db::deleteProduct( const QString & code )
 {
-	QSqlQuery d1( "DELETE FROM products WHERE code = ?" );
-	d1.addBindValue( code );
-	d1.exec();
+	try {
+		if( !d->m_connection.transaction() )
+			return { false, d->m_connection.lastError().text() };
 
-	QSqlQuery d2( "DELETE FROM places WHERE code = ?" );
-	d2.addBindValue( code );
-	d2.exec();
+		QSqlQuery d1( "DELETE FROM products WHERE code = ?" );
+		d1.addBindValue( code );
+
+		if( !d1.exec() )
+			throw DbException();
+
+		QSqlQuery d2( "DELETE FROM places WHERE code = ?" );
+		d2.addBindValue( code );
+
+		if( !d2.exec() )
+			throw DbException();
+
+		if( !d->m_connection.commit() )
+			throw DbException();
+	}
+	catch( const DbException & )
+	{
+		d->m_connection.rollback();
+
+		return { false, d->m_connection.lastError().text() };
+	}
+
+	return { true, QString() };
 }
 
 } /* namespace Stock */

@@ -5,6 +5,8 @@ TARGET = Stock
 
 QT += widgets network sql
 
+CONFIG += c++11
+
 DEFINES += CFGFILE_QT_SUPPORT
 
 HEADERS = mainwindow.hpp \
