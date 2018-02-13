@@ -258,8 +258,6 @@ MainWindow::appStarted()
 				d->m_codeModel = new ByProductModel( d->m_db.data(), this );
 
 				d->m_view->byProductsView()->setModel( d->m_codeModel );
-
-				d->m_db->deleteProduct( "18182764738" );
 			}
 			catch( const Exception & x )
 			{
