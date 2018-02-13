@@ -3,20 +3,26 @@ TEMPLATE = app
 
 TARGET = Stock
 
-QT += widgets network
+QT += widgets network sql
 
 DEFINES += CFGFILE_QT_SUPPORT
 
 HEADERS = mainwindow.hpp \
     view.hpp \
 	options.hpp \
-	server.hpp
+	server.hpp \
+	db.hpp \
+	by_product_model.hpp \
+	by_place_model.hpp
 
 SOURCES = mainwindow.cpp \
     main.cpp \
     view.cpp \
 	options.cpp \
-	server.cpp
+	server.cpp \
+	db.cpp \
+	by_product_model.cpp \
+	by_place_model.cpp
     
 RESOURCES = resources.qrc
 

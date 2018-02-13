@@ -20,30 +20,55 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Stock include.
-#include "exceptions.hpp"
+#ifndef STOCK_DB_HPP_INCLUDED
+#define STOCK_DB_HPP_INCLUDED
+
+// Qt include.
+#include <QScopedPointer>
+#include <QVector>
 
 
 namespace Stock {
 
 //
-// Exception
+// Record
 //
 
-Exception::Exception( const QString & msg )
-	:	std::runtime_error( "error" )
-	,	m_msg( msg )
-{
-}
+//! Record in the database.
+struct Record Q_DECL_FINAL {
+	QString m_code;
+	QString m_place;
+	quint64 m_count;
+	QString m_desc;
+}; // struct Record
 
-Exception::~Exception() noexcept
-{
-}
 
-const QString &
-Exception::msg() const noexcept
+//
+// Db
+//
+
+class DbPrivate;
+
+class Db Q_DECL_FINAL
 {
-	return m_msg;
-}
+public:
+	Db();
+	~Db();
+
+	//! \return All records.
+	QVector< Record > records() const;
+	//! Change product.
+	void changeProduct( const Record & r ) const;
+	//! Totally delete product. If you want to clear position on the place
+	//! use changeProduct() with m_count = 0.
+	void deleteProduct( const QString & code );
+
+private:
+	Q_DISABLE_COPY( Db )
+
+	QScopedPointer< DbPrivate > d;
+}; // class Db
 
 } /* namespace Stock */
+
+#endif // STOCK_DB_HPP_INCLUDED

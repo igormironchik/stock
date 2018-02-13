@@ -129,6 +129,18 @@ View::~View()
 {
 }
 
+QTreeView *
+View::byProductsView() const
+{
+	return d->m_codeView;
+}
+
+QTreeView *
+View::byPlaceView() const
+{
+	return d->m_placeView;
+}
+
 void
 View::productCodeChanged( const QString & txt )
 {

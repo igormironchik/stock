@@ -70,7 +70,7 @@ private:
 	//! Start network.
 	void startNetwork();
 	//! Can't start network.
-	void cantStartNetwork();
+	void cantStartNetwork( const QString & error );
 
 protected:
 	void closeEvent( QCloseEvent * e ) Q_DECL_OVERRIDE;

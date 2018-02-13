@@ -27,6 +27,10 @@
 #include <QWidget>
 #include <QScopedPointer>
 
+QT_BEGIN_NAMESPACE
+class QTreeView;
+QT_END_NAMESPACE
+
 
 namespace Stock {
 
@@ -45,6 +49,11 @@ class View Q_DECL_FINAL
 public:
 	explicit View( QWidget * parent );
 	virtual ~View();
+
+	//! \return By products view.
+	QTreeView * byProductsView() const;
+	//! \return By place view.
+	QTreeView * byPlaceView() const;
 
 public slots:
 	//! Switch to by product code mode.

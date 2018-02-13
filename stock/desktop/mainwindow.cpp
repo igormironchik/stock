@@ -26,7 +26,10 @@
 #include "config.hpp"
 #include "options.hpp"
 #include "server.hpp"
-#include "datagrams.hpp"
+#include "shared/datagrams.hpp"
+#include "shared/exceptions.hpp"
+#include "db.hpp"
+#include "by_product_model.hpp"
 
 // Qt include.
 #include <QMenuBar>
@@ -42,9 +45,12 @@
 #include <QTextCodec>
 #include <QHostAddress>
 #include <QUdpSocket>
+#include <QTreeView>
 
 // cfgfile include.
 #include <cfgfile/all.hpp>
+
+#include <QDebug>
 
 
 namespace Stock {
@@ -57,6 +63,8 @@ class MainWindowPrivate {
 public:
 	MainWindowPrivate( MainWindow * parent )
 		:	m_view( Q_NULLPTR )
+		,	m_codeModel( Q_NULLPTR )
+		,	m_db( Q_NULLPTR )
 		,	m_udp( Q_NULLPTR )
 		,	m_srv( Q_NULLPTR )
 		,	m_tray( Q_NULLPTR )
@@ -65,11 +73,24 @@ public:
 	{
 	}
 
+	~MainWindowPrivate()
+	{
+		if( m_udp )
+			m_udp->close();
+
+		if( m_srv )
+			m_srv->close();
+	}
+
 	//! Init.
 	void init();
 
 	//! Tree view.
 	View * m_view;
+	//! By product model.
+	ByProductModel * m_codeModel;
+	//! Database.
+	QScopedPointer< Db > m_db;
 	//! UDP.
 	QUdpSocket * m_udp;
 	//! Server.
@@ -231,6 +252,23 @@ MainWindow::appStarted()
 				QApplication::quit();
 			}
 
+			try {
+				d->m_db.reset( new Db );
+
+				d->m_codeModel = new ByProductModel( d->m_db.data(), this );
+
+				d->m_view->byProductsView()->setModel( d->m_codeModel );
+
+				d->m_db->deleteProduct( "18182764738" );
+			}
+			catch( const Exception & x )
+			{
+				QMessageBox::critical( this, tr( "Couldn't open database..." ),
+					tr( "Couldn't open database.\n\n%1" ).arg( x.msg() ) );
+
+				QApplication::quit();
+			}
+
 			startNetwork();
 		}
 		else
@@ -261,7 +299,7 @@ MainWindow::startNetwork()
 		d->m_udp = new QUdpSocket( this );
 
 		if( !d->m_udp->bind( host, d->m_cfg.port() ) )
-			cantStartNetwork();
+			cantStartNetwork( d->m_udp->errorString() );
 
 		connect( d->m_udp, &QUdpSocket::readyRead,
 			this, &MainWindow::readPendingDatagrams );
@@ -269,7 +307,7 @@ MainWindow::startNetwork()
 		d->m_srv = new Server( this );
 
 		if( !d->m_srv->listen( host, d->m_cfg.port() ) )
-			cantStartNetwork();
+			cantStartNetwork( d->m_srv->errorString() );
 	}
 	else
 	{
@@ -285,7 +323,7 @@ MainWindow::startNetwork()
 }
 
 void
-MainWindow::cantStartNetwork()
+MainWindow::cantStartNetwork( const QString & error )
 {
 	QMessageBox::critical( this, tr( "Application already started..." ),
 		tr( "Seems that application is already started. "
@@ -294,9 +332,10 @@ MainWindow::cantStartNetwork()
 			"application. Possibly application can't start if options are "
 			"wrong, in such case, please, reconfigure application too. "
 			"To reconfigure application, please, edit \"%2\" file in "
-			"installation directory or just delete this file." )
+			"installation directory or just delete this file.\n\n%3" )
 				.arg( QString::number( d->m_cfg.port() ) )
-				.arg( c_appCfgFileName ) );
+				.arg( c_appCfgFileName )
+				.arg( error ) );
 
 	QApplication::quit();
 }
