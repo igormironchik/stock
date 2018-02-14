@@ -15,7 +15,8 @@ HEADERS = mainwindow.hpp \
 	server.hpp \
 	db.hpp \
 	by_product_model.hpp \
-	by_place_model.hpp
+	by_place_model.hpp \
+	db_signals.hpp
 
 SOURCES = mainwindow.cpp \
     main.cpp \
@@ -24,7 +25,8 @@ SOURCES = mainwindow.cpp \
 	server.cpp \
 	db.cpp \
 	by_product_model.cpp \
-	by_place_model.cpp
+	by_place_model.cpp \
+	db_signals.cpp
     
 RESOURCES = resources.qrc
 

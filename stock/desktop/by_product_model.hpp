@@ -31,6 +31,7 @@
 namespace Stock {
 
 class Db;
+class DbSignals;
 
 
 //
@@ -45,31 +46,9 @@ class ByProductModel Q_DECL_FINAL
 {
 	Q_OBJECT
 
-signals:
-	//! Product is deleted.
-	void productDeleted(
-		//! Code of the product. Can't be empty.
-		const QString & code,
-		//! Place of the product. Can be empty. in this case product
-		//! was delete in total.
-		const QString & place );
-	//! Product's options are changed.
-	void productChanged(
-		//! Code of the product. Can't be empty.
-		const QString & code,
-		//! Place of the product. Can be empty, in this case
-		//! product just was added into database.
-		const QString & place,
-		//! Amount of the product on the place. Ignores if product place is
-		//! empty.
-		quint64 count,
-		//! Description of the product.
-		const QString & desc );
-
 public:
-	ByProductModel( Db * db, QObject * parent );
+	ByProductModel( Db * db, DbSignals * sigs, QObject * parent );
 	virtual ~ByProductModel();
-
 
 	int columnCount( const QModelIndex & parent = QModelIndex() ) const
 		Q_DECL_OVERRIDE;

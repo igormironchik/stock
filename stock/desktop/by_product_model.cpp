@@ -23,6 +23,7 @@
 // Stock include.
 #include "by_product_model.hpp"
 #include "db.hpp"
+#include "db_signals.hpp"
 
 
 namespace Stock {
@@ -33,8 +34,9 @@ namespace Stock {
 
 class ByProductModelPrivate {
 public:
-	ByProductModelPrivate( Db * db, ByProductModel * parent )
+	ByProductModelPrivate( Db * db, DbSignals * sigs, ByProductModel * parent )
 		:	m_db( db )
+		,	m_sigs( sigs )
 		,	q( parent )
 	{
 	}
@@ -44,6 +46,8 @@ public:
 
 	//! DB.
 	Db * m_db;
+	//! DB signals.
+	DbSignals * m_sigs;
 	//! Parent.
 	ByProductModel * q;
 }; // class ByProductModelPrivate
@@ -59,9 +63,9 @@ ByProductModelPrivate::init()
 // ByProductModel
 //
 
-ByProductModel::ByProductModel( Db * db, QObject * parent )
+ByProductModel::ByProductModel( Db * db, DbSignals * sigs, QObject * parent )
 	:	QAbstractItemModel( parent )
-	,	d( new ByProductModelPrivate( db, this ) )
+	,	d( new ByProductModelPrivate( db, sigs, this ) )
 {
 	d->init();
 }

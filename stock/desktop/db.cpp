@@ -89,8 +89,9 @@ DbPrivate::init()
 // Db
 //
 
-Db::Db()
-	:	d( new DbPrivate( this ) )
+Db::Db( QObject * parent )
+	:	QObject( parent )
+	,	d( new DbPrivate( this ) )
 {
 	d->init();
 }

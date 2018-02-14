@@ -27,6 +27,7 @@
 #include <QScopedPointer>
 #include <QVector>
 #include <QString>
+#include <QObject>
 
 
 namespace Stock {
@@ -62,10 +63,11 @@ struct DbResult Q_DECL_FINAL {
 class DbPrivate;
 
 class Db Q_DECL_FINAL
+	:	public QObject
 {
 public:
-	Db();
-	~Db();
+	Db( QObject * parent );
+	virtual ~Db();
 
 	//! \return All records.
 	QVector< DbRecord > records( DbResult * res = Q_NULLPTR ) const;

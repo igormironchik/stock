@@ -30,6 +30,7 @@
 #include "shared/exceptions.hpp"
 #include "db.hpp"
 #include "by_product_model.hpp"
+#include "db_signals.hpp"
 
 // Qt include.
 #include <QMenuBar>
@@ -66,8 +67,9 @@ public:
 		,	m_udp( Q_NULLPTR )
 		,	m_srv( Q_NULLPTR )
 		,	m_tray( Q_NULLPTR )
-		,	m_notifyOnOptionsChanges( true )
+		,	m_sigs( Q_NULLPTR )
 		,	q( parent )
+		,	m_notifyOnOptionsChanges( true )
 	{
 	}
 
@@ -88,24 +90,28 @@ public:
 	//! By product model.
 	ByProductModel * m_codeModel;
 	//! Database.
-	QScopedPointer< Db > m_db;
+	Db * m_db;
 	//! UDP.
 	QUdpSocket * m_udp;
 	//! Server.
 	Server * m_srv;
 	//! System tray.
 	QSystemTrayIcon * m_tray;
-	//! Configuration.
-	Cfg m_cfg;
-	//! Notify on option changes?
-	bool m_notifyOnOptionsChanges;
+	//! DB signals.
+	DbSignals * m_sigs;
 	//! Parent.
 	MainWindow * q;
+	//! Notify on option changes?
+	bool m_notifyOnOptionsChanges;
+	//! Configuration.
+	Cfg m_cfg;
 }; // class MainWindowPrivate
 
 void MainWindowPrivate::init()
 {
 	m_view = new View( q );
+
+	m_sigs = new DbSignals( q );
 
 	q->setCentralWidget( m_view );
 
@@ -209,7 +215,7 @@ MainWindow::quit()
 void
 MainWindow::showWindow()
 {	
-	setWindowState( ( windowState() & ~Qt::WindowMinimized) | Qt::WindowActive );
+	setWindowState( ( windowState() & ~Qt::WindowMinimized ) | Qt::WindowActive );
 
 	activateWindow();
 
@@ -262,9 +268,9 @@ MainWindow::appStarted()
 			}
 
 			try {
-				d->m_db.reset( new Db );
+				d->m_db = new Db( this );
 
-				d->m_codeModel = new ByProductModel( d->m_db.data(), this );
+				d->m_codeModel = new ByProductModel( d->m_db, d->m_sigs, this );
 
 				d->m_view->byProductsView()->setModel( d->m_codeModel );
 			}
