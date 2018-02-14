@@ -121,6 +121,13 @@ void MainWindowPrivate::init()
 		MainWindow::tr( "&Settings" ), q, &MainWindow::options,
 		QKeySequence( "Ctrl+O" ) );
 
+	auto * help = q->menuBar()->addMenu( MainWindow::tr( "&Help" ) );
+
+	help->addAction( QIcon( ":/img/icon_22x22.png" ),
+		MainWindow::tr( "&About" ), q, &MainWindow::about );
+	help->addAction( QIcon( ":/img/qt.png" ),
+			MainWindow::tr( "About Qt" ), q, &MainWindow::aboutQt );
+
 	if( QSystemTrayIcon::isSystemTrayAvailable() )
 	{
 		m_tray = new QSystemTrayIcon( q );
@@ -398,6 +405,22 @@ MainWindow::options()
 	}
 
 	d->m_notifyOnOptionsChanges = true;
+}
+
+void
+MainWindow::about()
+{
+	QMessageBox::about( this, tr( "About Stock" ),
+		tr( "Stock - GUI warehouse accounting application.\n\n"
+			"Author - Igor Mironchik (igor.mironchik at gmail dot com).\n\n"
+			"Copyright (c) 2018 Igor Mironchik.\n\n"
+			"Licensed under GNU GPL 3.0." ) );
+}
+
+void
+MainWindow::aboutQt()
+{
+	QMessageBox::aboutQt( this );
 }
 
 void

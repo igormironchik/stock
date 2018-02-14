@@ -65,6 +65,10 @@ private slots:
 	void options();
 	//! Read UDP datagrams.
 	void readPendingDatagrams();
+	//! About.
+	void about();
+	//! About Qt.
+	void aboutQt();
 
 private:
 	//! Start network.

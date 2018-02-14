@@ -10,5 +10,6 @@
 	<file>img/feed-subscribe_22x22.png</file>
 	<file>img/flag-blue_22x22.png</file>
 	<file>img/configure_22x22.png</file>
+	<file>img/qt.png</file>
     </qresource>
 </RCC>
