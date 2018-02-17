@@ -694,6 +694,11 @@ ByProductModel::productChanged( const QString & code, const QString & place,
 							endRemoveRows();
 						}
 					}
+
+					const QModelIndex parent = createIndex(
+						d->topRow( &p->m_index ), 1, &p->m_index );
+
+					emit dataChanged( parent, parent );
 				}
 			}
 			else

@@ -71,16 +71,16 @@ ViewPrivate::init()
 	filter->setText( View::tr( "Filter" ) );
 	h->addWidget( filter );
 
-	QLineEdit * place = new QLineEdit( q );
-	place->setPlaceholderText( View::tr( "Place" ) );
-	h->addWidget( place );
-
 	QLineEdit * code = new QLineEdit( q );
 	code->setPlaceholderText( View::tr( "Product Code" ) );
 	h->addWidget( code );
 
+	QLineEdit * place = new QLineEdit( q );
+	place->setPlaceholderText( View::tr( "Place" ) );
+	h->addWidget( place );
+
 	QLineEdit * name = new QLineEdit( q );
-	name->setPlaceholderText( View::tr( "Name of Product" ) );
+	name->setPlaceholderText( View::tr( "Description of Product" ) );
 	h->addWidget( name );
 
 	l->addLayout( h );
