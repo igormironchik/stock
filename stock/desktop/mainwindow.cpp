@@ -31,6 +31,7 @@
 #include "db.hpp"
 #include "by_product_model.hpp"
 #include "db_signals.hpp"
+#include "product.hpp"
 
 // Qt include.
 #include <QMenuBar>

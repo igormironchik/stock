@@ -284,6 +284,29 @@ ByProductModel::~ByProductModel()
 {
 }
 
+QStringList
+ByProductModel::codes() const
+{
+	QStringList res;
+
+	for( const auto & p : qAsConst( d->m_data ) )
+		res.append( p->m_code );
+
+	return res;
+}
+
+QStringList
+ByProductModel::places() const
+{
+	QStringList res;
+
+	for( const auto & p : qAsConst( d->m_data ) )
+		for( const auto & place : qAsConst( p->m_places ) )
+			res.append( place->m_place );
+
+	return res;
+}
+
 int
 ByProductModel::columnCount( const QModelIndex & parent ) const
 {
@@ -418,12 +441,23 @@ QModelIndex
 ByProductModel::index( int row, int column, const QModelIndex & parent ) const
 {
 	if( !parent.isValid() )
-		return createIndex( row, column, &d->m_data.at( row )->m_index );
+	{
+		if( row >= 0 && row < d->m_data.size() )
+			return createIndex( row, column, &d->m_data.at( row )->m_index );
+		else
+			return QModelIndex();
+	}
 	else
-		return createIndex( row, column,
-			&( static_cast< Product* > ( static_cast< IndexHelper* > (
-				parent.internalPointer() )->m_parent )->m_places.at( row )->
-					m_index ) );
+	{
+		auto * p = static_cast< Product* > ( static_cast< IndexHelper* > (
+			parent.internalPointer() )->m_parent );
+
+		if( p && row >= 0 && row < p->m_places.size() )
+			return createIndex( row, column,
+				&p->m_places.at( row )->m_index );
+		else
+			return QModelIndex();
+	}
 }
 
 QModelIndex
@@ -441,13 +475,15 @@ ByProductModel::parent( const QModelIndex & index ) const
 int
 ByProductModel::rowCount( const QModelIndex & parent ) const
 {
-	const auto * helper = static_cast< IndexHelper* > (
-		parent.internalPointer() );
+	if( parent.isValid() )
+	{
+		const auto * helper = static_cast< IndexHelper* > (
+			parent.internalPointer() );
 
-	if( !helper->m_parent )
-		return d->m_data.size();
-	else
 		return ( static_cast< Product* > ( helper->m_this )->m_places.size() );
+	}
+	else
+		return d->m_data.size();
 }
 
 bool
@@ -596,6 +632,38 @@ ByProductModel::productChanged( const QString & code, const QString & place,
 					}
 				}
 			}
+			else
+			{
+				const QModelIndex parent = createIndex(
+					d->topRow( &p->m_index ), 0, &p->m_index );
+				const int row = p->m_places.size();
+
+				beginInsertRows( parent, row, row );
+				p->m_places.push_back( QSharedPointer< ProductOnPlace > (
+					new ProductOnPlace( place, count, &p->m_index ) ) );
+				endInsertRows();
+			}
+		}
+	}
+	else
+	{
+		const int row = d->m_data.size();
+
+		beginInsertRows( QModelIndex(), row, row );
+		const auto product = QSharedPointer< Product > (
+			new Product( code, desc ) );
+		d->m_data.push_back( product );
+		endInsertRows();
+
+		if( !place.isEmpty() && count > 0 )
+		{
+			const QModelIndex parent = createIndex(
+				row, 0, &product->m_index );
+
+			beginInsertRows( parent, 0, 0 );
+			p->m_places.push_back( QSharedPointer< ProductOnPlace > (
+				new ProductOnPlace( place, count, &product->m_index ) ) );
+			endInsertRows();
 		}
 	}
 }

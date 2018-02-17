@@ -52,6 +52,11 @@ public:
 		DbSignals * sigs, QObject * parent );
 	virtual ~ByProductModel();
 
+	//! \return List of all codes of products.
+	QStringList codes() const;
+	//! \return List of all places.
+	QStringList places() const;
+
 	int columnCount( const QModelIndex & parent = QModelIndex() ) const
 		Q_DECL_OVERRIDE;
 	QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const
