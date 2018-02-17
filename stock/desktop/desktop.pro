@@ -16,7 +16,8 @@ HEADERS = mainwindow.hpp \
 	db.hpp \
 	by_product_model.hpp \
 	by_place_model.hpp \
-	db_signals.hpp
+	db_signals.hpp \
+	product.hpp
 
 SOURCES = mainwindow.cpp \
     main.cpp \
@@ -26,7 +27,8 @@ SOURCES = mainwindow.cpp \
 	db.cpp \
 	by_product_model.cpp \
 	by_place_model.cpp \
-	db_signals.cpp
+	db_signals.cpp \
+	product.cpp
     
 RESOURCES = resources.qrc
 
@@ -55,4 +57,5 @@ generate_cfg.commands = $$shell_path( $$absolute_path( $${OUT_PWD}/../../3rdpart
 PRE_TARGETDEPS += compiler_generate_cfg_make_all
 
 FORMS += \
-    options.ui
+    options.ui \
+    product.ui
