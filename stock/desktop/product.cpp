@@ -23,6 +23,7 @@
 // Stock include.
 #include "product.hpp"
 #include "ui_product.h"
+#include "by_product_model.hpp"
 
 // Qt include.
 #include <QComboBox>
@@ -38,8 +39,9 @@ namespace Stock {
 
 class ProductDlgPrivate {
 public:
-	ProductDlgPrivate( ProductDlg * parent )
-		:	q( parent )
+	ProductDlgPrivate( ByProductModel * model, ProductDlg * parent )
+		:	m_model( model )
+		,	q( parent )
 	{
 	}
 
@@ -54,6 +56,8 @@ public:
 
 	//! Ui.
 	Ui::ProductDlg m_ui;
+	//! By Product model.
+	ByProductModel * m_model;
 	//! Parent.
 	ProductDlg * q;
 }; // class ProductDlgPrivate
@@ -95,11 +99,17 @@ ProductDlg::ProductDlg( const QString & code,
 	const QStringList & codes,
 	const QStringList & places,
 	bool isNewProduct,
+	ByProductModel * model,
 	QWidget * parent )
 	:	QDialog( parent )
-	,	d( new ProductDlgPrivate( this ) )
+	,	d( new ProductDlgPrivate( model, this ) )
 {
 	d->init( code, place, count, desc, codes, places, isNewProduct );
+
+	connect( d->m_ui.m_code, &QComboBox::currentTextChanged,
+		this, &ProductDlg::codeChanged );
+	connect( d->m_ui.m_place, &QComboBox::currentTextChanged,
+		this, &ProductDlg::placeChanged );
 }
 
 ProductDlg::~ProductDlg()
@@ -128,6 +138,24 @@ QString
 ProductDlg::desc() const
 {
 	return d->m_ui.m_desc->toPlainText();
+}
+
+void
+ProductDlg::codeChanged( const QString & code )
+{
+	d->m_ui.m_desc->setText( d->m_model->desc( code ) );
+
+	if( !d->m_ui.m_place->currentText().isEmpty() )
+		d->m_ui.m_count->setValue( d->m_model->count( code,
+			d->m_ui.m_place->currentText() ) );
+}
+
+void
+ProductDlg::placeChanged( const QString & place )
+{
+	if( !d->m_ui.m_code->currentText().isEmpty() )
+		d->m_ui.m_count->setValue( d->m_model->count(
+			d->m_ui.m_code->currentText(), place ) );
 }
 
 } /* namespace Stock */

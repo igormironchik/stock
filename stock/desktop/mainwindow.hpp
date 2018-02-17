@@ -69,6 +69,8 @@ private slots:
 	void about();
 	//! About Qt.
 	void aboutQt();
+	//! Add product.
+	void addProduct();
 
 private:
 	//! Start network.

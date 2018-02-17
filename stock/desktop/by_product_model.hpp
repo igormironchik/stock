@@ -56,6 +56,10 @@ public:
 	QStringList codes() const;
 	//! \return List of all places.
 	QStringList places() const;
+	//! \return Description.
+	QString desc( const QString & code ) const;
+	//! \return Amount of product.
+	quint64 count( const QString & code, const QString & place ) const;
 
 	int columnCount( const QModelIndex & parent = QModelIndex() ) const
 		Q_DECL_OVERRIDE;

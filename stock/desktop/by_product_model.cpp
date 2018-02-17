@@ -128,6 +128,11 @@ public:
 	ProductOnPlace * findPlace( Product * p, const QString & place );
 	//! \return Row of the place.
 	int placeRow( Product * p, const QString & place ) const;
+	//! Add new product.
+	void addNewProduct( const QString & code, const QString & desc );
+	//! Put new product on place.
+	void putNewProductOnPlace( Product * product, const QString & place,
+		quint64 count );
 
 	//! Data.
 	QVector< QSharedPointer< Product > > m_data;
@@ -169,20 +174,16 @@ ByProductModelPrivate::init()
 		auto * pr = findProduct( r.m_code );
 
 		if( pr )
-			pr->m_places.push_back( QSharedPointer< ProductOnPlace > (
-				new ProductOnPlace( r.m_place, r.m_count, &pr->m_index ) ) );
+			putNewProductOnPlace( pr, r.m_place, r.m_count );
 		else
 		{
-			m_data.push_back( QSharedPointer< Product > (
-				new Product( r.m_code, r.m_desc ) ) );
-			m_data.last()->m_places.push_back( QSharedPointer< ProductOnPlace > (
-				new ProductOnPlace( r.m_place, r.m_count,
-					&m_data.last()->m_index ) ) );
+			addNewProduct( r.m_code, r.m_desc );
+			putNewProductOnPlace( findProduct( r.m_code ), r.m_place, r.m_count );
 		}
 	}
 
 	if( !records.isEmpty() )
-		emit q->dataChanged( q->index( 0, 0 ), q->index( q->rowCount(), 2 ) );
+		emit q->dataChanged( q->index( 0, 0 ), q->index( q->rowCount() - 1, 2 ) );
 }
 
 bool operator == ( const QSharedPointer< Product > & p1,
@@ -267,6 +268,35 @@ ByProductModelPrivate::placeRow( Product * p, const QString & place ) const
 	return -1;
 }
 
+void
+ByProductModelPrivate::addNewProduct( const QString & code,
+	const QString & desc )
+{
+	const int row = m_data.size();
+
+	q->beginInsertRows( QModelIndex(), row, row );
+	m_data.push_back( QSharedPointer< Product > (
+		new Product( code, desc ) ) );
+	q->endInsertRows();
+}
+
+void
+ByProductModelPrivate::putNewProductOnPlace( Product * product,
+	const QString & place, quint64 count )
+{
+	if( product )
+	{
+		const QModelIndex parent = q->createIndex(
+			topRow( &product->m_index ), 0, &product->m_index );
+
+		q->beginInsertRows( parent, product->m_places.size(),
+			product->m_places.size() );
+		product->m_places.push_back( QSharedPointer< ProductOnPlace > (
+			new ProductOnPlace( place, count, &product->m_index ) ) );
+		q->endInsertRows();
+	}
+}
+
 
 //
 // ByProductModel
@@ -302,9 +332,37 @@ ByProductModel::places() const
 
 	for( const auto & p : qAsConst( d->m_data ) )
 		for( const auto & place : qAsConst( p->m_places ) )
-			res.append( place->m_place );
+			if( !res.contains( place->m_place ) )
+				res.append( place->m_place );
 
 	return res;
+}
+
+QString
+ByProductModel::desc( const QString & code ) const
+{
+	const auto * p = d->findProduct( code );
+
+	if( p )
+		return p->m_desc;
+	else
+		return QString();
+}
+
+quint64
+ByProductModel::count( const QString & code, const QString & place ) const
+{
+	auto * p = d->findProduct( code );
+
+	if( p )
+	{
+		const auto * onPlace = d->findPlace( p, place );
+
+		if( onPlace )
+			return onPlace->m_count;
+	}
+
+	return 0;
 }
 
 int
@@ -402,7 +460,7 @@ bool
 ByProductModel::hasChildren( const QModelIndex & parent ) const
 {
 	if( !parent.isValid() )
-		return false;
+		return !d->m_data.isEmpty();
 
 	if( !parent.parent().isValid() )
 	{
@@ -450,7 +508,7 @@ ByProductModel::index( int row, int column, const QModelIndex & parent ) const
 	else
 	{
 		auto * p = static_cast< Product* > ( static_cast< IndexHelper* > (
-			parent.internalPointer() )->m_parent );
+			parent.internalPointer() )->m_this );
 
 		if( p && row >= 0 && row < p->m_places.size() )
 			return createIndex( row, column,
@@ -463,13 +521,19 @@ ByProductModel::index( int row, int column, const QModelIndex & parent ) const
 QModelIndex
 ByProductModel::parent( const QModelIndex & index ) const
 {
-	IndexHelper * helper = static_cast< IndexHelper* > (
-		index.internalPointer() );
+	if( index.isValid() )
+	{
+		IndexHelper * helper = static_cast< IndexHelper* > (
+			index.internalPointer() );
 
-	if( !helper->m_parent )
-		return QModelIndex();
+		if( !helper->m_parent )
+			return QModelIndex();
+		else
+			return createIndex( d->topRow( helper->m_parent ),
+				0, helper->m_parent );
+	}
 	else
-		return createIndex( d->topRow( helper->m_parent ), 0, helper->m_parent );
+		return QModelIndex();
 }
 
 int
@@ -633,38 +697,15 @@ ByProductModel::productChanged( const QString & code, const QString & place,
 				}
 			}
 			else
-			{
-				const QModelIndex parent = createIndex(
-					d->topRow( &p->m_index ), 0, &p->m_index );
-				const int row = p->m_places.size();
-
-				beginInsertRows( parent, row, row );
-				p->m_places.push_back( QSharedPointer< ProductOnPlace > (
-					new ProductOnPlace( place, count, &p->m_index ) ) );
-				endInsertRows();
-			}
+				d->putNewProductOnPlace( p, place, count );
 		}
 	}
 	else
 	{
-		const int row = d->m_data.size();
-
-		beginInsertRows( QModelIndex(), row, row );
-		const auto product = QSharedPointer< Product > (
-			new Product( code, desc ) );
-		d->m_data.push_back( product );
-		endInsertRows();
+		d->addNewProduct( code, desc );
 
 		if( !place.isEmpty() && count > 0 )
-		{
-			const QModelIndex parent = createIndex(
-				row, 0, &product->m_index );
-
-			beginInsertRows( parent, 0, 0 );
-			p->m_places.push_back( QSharedPointer< ProductOnPlace > (
-				new ProductOnPlace( place, count, &product->m_index ) ) );
-			endInsertRows();
-		}
+			d->putNewProductOnPlace( d->findProduct( code ), place, count );
 	}
 }
 

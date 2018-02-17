@@ -122,6 +122,12 @@ void MainWindowPrivate::init()
 		MainWindow::tr( "&Quit" ), q, &MainWindow::quit,
 		QKeySequence( "Ctrl+Q" ) );
 
+	auto * edit = q->menuBar()->addMenu( MainWindow::tr( "&Edit" ) );
+
+	edit->addAction( QIcon( ":/img/list-add_22x22.png" ),
+		MainWindow::tr( "Add Product" ), q, &MainWindow::addProduct,
+		QKeySequence( "Ctrl+P" ) );
+
 	auto * opt = q->menuBar()->addMenu( MainWindow::tr( "&Options" ) );
 
 	opt->addAction( QIcon( ":/img/configure_22x22.png" ),
@@ -433,6 +439,28 @@ void
 MainWindow::aboutQt()
 {
 	QMessageBox::aboutQt( this );
+}
+
+void
+MainWindow::addProduct()
+{
+	ProductDlg dlg( QString(), QString(), 0, QString(),
+		d->m_codeModel->codes(), d->m_codeModel->places(),
+		true, d->m_codeModel, this );
+
+	if( dlg.exec() == QDialog::Accepted )
+	{
+		DbResult res = d->m_db->changeProduct( { dlg.code(),
+			dlg.place(), dlg.count(), dlg.desc() } );
+
+		if( res.m_ok )
+			d->m_sigs->emitProductChanged( dlg.code(), dlg.place(),
+				dlg.count(), dlg.desc() );
+		else
+			QMessageBox::critical( this, tr( "Error in the database..." ),
+				tr( "Unable to add the product.\n\n%1" )
+					.arg( res.m_error ) );
+	}
 }
 
 void

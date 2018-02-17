@@ -3,7 +3,7 @@ TEMPLATE = app
 
 TARGET = Stock
 
-QT += widgets network sql
+QT += widgets network sql testlib
 
 CONFIG += c++11
 

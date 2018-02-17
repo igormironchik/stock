@@ -30,6 +30,9 @@
 
 namespace Stock {
 
+class ByProductModel;
+
+
 //
 // ProductDlg
 //
@@ -50,6 +53,7 @@ public:
 		const QStringList & codes,
 		const QStringList & places,
 		bool isNewProduct,
+		ByProductModel * model,
 		QWidget * parent );
 	virtual ~ProductDlg();
 
@@ -61,6 +65,12 @@ public:
 	quint64 count() const;
 	//! \return Description.
 	QString desc() const;
+
+private slots:
+	//! Code changed.
+	void codeChanged( const QString & code );
+	//! Place changed.
+	void placeChanged( const QString & place );
 
 private:
 	Q_DISABLE_COPY( ProductDlg )
