@@ -270,7 +270,8 @@ MainWindow::appStarted()
 			try {
 				d->m_db = new Db( this );
 
-				d->m_codeModel = new ByProductModel( d->m_db, d->m_sigs, this );
+				d->m_codeModel = new ByProductModel( this, d->m_db,
+					d->m_sigs, this );
 
 				d->m_view->byProductsView()->setModel( d->m_codeModel );
 			}

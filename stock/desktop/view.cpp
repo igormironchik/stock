@@ -92,7 +92,11 @@ ViewPrivate::init()
 	m_codeView->setRootIsDecorated( true );
 	m_codeView->setAlternatingRowColors( true );
 	m_codeView->setSortingEnabled( true );
+	m_codeView->setWordWrap( true );
+	m_codeView->setSelectionBehavior( QAbstractItemView::SelectRows );
+	m_codeView->setSelectionMode( QAbstractItemView::SingleSelection );
 	m_codeView->header()->setStretchLastSection( true );
+	m_codeView->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
 	m_stack->addWidget( m_codeView );
 
 	m_placeView = new QTreeView( m_stack );
@@ -100,7 +104,11 @@ ViewPrivate::init()
 	m_placeView->setRootIsDecorated( true );
 	m_placeView->setAlternatingRowColors( true );
 	m_placeView->setSortingEnabled( true );
+	m_placeView->setWordWrap( true );
+	m_placeView->setSelectionBehavior( QAbstractItemView::SelectRows );
+	m_placeView->setSelectionMode( QAbstractItemView::SingleSelection );
 	m_placeView->header()->setStretchLastSection( true );
+	m_placeView->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
 	m_stack->addWidget( m_placeView );
 
 	l->addWidget( m_stack );

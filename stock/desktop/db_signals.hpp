@@ -44,10 +44,7 @@ signals:
 	//! Product is deleted.
 	void productDeleted(
 		//! Code of the product. Can't be empty.
-		const QString & code,
-		//! Place of the product. Can be empty. in this case product
-		//! was delete in total.
-		const QString & place );
+		const QString & code );
 	//! Product's options are changed.
 	void productChanged(
 		//! Code of the product. Can't be empty.
@@ -69,10 +66,7 @@ public slots:
 	//! Product is deleted.
 	void emitProductDeleted(
 		//! Code of the product. Can't be empty.
-		const QString & code,
-		//! Place of the product. Can be empty. in this case product
-		//! was delete in total.
-		const QString & place );
+		const QString & code );
 	//! Product's options are changed.
 	void emitProductChanged(
 		//! Code of the product. Can't be empty.

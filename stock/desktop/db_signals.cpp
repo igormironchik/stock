@@ -43,9 +43,9 @@ DbSignals::~DbSignals()
 }
 
 void
-DbSignals::emitProductDeleted( const QString & code, const QString & place )
+DbSignals::emitProductDeleted( const QString & code )
 {
-	emit productDeleted( code, place );
+	emit productDeleted( code );
 }
 
 void

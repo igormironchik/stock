@@ -32,6 +32,7 @@ namespace Stock {
 
 class Db;
 class DbSignals;
+class MainWindow;
 
 
 //
@@ -47,7 +48,8 @@ class ByProductModel Q_DECL_FINAL
 	Q_OBJECT
 
 public:
-	ByProductModel( Db * db, DbSignals * sigs, QObject * parent );
+	ByProductModel( MainWindow * win, Db * db,
+		DbSignals * sigs, QObject * parent );
 	virtual ~ByProductModel();
 
 	int columnCount( const QModelIndex & parent = QModelIndex() ) const
@@ -70,7 +72,27 @@ public:
 	bool setData( const QModelIndex & index, const QVariant & value,
 		int role = Qt::EditRole ) Q_DECL_OVERRIDE;
 
+private slots:
+	//! Product is deleted.
+	void productDeleted(
+		//! Code of the product. Can't be empty.
+		const QString & code );
+	//! Product's options are changed.
+	void productChanged(
+		//! Code of the product. Can't be empty.
+		const QString & code,
+		//! Place of the product. Can be empty, in this case
+		//! product just was added into database.
+		const QString & place,
+		//! Amount of the product on the place. Ignores if product place is
+		//! empty.
+		quint64 count,
+		//! Description of the product.
+		const QString & desc );
+
 private:
+	friend class ByProductModelPrivate;
+
 	Q_DISABLE_COPY( ByProductModel )
 
 	QScopedPointer< ByProductModelPrivate > d;
