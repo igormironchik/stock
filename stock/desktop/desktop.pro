@@ -18,7 +18,9 @@ HEADERS = mainwindow.hpp \
 	by_place_model.hpp \
 	db_signals.hpp \
 	product.hpp \
-	by_product_sort_model.hpp
+	by_product_sort_model.hpp \
+	by_place_view.hpp \
+	by_product_view.hpp
 
 SOURCES = mainwindow.cpp \
     main.cpp \
@@ -30,7 +32,9 @@ SOURCES = mainwindow.cpp \
 	by_place_model.cpp \
 	db_signals.cpp \
 	product.cpp \
-	by_product_sort_model.cpp
+	by_product_sort_model.cpp \
+	by_place_view.cpp \
+	by_product_view.cpp
     
 RESOURCES = resources.qrc
 

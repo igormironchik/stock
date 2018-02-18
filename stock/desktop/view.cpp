@@ -23,9 +23,10 @@
 // Stock include.
 #include "view.hpp"
 #include "by_product_sort_model.hpp"
+#include "by_product_view.hpp"
+#include "by_place_view.hpp"
 
 // Qt include.
-#include <QTreeView>
 #include <QBoxLayout>
 #include <QLineEdit>
 #include <QLabel>
@@ -46,6 +47,7 @@ public:
 		,	m_codeView( Q_NULLPTR )
 		,	m_placeView( Q_NULLPTR )
 		,	m_codeModel( Q_NULLPTR )
+		,	m_placeModel( Q_NULLPTR )
 		,	m_code( Q_NULLPTR )
 		,	m_place( Q_NULLPTR )
 		,	m_desc( Q_NULLPTR )
@@ -58,11 +60,13 @@ public:
 
 	QStackedWidget * m_stack;
 	//! By product code tree view.
-	QTreeView * m_codeView;
+	ByProductView * m_codeView;
 	//! By place tree view.
-	QTreeView * m_placeView;
+	ByPlaceView * m_placeView;
 	//! By Product filter model.
 	ByProductSortModel * m_codeModel;
+	//! By Place filter model.
+	ByPlaceSortModel * m_placeModel;
 	//! Code.
 	QLineEdit * m_code;
 	//! Place.
@@ -100,7 +104,7 @@ ViewPrivate::init()
 
 	m_stack = new QStackedWidget( q );
 
-	m_codeView = new QTreeView( m_stack );
+	m_codeView = new ByProductView( m_stack );
 	m_codeView->setAllColumnsShowFocus( true );
 	m_codeView->setRootIsDecorated( true );
 	m_codeView->setAlternatingRowColors( true );
@@ -113,7 +117,7 @@ ViewPrivate::init()
 	m_codeView->header()->setSortIndicator( 0, Qt::AscendingOrder );
 	m_stack->addWidget( m_codeView );
 
-	m_placeView = new QTreeView( m_stack );
+	m_placeView = new ByPlaceView( m_stack );
 	m_placeView->setAllColumnsShowFocus( true );
 	m_placeView->setRootIsDecorated( true );
 	m_placeView->setAlternatingRowColors( true );
@@ -152,22 +156,32 @@ View::~View()
 {
 }
 
-QTreeView *
+ByProductView *
 View::byProductsView() const
 {
 	return d->m_codeView;
 }
 
-QTreeView *
+ByPlaceView *
 View::byPlaceView() const
 {
 	return d->m_placeView;
 }
 
 void
-View::setByProductFilterModel( ByProductSortModel * model )
+View::setFilterModels( ByProductSortModel * product, ByPlaceSortModel * place )
 {
-	d->m_codeModel = model;
+	d->m_codeModel = product;
+	d->m_placeModel = place;
+
+	d->m_codeView->setModel( d->m_codeModel );
+//	d->m_placeView->setModel( d->m_placeModel );
+}
+
+void
+View::setModels( ByProductModel * product,
+	ByPlaceModel * place )
+{
 }
 
 void

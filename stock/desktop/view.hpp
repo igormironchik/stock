@@ -35,6 +35,11 @@ QT_END_NAMESPACE
 namespace Stock {
 
 class ByProductSortModel;
+class ByPlaceSortModel;
+class ByProductView;
+class ByPlaceView;
+class ByProductModel;
+class ByPlaceModel;
 
 //
 // View
@@ -53,12 +58,17 @@ public:
 	virtual ~View();
 
 	//! \return By products view.
-	QTreeView * byProductsView() const;
+	ByProductView * byProductsView() const;
 	//! \return By place view.
-	QTreeView * byPlaceView() const;
+	ByPlaceView * byPlaceView() const;
 
-	//! Set By Product filter model.
-	void setByProductFilterModel( ByProductSortModel * model );
+	//! Set filter models.
+	void setFilterModels( ByProductSortModel * product,
+		ByPlaceSortModel * place );
+
+	//! Set models.
+	void setModels( ByProductModel * product,
+		ByPlaceModel * place );
 
 public slots:
 	//! Switch to by product code mode.

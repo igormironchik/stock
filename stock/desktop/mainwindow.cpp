@@ -33,6 +33,8 @@
 #include "db_signals.hpp"
 #include "product.hpp"
 #include "by_product_sort_model.hpp"
+#include "by_product_view.hpp"
+#include "by_place_view.hpp"
 
 // Qt include.
 #include <QMenuBar>
@@ -48,7 +50,6 @@
 #include <QTextCodec>
 #include <QHostAddress>
 #include <QUdpSocket>
-#include <QTreeView>
 
 // cfgfile include.
 #include <cfgfile/all.hpp>
@@ -287,9 +288,8 @@ MainWindow::appStarted()
 				d->m_codeFilterModel = new ByProductSortModel( this );
 				d->m_codeFilterModel->setSourceModel( d->m_codeModel );
 
-				d->m_view->setByProductFilterModel( d->m_codeFilterModel );
-
-				d->m_view->byProductsView()->setModel( d->m_codeFilterModel );
+				d->m_view->setFilterModels( d->m_codeFilterModel, Q_NULLPTR );
+				d->m_view->setModels( d->m_codeModel, Q_NULLPTR );
 			}
 			catch( const Exception & x )
 			{
