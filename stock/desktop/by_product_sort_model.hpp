@@ -20,42 +20,46 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef STOCK_SERVER_HPP_INCLUDED
-#define STOCK_SERVER_HPP_INCLUDED
+#ifndef STOCK_BY_PRODUCT_SORT_MODEL_HPP_INCLUDED
+#define STOCK_BY_PRODUCT_SORT_MODEL_HPP_INCLUDED
 
 // Qt include.
-#include <QTcpServer>
+#include <QSortFilterProxyModel>
 #include <QScopedPointer>
 
 
 namespace Stock {
 
 //
-// Server
+// ByProductSortModel
 //
 
-class ServerPrivate;
+class ByProductSortModelPrivate;
 
-//! TCP server.
-class Server Q_DECL_FINAL
-	:	public QTcpServer
+//! Sort-filter model for "By Product" mode.
+class ByProductSortModel Q_DECL_FINAL
+	:	public QSortFilterProxyModel
 {
 	Q_OBJECT
 
 public:
-	explicit Server( QObject * parent );
-	virtual ~Server();
+	explicit ByProductSortModel( QObject * parent );
+	virtual ~ByProductSortModel();
+
+	//! Set filter data.
+	void setFilterData( const QString & code, const QString & place,
+		const QString & desc );
 
 protected:
-	//!	Process new incoming connection.
-	void incomingConnection( qintptr socketDescriptor ) Q_DECL_OVERRIDE;
+	bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
+		Q_DECL_OVERRIDE;
 
 private:
-	Q_DISABLE_COPY( Server )
+	Q_DISABLE_COPY( ByProductSortModel )
 
-	QScopedPointer< ServerPrivate > d;
-}; // class Server
+	QScopedPointer< ByProductSortModelPrivate > d;
+};
 
 } /* namespace Stock */
 
-#endif // STOCK_SERVER_HPP_INCLUDED
+#endif // STOCK_BY_PRODUCT_SORT_MODEL_HPP_INCLUDED

@@ -66,7 +66,7 @@ class Db Q_DECL_FINAL
 	:	public QObject
 {
 public:
-	Db( QObject * parent );
+	explicit Db( QObject * parent );
 	virtual ~Db();
 
 	//! \return All records.

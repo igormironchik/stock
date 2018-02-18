@@ -32,6 +32,7 @@
 #include "by_product_model.hpp"
 #include "db_signals.hpp"
 #include "product.hpp"
+#include "by_product_sort_model.hpp"
 
 // Qt include.
 #include <QMenuBar>
@@ -64,6 +65,7 @@ public:
 	MainWindowPrivate( MainWindow * parent )
 		:	m_view( Q_NULLPTR )
 		,	m_codeModel( Q_NULLPTR )
+		,	m_codeFilterModel( Q_NULLPTR )
 		,	m_db( Q_NULLPTR )
 		,	m_udp( Q_NULLPTR )
 		,	m_srv( Q_NULLPTR )
@@ -90,6 +92,8 @@ public:
 	View * m_view;
 	//! By product model.
 	ByProductModel * m_codeModel;
+	//! By product filter model.
+	ByProductSortModel * m_codeFilterModel;
 	//! Database.
 	Db * m_db;
 	//! UDP.
@@ -280,7 +284,12 @@ MainWindow::appStarted()
 				d->m_codeModel = new ByProductModel( this, d->m_db,
 					d->m_sigs, this );
 
-				d->m_view->byProductsView()->setModel( d->m_codeModel );
+				d->m_codeFilterModel = new ByProductSortModel( this );
+				d->m_codeFilterModel->setSourceModel( d->m_codeModel );
+
+				d->m_view->setByProductFilterModel( d->m_codeFilterModel );
+
+				d->m_view->byProductsView()->setModel( d->m_codeFilterModel );
 			}
 			catch( const Exception & x )
 			{

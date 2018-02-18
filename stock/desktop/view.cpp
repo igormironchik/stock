@@ -22,6 +22,7 @@
 
 // Stock include.
 #include "view.hpp"
+#include "by_product_sort_model.hpp"
 
 // Qt include.
 #include <QTreeView>
@@ -44,6 +45,10 @@ public:
 		:	m_stack( Q_NULLPTR )
 		,	m_codeView( Q_NULLPTR )
 		,	m_placeView( Q_NULLPTR )
+		,	m_codeModel( Q_NULLPTR )
+		,	m_code( Q_NULLPTR )
+		,	m_place( Q_NULLPTR )
+		,	m_desc( Q_NULLPTR )
 		,	q( parent )
 	{
 	}
@@ -56,6 +61,14 @@ public:
 	QTreeView * m_codeView;
 	//! By place tree view.
 	QTreeView * m_placeView;
+	//! By Product filter model.
+	ByProductSortModel * m_codeModel;
+	//! Code.
+	QLineEdit * m_code;
+	//! Place.
+	QLineEdit * m_place;
+	//! Description.
+	QLineEdit * m_desc;
 	//! Parent.
 	View * q;
 }; // class ViewPrivate
@@ -71,17 +84,17 @@ ViewPrivate::init()
 	filter->setText( View::tr( "Filter" ) );
 	h->addWidget( filter );
 
-	QLineEdit * code = new QLineEdit( q );
-	code->setPlaceholderText( View::tr( "Product Code" ) );
-	h->addWidget( code );
+	m_code = new QLineEdit( q );
+	m_code->setPlaceholderText( View::tr( "Product Code" ) );
+	h->addWidget( m_code );
 
-	QLineEdit * place = new QLineEdit( q );
-	place->setPlaceholderText( View::tr( "Place" ) );
-	h->addWidget( place );
+	m_place = new QLineEdit( q );
+	m_place->setPlaceholderText( View::tr( "Place" ) );
+	h->addWidget( m_place );
 
-	QLineEdit * name = new QLineEdit( q );
-	name->setPlaceholderText( View::tr( "Description of Product" ) );
-	h->addWidget( name );
+	m_desc = new QLineEdit( q );
+	m_desc->setPlaceholderText( View::tr( "Description of Product" ) );
+	h->addWidget( m_desc );
 
 	l->addLayout( h );
 
@@ -97,6 +110,7 @@ ViewPrivate::init()
 	m_codeView->setSelectionMode( QAbstractItemView::SingleSelection );
 	m_codeView->header()->setStretchLastSection( true );
 	m_codeView->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
+	m_codeView->header()->setSortIndicator( 0, Qt::AscendingOrder );
 	m_stack->addWidget( m_codeView );
 
 	m_placeView = new QTreeView( m_stack );
@@ -109,16 +123,17 @@ ViewPrivate::init()
 	m_placeView->setSelectionMode( QAbstractItemView::SingleSelection );
 	m_placeView->header()->setStretchLastSection( true );
 	m_placeView->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
+	m_placeView->header()->setSortIndicator( 0, Qt::AscendingOrder );
 	m_stack->addWidget( m_placeView );
 
 	l->addWidget( m_stack );
 
-	View::connect( code, &QLineEdit::textChanged,
-		q, &View::productCodeChanged );
-	View::connect( name, &QLineEdit::textChanged,
-		q, &View::nameOfProductChanged );
-	View::connect( name, &QLineEdit::textChanged,
-		q, &View::placeChanged );
+	View::connect( m_code, &QLineEdit::textChanged,
+		q, &View::filterChanged );
+	View::connect( m_place, &QLineEdit::textChanged,
+		q, &View::filterChanged );
+	View::connect( m_desc, &QLineEdit::textChanged,
+		q, &View::filterChanged );
 }
 
 
@@ -150,21 +165,17 @@ View::byPlaceView() const
 }
 
 void
-View::productCodeChanged( const QString & txt )
+View::setByProductFilterModel( ByProductSortModel * model )
 {
-
+	d->m_codeModel = model;
 }
 
 void
-View::nameOfProductChanged( const QString & txt )
+View::filterChanged( const QString & )
 {
-
-}
-
-void
-View::placeChanged( const QString & txt )
-{
-
+	if( d->m_codeModel )
+		d->m_codeModel->setFilterData( d->m_code->text(),
+			d->m_place->text(), d->m_desc->text() );
 }
 
 void

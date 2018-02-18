@@ -59,7 +59,7 @@ signals:
 		const QString & desc );
 
 public:
-	DbSignals( QObject * parent );
+	explicit DbSignals( QObject * parent );
 	virtual ~DbSignals();
 
 public slots:

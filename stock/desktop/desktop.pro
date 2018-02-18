@@ -3,7 +3,7 @@ TEMPLATE = app
 
 TARGET = Stock
 
-QT += widgets network sql testlib
+QT += widgets network sql
 
 CONFIG += c++11
 
@@ -17,7 +17,8 @@ HEADERS = mainwindow.hpp \
 	by_product_model.hpp \
 	by_place_model.hpp \
 	db_signals.hpp \
-	product.hpp
+	product.hpp \
+	by_product_sort_model.hpp
 
 SOURCES = mainwindow.cpp \
     main.cpp \
@@ -28,7 +29,8 @@ SOURCES = mainwindow.cpp \
 	by_product_model.cpp \
 	by_place_model.cpp \
 	db_signals.cpp \
-	product.cpp
+	product.cpp \
+	by_product_sort_model.cpp
     
 RESOURCES = resources.qrc
 

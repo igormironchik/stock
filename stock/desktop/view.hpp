@@ -34,6 +34,8 @@ QT_END_NAMESPACE
 
 namespace Stock {
 
+class ByProductSortModel;
+
 //
 // View
 //
@@ -55,6 +57,9 @@ public:
 	//! \return By place view.
 	QTreeView * byPlaceView() const;
 
+	//! Set By Product filter model.
+	void setByProductFilterModel( ByProductSortModel * model );
+
 public slots:
 	//! Switch to by product code mode.
 	void switchToByProductCode();
@@ -62,12 +67,8 @@ public slots:
 	void switchToByPlace();
 
 private slots:
-	//! Product code changed.
-	void productCodeChanged( const QString & txt );
-	//! Name of product changed.
-	void nameOfProductChanged( const QString & txt );
-	//! Place changed.
-	void placeChanged( const QString & txt );
+	//! Filter changed.
+	void filterChanged( const QString & );
 
 private:
 	friend class ViewPrivate;
