@@ -366,12 +366,9 @@ ByProductModel::count( const QString & code, const QString & place ) const
 }
 
 int
-ByProductModel::columnCount( const QModelIndex & parent ) const
+ByProductModel::columnCount( const QModelIndex & ) const
 {
-	if( parent.isValid() )
-		return 2;
-	else
-		return 3;
+	return 3;
 }
 
 QVariant
@@ -451,7 +448,7 @@ ByProductModel::flags( const QModelIndex & index ) const
 					Qt::ItemIsEditable;
 
 			default :
-				return Qt::NoItemFlags;
+				return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 		}
 	}
 }

@@ -400,17 +400,7 @@ ByPlaceModel::flags( const QModelIndex & index ) const
 		return Qt::NoItemFlags;
 
 	if( !index.parent().isValid() )
-	{
-		switch( index.column() )
-		{
-			case 0 :
-			case 1 :
-				return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
-
-			default :
-				return Qt::NoItemFlags;
-		}
-	}
+		return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 	else
 	{
 		switch( index.column() )
