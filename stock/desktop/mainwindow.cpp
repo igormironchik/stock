@@ -467,7 +467,7 @@ void
 MainWindow::addProduct()
 {
 	ProductDlg dlg( QString(), QString(), 0, QString(),
-		d->m_codeModel->codes(), d->m_codeModel->places(),
+		d->m_codeModel->codes(), d->m_placeModel->places(),
 		true, d->m_codeModel, this );
 
 	if( dlg.exec() == QDialog::Accepted )

@@ -325,19 +325,6 @@ ByProductModel::codes() const
 	return res;
 }
 
-QStringList
-ByProductModel::places() const
-{
-	QStringList res;
-
-	for( const auto & p : qAsConst( d->m_data ) )
-		for( const auto & place : qAsConst( p->m_places ) )
-			if( !res.contains( place->m_place ) )
-				res.append( place->m_place );
-
-	return res;
-}
-
 QString
 ByProductModel::desc( const QString & code ) const
 {

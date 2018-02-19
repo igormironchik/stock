@@ -54,8 +54,6 @@ public:
 
 	//! \return List of all codes of products.
 	QStringList codes() const;
-	//! \return List of all places.
-	QStringList places() const;
 	//! \return Description.
 	QString desc( const QString & code ) const;
 	//! \return Amount of product.

@@ -23,9 +23,8 @@
 #ifndef STOCK_BY_PLACE_SORT_MODEL_HPP_INCLUDED
 #define STOCK_BY_PLACE_SORT_MODEL_HPP_INCLUDED
 
-// Qt include.
-#include <QSortFilterProxyModel>
-#include <QScopedPointer>
+// Stock include.
+#include "sort_filter_base_model.hpp"
 
 
 namespace Stock {
@@ -38,17 +37,13 @@ class ByPlaceSortModelPrivate;
 
 //! Sort-filter model for "By Product" mode.
 class ByPlaceSortModel Q_DECL_FINAL
-	:	public QSortFilterProxyModel
+	:	public SortFilterModel
 {
 	Q_OBJECT
 
 public:
 	explicit ByPlaceSortModel( QObject * parent );
 	virtual ~ByPlaceSortModel();
-
-	//! Set filter data.
-	void setFilterData( const QString & code, const QString & place,
-		const QString & desc );
 
 protected:
 	bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
@@ -57,8 +52,11 @@ protected:
 private:
 	Q_DISABLE_COPY( ByPlaceSortModel )
 
-	QScopedPointer< ByPlaceSortModelPrivate > d;
-};
+	inline ByPlaceSortModelPrivate * d_func() const
+	{
+		return reinterpret_cast< ByPlaceSortModelPrivate* > ( d.data() );
+	}
+}; // class ByPlaceSortModel
 
 } /* namespace Stock */
 

@@ -23,9 +23,8 @@
 #ifndef STOCK_BY_PRODUCT_SORT_MODEL_HPP_INCLUDED
 #define STOCK_BY_PRODUCT_SORT_MODEL_HPP_INCLUDED
 
-// Qt include.
-#include <QSortFilterProxyModel>
-#include <QScopedPointer>
+// Stock include.
+#include "sort_filter_base_model.hpp"
 
 
 namespace Stock {
@@ -34,11 +33,9 @@ namespace Stock {
 // ByProductSortModel
 //
 
-class ByProductSortModelPrivate;
-
 //! Sort-filter model for "By Product" mode.
 class ByProductSortModel Q_DECL_FINAL
-	:	public QSortFilterProxyModel
+	:	public SortFilterModel
 {
 	Q_OBJECT
 
@@ -46,19 +43,13 @@ public:
 	explicit ByProductSortModel( QObject * parent );
 	virtual ~ByProductSortModel();
 
-	//! Set filter data.
-	void setFilterData( const QString & code, const QString & place,
-		const QString & desc );
-
 protected:
 	bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 		Q_DECL_OVERRIDE;
 
 private:
 	Q_DISABLE_COPY( ByProductSortModel )
-
-	QScopedPointer< ByProductSortModelPrivate > d;
-};
+}; // class ByProductSortModel
 
 } /* namespace Stock */
 

@@ -21,45 +21,54 @@
 */
 
 // Stock include.
-#include "by_product_sort_model.hpp"
+#include "sort_filter_base_model.hpp"
 
 
 namespace Stock {
 
 //
-// ByProductSortModel
+// SortFilterModelPrivate
 //
 
-ByProductSortModel::ByProductSortModel( QObject * parent )
-	:	SortFilterModel( parent )
+SortFilterModelPrivate::SortFilterModelPrivate( SortFilterModel * parent )
+	:	q( parent )
 {
 }
 
-ByProductSortModel::~ByProductSortModel()
+SortFilterModelPrivate::~SortFilterModelPrivate()
 {
 }
 
-bool
-ByProductSortModel::filterAcceptsRow( int sourceRow,
-	const QModelIndex & sourceParent ) const
+
+//
+// SortFilterModel
+//
+
+SortFilterModel::SortFilterModel( QObject * parent )
+	:	QSortFilterProxyModel( parent )
+	,	d( new SortFilterModelPrivate( this ) )
 {
-	if( !sourceParent.isValid() )
-	{
-		const QModelIndex code = sourceModel()->index( sourceRow, 0,
-			sourceParent );
-		const QModelIndex desc = sourceModel()->index( sourceRow, 2,
-			sourceParent );
+}
 
-		return ( code.data().toString().contains( d->m_code ) &&
-			desc.data().toString().contains( d->m_desc ) );
-	}
-	else
-	{
-		const QModelIndex place = sourceModel()->index( sourceRow, 0,
-			sourceParent );
+SortFilterModel::SortFilterModel( SortFilterModelPrivate * dd, QObject * parent )
+	:	QSortFilterProxyModel( parent )
+	,	d( dd )
+{
+}
 
-		return place.data().toString().contains( d->m_place );
-	}
+SortFilterModel::~SortFilterModel()
+{
+}
+
+void
+SortFilterModel::setFilterData( const QString & code, const QString & place,
+	const QString & desc )
+{
+	d->m_code = code;
+	d->m_place = place;
+	d->m_desc = desc;
+
+	invalidateFilter();
 }
 
 } /* namespace Stock */

@@ -30,10 +30,12 @@ namespace Stock {
 // ByPlaceSortModelPrivate
 //
 
-class ByPlaceSortModelPrivate {
+class ByPlaceSortModelPrivate
+	:	public SortFilterModelPrivate
+{
 public:
 	ByPlaceSortModelPrivate( ByPlaceSortModel * parent )
-		:	q( parent )
+		:	SortFilterModelPrivate( parent )
 	{
 	}
 
@@ -41,14 +43,10 @@ public:
 	bool acceptProduct( int sourceRow,
 		const QModelIndex & sourceParent ) const;
 
-	//! Code.
-	QString m_code;
-	//! Place.
-	QString m_place;
-	//! Description.
-	QString m_desc;
-	//! Parent.
-	ByPlaceSortModel * q;
+	inline ByPlaceSortModel * q_func() const
+	{
+		return static_cast< ByPlaceSortModel* > ( q );
+	}
 }; // class ByPlaceSortModelPrivate
 
 bool
@@ -70,8 +68,7 @@ ByPlaceSortModelPrivate::acceptProduct( int sourceRow,
 //
 
 ByPlaceSortModel::ByPlaceSortModel( QObject * parent )
-	:	QSortFilterProxyModel( parent )
-	,	d( new ByPlaceSortModelPrivate( this ) )
+	:	SortFilterModel( new ByPlaceSortModelPrivate( this ), parent )
 {
 }
 
@@ -79,21 +76,12 @@ ByPlaceSortModel::~ByPlaceSortModel()
 {
 }
 
-void
-ByPlaceSortModel::setFilterData( const QString & code, const QString & place,
-	const QString & desc )
-{
-	d->m_code = code;
-	d->m_place = place;
-	d->m_desc = desc;
-
-	invalidateFilter();
-}
-
 bool
 ByPlaceSortModel::filterAcceptsRow( int sourceRow,
 	const QModelIndex & sourceParent ) const
 {
+	const ByPlaceSortModelPrivate * dd = d_func();
+
 	if( !sourceParent.isValid() )
 	{
 		const QModelIndex place = sourceModel()->index( sourceRow, 0,
@@ -105,7 +93,7 @@ ByPlaceSortModel::filterAcceptsRow( int sourceRow,
 
 		for( auto i = 0; i < rowsCount; ++i )
 		{
-			if( d->acceptProduct( i, place ) )
+			if( dd->acceptProduct( i, place ) )
 			{
 				empty = false;
 
@@ -116,7 +104,7 @@ ByPlaceSortModel::filterAcceptsRow( int sourceRow,
 		return ( place.data().toString().contains( d->m_place )  && !empty );
 	}
 	else
-		return d->acceptProduct( sourceRow, sourceParent );
+		return dd->acceptProduct( sourceRow, sourceParent );
 }
 
 } /* namespace Stock */
