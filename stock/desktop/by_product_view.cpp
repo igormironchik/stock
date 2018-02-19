@@ -75,11 +75,17 @@ ByProductView::~ByProductView()
 }
 
 void
-ByProductView::setModels( ByProductModel * model,
-	ByProductSortModel * filter )
+ByProductView::setFilterModel( ByProductSortModel * filter )
+{
+	d->m_filter = filter;
+
+	setModel( d->m_filter );
+}
+
+void
+ByProductView::setSourceModel( ByProductModel * model )
 {
 	d->m_model = model;
-	d->m_filter = filter;
 }
 
 } /* namespace Stock */

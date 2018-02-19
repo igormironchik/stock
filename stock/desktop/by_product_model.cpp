@@ -44,10 +44,10 @@ namespace Stock {
 
 //! Internal index.
 struct IndexHelper Q_DECL_FINAL {
-	void * m_parent;
+	IndexHelper * m_parent;
 	void * m_this;
 
-	IndexHelper( void * parent, void * self )
+	IndexHelper( IndexHelper * parent, void * self )
 		:	m_parent( parent )
 		,	m_this( self )
 	{
@@ -60,7 +60,7 @@ struct IndexHelper Q_DECL_FINAL {
 //
 
 //! Product data on the give place.
-struct ProductOnPlace {
+struct ProductOnPlace Q_DECL_FINAL {
 	//! Place.
 	QString m_place;
 	//! Amount of the product.
@@ -68,7 +68,7 @@ struct ProductOnPlace {
 	//! Internal index.
 	IndexHelper m_index;
 
-	ProductOnPlace( const QString & place, quint64 count, void * parent )
+	ProductOnPlace( const QString & place, quint64 count, IndexHelper * parent )
 		:	m_place( place )
 		,	m_count( count )
 		,	m_index( parent, this )
@@ -82,7 +82,7 @@ struct ProductOnPlace {
 //
 
 //! Product.
-struct Product {
+struct Product Q_DECL_FINAL {
 	//! Code.
 	QString m_code;
 	//! Description.
@@ -123,7 +123,7 @@ public:
 	//! \return Total amount of product.
 	quint64 totalCount( int index ) const;
 	//! \return Top row.
-	int topRow( void * index ) const;
+	int topRow( IndexHelper * index ) const;
 	//! \return Place.
 	ProductOnPlace * findPlace( Product * p, const QString & place );
 	//! \return Row of the place.
@@ -217,7 +217,7 @@ ByProductModelPrivate::totalCount( int index ) const
 }
 
 int
-ByProductModelPrivate::topRow( void * index ) const
+ByProductModelPrivate::topRow( IndexHelper * index ) const
 {
 	int i = 0;
 
@@ -595,8 +595,7 @@ ByProductModel::setData( const QModelIndex & index, const QVariant & value,
 			{
 				auto * p = static_cast< Product* > (
 					static_cast< IndexHelper* > (
-						static_cast< IndexHelper* > (
-							index.internalPointer() )->m_parent )->m_this );
+						index.internalPointer() )->m_parent->m_this );
 
 				DbResult result = d->m_db->changeProduct( { p->m_code,
 					p->m_places.at( index.row() )->m_place, value.toULongLong(),

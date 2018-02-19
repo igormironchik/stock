@@ -25,6 +25,7 @@
 #include "by_product_sort_model.hpp"
 #include "by_product_view.hpp"
 #include "by_place_view.hpp"
+#include "by_place_model.hpp"
 
 // Qt include.
 #include <QBoxLayout>
@@ -174,14 +175,16 @@ View::setFilterModels( ByProductSortModel * product, ByPlaceSortModel * place )
 	d->m_codeModel = product;
 	d->m_placeModel = place;
 
-	d->m_codeView->setModel( d->m_codeModel );
-//	d->m_placeView->setModel( d->m_placeModel );
+	d->m_codeView->setFilterModel( d->m_codeModel );
+	d->m_placeView->setFilterModel( d->m_placeModel );
 }
 
 void
 View::setModels( ByProductModel * product,
 	ByPlaceModel * place )
 {
+	d->m_codeView->setSourceModel( product );
+	d->m_placeView->setSourceModel( place );
 }
 
 void

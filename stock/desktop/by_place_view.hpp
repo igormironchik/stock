@@ -49,9 +49,10 @@ public:
 	explicit ByPlaceView( QWidget * parent );
 	virtual ~ByPlaceView();
 
-	//! Set models.
-	void setModels( ByPlaceModel * model,
-		ByPlaceSortModel * filter );
+	//! Set filter model.
+	void setFilterModel( ByPlaceSortModel * filter );
+	//! Set source model.
+	void setSourceModel( ByPlaceModel * model );
 
 private:
 	friend class ByPlaceViewPrivate;

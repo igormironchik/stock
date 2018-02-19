@@ -49,9 +49,10 @@ public:
 	explicit ByProductView( QWidget * parent );
 	virtual ~ByProductView();
 
-	//! Set models.
-	void setModels( ByProductModel * model,
-		ByProductSortModel * filter );
+	//! Set filter model.
+	void setFilterModel( ByProductSortModel * filter );
+	//! Set source model.
+	void setSourceModel( ByProductModel * model );
 
 private:
 	friend class ByProductViewPrivate;

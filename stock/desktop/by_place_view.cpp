@@ -74,11 +74,17 @@ ByPlaceView::~ByPlaceView()
 }
 
 void
-ByPlaceView::setModels( ByPlaceModel * model,
-	ByPlaceSortModel * filter )
+ByPlaceView::setFilterModel( ByPlaceSortModel * filter )
+{
+	d->m_filter = filter;
+}
+
+void
+ByPlaceView::setSourceModel( ByPlaceModel * model )
 {
 	d->m_model = model;
-	d->m_filter = filter;
+
+	setModel( model );
 }
 
 } /* namespace Stock */
