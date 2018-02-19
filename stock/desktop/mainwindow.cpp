@@ -137,9 +137,9 @@ void MainWindowPrivate::init()
 
 	auto * edit = q->menuBar()->addMenu( MainWindow::tr( "&Edit" ) );
 
-	edit->addAction( QIcon( ":/img/list-add_22x22.png" ),
+	auto * add = edit->addAction( QIcon( ":/img/list-add_22x22.png" ),
 		MainWindow::tr( "Add/Edit Product" ), q, &MainWindow::addProduct,
-		QKeySequence( "Ctrl+P" ) );
+		QKeySequence( "Ctrl+=" ) );
 
 	auto * opt = q->menuBar()->addMenu( MainWindow::tr( "&Options" ) );
 
@@ -204,6 +204,11 @@ void MainWindowPrivate::init()
 	mode->addAction( place );
 
 	q->addToolBar( mode );
+
+	auto * actions = new QToolBar( q );
+	actions->addAction( add );
+
+	q->addToolBar( actions );
 
 	QObject::connect( q, &MainWindow::started, q, &MainWindow::appStarted,
 		Qt::QueuedConnection );
