@@ -36,6 +36,7 @@
 #include "by_product_view.hpp"
 #include "by_place_view.hpp"
 #include "by_place_model.hpp"
+#include "by_place_sort_model.hpp"
 
 // Qt include.
 #include <QMenuBar>
@@ -69,6 +70,7 @@ public:
 		,	m_codeModel( Q_NULLPTR )
 		,	m_placeModel( Q_NULLPTR )
 		,	m_codeFilterModel( Q_NULLPTR )
+		,	m_placeFilterModel( Q_NULLPTR )
 		,	m_db( Q_NULLPTR )
 		,	m_udp( Q_NULLPTR )
 		,	m_srv( Q_NULLPTR )
@@ -99,6 +101,8 @@ public:
 	ByPlaceModel * m_placeModel;
 	//! By product filter model.
 	ByProductSortModel * m_codeFilterModel;
+	//! By place filter model.
+	ByPlaceSortModel * m_placeFilterModel;
 	//! Database.
 	Db * m_db;
 	//! UDP.
@@ -294,7 +298,10 @@ MainWindow::appStarted()
 				d->m_codeFilterModel = new ByProductSortModel( this );
 				d->m_codeFilterModel->setSourceModel( d->m_codeModel );
 
-				d->m_view->setFilterModels( d->m_codeFilterModel, Q_NULLPTR );
+				d->m_placeFilterModel = new ByPlaceSortModel( this );
+				d->m_placeFilterModel->setSourceModel( d->m_placeModel );
+
+				d->m_view->setFilterModels( d->m_codeFilterModel, d->m_placeFilterModel );
 				d->m_view->setModels( d->m_codeModel, d->m_placeModel );
 			}
 			catch( const Exception & x )

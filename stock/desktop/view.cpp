@@ -26,6 +26,7 @@
 #include "by_product_view.hpp"
 #include "by_place_view.hpp"
 #include "by_place_model.hpp"
+#include "by_place_sort_model.hpp"
 
 // Qt include.
 #include <QBoxLayout>
@@ -192,6 +193,10 @@ View::filterChanged( const QString & )
 {
 	if( d->m_codeModel )
 		d->m_codeModel->setFilterData( d->m_code->text(),
+			d->m_place->text(), d->m_desc->text() );
+
+	if( d->m_placeModel )
+		d->m_placeModel->setFilterData( d->m_code->text(),
 			d->m_place->text(), d->m_desc->text() );
 }
 

@@ -23,6 +23,7 @@
 // Stock include.
 #include "by_place_view.hpp"
 #include "by_place_model.hpp"
+#include "by_place_sort_model.hpp"
 
 
 namespace Stock {
@@ -77,14 +78,14 @@ void
 ByPlaceView::setFilterModel( ByPlaceSortModel * filter )
 {
 	d->m_filter = filter;
+
+	setModel( d->m_filter );
 }
 
 void
 ByPlaceView::setSourceModel( ByPlaceModel * model )
 {
 	d->m_model = model;
-
-	setModel( model );
 }
 
 } /* namespace Stock */
