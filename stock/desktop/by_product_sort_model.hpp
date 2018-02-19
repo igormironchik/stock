@@ -33,6 +33,8 @@ namespace Stock {
 // ByProductSortModel
 //
 
+class ByProductSortModelPrivate;
+
 //! Sort-filter model for "By Product" mode.
 class ByProductSortModel Q_DECL_FINAL
 	:	public SortFilterModel
@@ -49,6 +51,11 @@ protected:
 
 private:
 	Q_DISABLE_COPY( ByProductSortModel )
+
+	inline ByProductSortModelPrivate * d_func() const
+	{
+		return reinterpret_cast< ByProductSortModelPrivate* > ( d.data() );
+	}
 }; // class ByProductSortModel
 
 } /* namespace Stock */

@@ -27,11 +27,45 @@
 namespace Stock {
 
 //
+// ByProductSortModelPrivate
+//
+
+class ByProductSortModelPrivate
+	:	public SortFilterModelPrivate
+{
+public:
+	ByProductSortModelPrivate( ByProductSortModel * parent )
+		:	SortFilterModelPrivate( parent )
+	{
+	}
+
+	//! \return Is place accepted?
+	bool acceptPlace( int sourceRow,
+		const QModelIndex & sourceParent ) const;
+
+	inline ByProductSortModel * q_func() const
+	{
+		return static_cast< ByProductSortModel* > ( q );
+	}
+}; // class ByProductSortModelPrivate
+
+bool
+ByProductSortModelPrivate::acceptPlace( int sourceRow,
+	const QModelIndex & sourceParent ) const
+{
+	const QModelIndex place = q_func()->sourceModel()->index( sourceRow, 0,
+		sourceParent );
+
+	return place.data().toString().contains( m_place );
+}
+
+
+//
 // ByProductSortModel
 //
 
 ByProductSortModel::ByProductSortModel( QObject * parent )
-	:	SortFilterModel( parent )
+	:	SortFilterModel( new ByProductSortModelPrivate( this ), parent )
 {
 }
 
@@ -43,6 +77,8 @@ bool
 ByProductSortModel::filterAcceptsRow( int sourceRow,
 	const QModelIndex & sourceParent ) const
 {
+	const ByProductSortModelPrivate * dd = d_func();
+
 	if( !sourceParent.isValid() )
 	{
 		const QModelIndex code = sourceModel()->index( sourceRow, 0,
@@ -50,16 +86,25 @@ ByProductSortModel::filterAcceptsRow( int sourceRow,
 		const QModelIndex desc = sourceModel()->index( sourceRow, 2,
 			sourceParent );
 
-		return ( code.data().toString().contains( d->m_code ) &&
-			desc.data().toString().contains( d->m_desc ) );
+		const auto rowsCount = sourceModel()->rowCount( code );
+
+		bool empty = true;
+
+		for( auto i = 0; i < rowsCount; ++i )
+		{
+			if( dd->acceptPlace( i, code ) )
+			{
+				empty = false;
+
+				break;
+			}
+		}
+
+		return ( code.data().toString().contains( dd->m_code ) &&
+			desc.data().toString().contains( dd->m_desc ) && !empty );
 	}
 	else
-	{
-		const QModelIndex place = sourceModel()->index( sourceRow, 0,
-			sourceParent );
-
-		return place.data().toString().contains( d->m_place );
-	}
+		return dd->acceptPlace( sourceRow, sourceParent );
 }
 
 } /* namespace Stock */
