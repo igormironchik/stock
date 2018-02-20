@@ -346,7 +346,7 @@ Db::deleteProduct( const QString & code )
 DbResult
 Db::deletePlace( const QString & place )
 {
-	try {
+	try {		
 		QSqlQuery d1( "DELETE FROM places WHERE place = ?" );
 		d1.addBindValue( place );
 
@@ -354,7 +354,41 @@ Db::deletePlace( const QString & place )
 			throw DbException();
 	}
 	catch( const DbException & )
+	{		
+		return { false, d->m_connection.lastError().text() };
+	}
+
+	return { true, QString() };
+}
+
+DbResult
+Db::changeCode( const QString & oldCode, const QString & newCode )
+{
+	try {
+		if( !d->m_connection.transaction() )
+			return { false, d->m_connection.lastError().text() };
+
+		QSqlQuery u1( "UPDATE stock SET code = ? WHERE code = ?" );
+		u1.addBindValue( newCode );
+		u1.addBindValue( oldCode );
+
+		if( !u1.exec() )
+			throw DbException();
+
+		QSqlQuery u2( "UPDATE products SET code = ? WHERE code = ?" );
+		u2.addBindValue( newCode );
+		u2.addBindValue( oldCode );
+
+		if( !u2.exec() )
+			throw DbException();
+
+		if( !d->m_connection.commit() )
+			throw DbException();
+	}
+	catch( const DbException & )
 	{
+		d->m_connection.rollback();
+
 		return { false, d->m_connection.lastError().text() };
 	}
 

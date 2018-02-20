@@ -22,7 +22,8 @@ HEADERS = mainwindow.hpp \
 	by_place_view.hpp \
 	by_product_view.hpp \
 	by_place_sort_model.hpp \
-	sort_filter_base_model.hpp
+	sort_filter_base_model.hpp \
+	rename.hpp
 
 SOURCES = mainwindow.cpp \
     main.cpp \
@@ -38,7 +39,8 @@ SOURCES = mainwindow.cpp \
 	by_place_view.cpp \
 	by_product_view.cpp \
 	by_place_sort_model.cpp \
-	sort_filter_base_model.cpp
+	sort_filter_base_model.cpp \
+	rename.cpp
     
 RESOURCES = resources.qrc
 
@@ -68,4 +70,5 @@ PRE_TARGETDEPS += compiler_generate_cfg_make_all
 
 FORMS += \
     options.ui \
-    product.ui
+    product.ui \
+    rename.ui

@@ -189,6 +189,13 @@ View::setModels( ByProductModel * product,
 }
 
 void
+View::setDb( DbSignals * sigs, Db * db )
+{
+	d->m_codeView->setDb( sigs, db );
+	d->m_placeView->setDb( sigs, db );
+}
+
+void
 View::filterChanged( const QString & )
 {
 	if( d->m_codeModel )

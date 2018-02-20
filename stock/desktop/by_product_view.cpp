@@ -24,6 +24,15 @@
 #include "by_product_view.hpp"
 #include "by_product_model.hpp"
 #include "by_product_sort_model.hpp"
+#include "rename.hpp"
+#include "db.hpp"
+#include "db_signals.hpp"
+
+// Qt include.
+#include <QContextMenuEvent>
+#include <QMenu>
+#include <QAction>
+#include <QMessageBox>
 
 
 namespace Stock {
@@ -37,6 +46,8 @@ public:
 	ByProductViewPrivate( ByProductView * parent )
 		:	m_model( Q_NULLPTR )
 		,	m_filter( Q_NULLPTR )
+		,	m_sigs( Q_NULLPTR )
+		,	m_db( Q_NULLPTR )
 		,	q( parent )
 	{
 	}
@@ -44,10 +55,16 @@ public:
 	//! Init.
 	void init();
 
+	//! Index of context menu.
+	QModelIndex m_index;
 	//! Source model.
 	ByProductModel * m_model;
 	//! Filter model.
 	ByProductSortModel * m_filter;
+	//! DB signals.
+	DbSignals * m_sigs;
+	//! DB.
+	Db * m_db;
 	//! Parent.
 	ByProductView * q;
 }; // class ByProductViewPrivate
@@ -86,6 +103,63 @@ void
 ByProductView::setSourceModel( ByProductModel * model )
 {
 	d->m_model = model;
+}
+
+void
+ByProductView::setDb( DbSignals * sigs, Db * db )
+{
+	d->m_db = db;
+	d->m_sigs = sigs;
+}
+
+void
+ByProductView::contextMenuEvent( QContextMenuEvent * e )
+{
+	d->m_index = indexAt( e->pos() );
+
+	if( d->m_index.isValid() )
+	{
+		if( !d->m_index.parent().isValid() && d->m_index.column() == 0 )
+		{
+			QMenu menu;
+			menu.addAction( QIcon( ":/img/edit-rename_22x22.png" ),
+				tr( "Change Product's Code" ), this, &ByProductView::changeCode );
+
+			menu.exec( e->globalPos() );
+
+			e->accept();
+		}
+		else
+			e->ignore();
+	}
+	else
+		e->ignore();
+}
+
+void
+ByProductView::changeCode()
+{
+	if( d->m_db && d->m_sigs && d->m_index.isValid() )
+	{
+		RenameDlg dlg( d->m_index.data().toString(), d->m_model->codes(),
+			this );
+		dlg.setWindowTitle( tr( "Change Product's Code..." ) );
+
+		if( dlg.exec() == QDialog::Accepted )
+		{
+			DbResult res = d->m_db->changeCode( d->m_index.data().toString(),
+				dlg.renamed() );
+
+			if( !res.m_ok )
+			{
+				QMessageBox::critical( this, tr( "Error in the database..." ),
+					tr( "Unable to change code of the product.\n\n%1" )
+						.arg( res.m_error ) );
+			}
+			else
+				d->m_sigs->emitCodeChanged( dlg.renamed(), d->m_index.data().toString() );
+		}
+	}
 }
 
 } /* namespace Stock */

@@ -32,6 +32,8 @@ namespace Stock {
 
 class ByPlaceModel;
 class ByPlaceSortModel;
+class DbSignals;
+class Db;
 
 //
 // ByPlaceView
@@ -53,6 +55,8 @@ public:
 	void setFilterModel( ByPlaceSortModel * filter );
 	//! Set source model.
 	void setSourceModel( ByPlaceModel * model );
+	//! Set DB.
+	void setDb( DbSignals * sigs, Db * db );
 
 private:
 	friend class ByPlaceViewPrivate;

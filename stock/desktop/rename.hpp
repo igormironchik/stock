@@ -20,45 +20,48 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Qt include.
-#include <QObject>
+#ifndef STOCK_RENAME_HPP_INCLUDED
+#define STOCK_RENAME_HPP_INCLUDED
 
-// Stock include.
-#include "db_signals.hpp"
+// Qt include.
+#include <QDialog>
+#include <QScopedPointer>
 
 
 namespace Stock {
 
 //
-// DbSignals
+// RenameDlg
 //
 
-DbSignals::DbSignals( QObject * parent )
-	:	QObject( parent )
-{
-}
+class RenameDlgPrivate;
 
-DbSignals::~DbSignals()
+//! RenameDlg.
+class RenameDlg Q_DECL_FINAL
+	:	public QDialog
 {
-}
+	Q_OBJECT
 
-void
-DbSignals::emitProductDeleted( const QString & code )
-{
-	emit productDeleted( code );
-}
+public:
+	RenameDlg( const QString & oldName, const QStringList & constraint,
+		QWidget * parent );
+	virtual ~RenameDlg();
 
-void
-DbSignals::emitProductChanged( const QString & code, const QString & place,
-	quint64 count, const QString & desc )
-{
-	emit productChanged( code, place, count, desc );
-}
+	//! \return New name.
+	QString renamed() const;
 
-void
-DbSignals::emitCodeChanged( const QString & newCode, const QString & oldCode )
-{
-	emit codeChanged( newCode, oldCode );
-}
+private slots:
+	//! Name changed.
+	void nameChanged( const QString & txt );
+
+private:
+	friend class RenameDlgPrivate;
+
+	Q_DISABLE_COPY( RenameDlg )
+
+	QScopedPointer< RenameDlgPrivate > d;
+}; // class RenameDlg
 
 } /* namespace Stock */
+
+#endif // STOCK_RENAME_HPP_INCLUDED

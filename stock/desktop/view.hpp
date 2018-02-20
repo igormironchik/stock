@@ -40,6 +40,8 @@ class ByProductView;
 class ByPlaceView;
 class ByProductModel;
 class ByPlaceModel;
+class DbSignals;
+class Db;
 
 //
 // View
@@ -65,10 +67,11 @@ public:
 	//! Set filter models.
 	void setFilterModels( ByProductSortModel * product,
 		ByPlaceSortModel * place );
-
 	//! Set models.
 	void setModels( ByProductModel * product,
 		ByPlaceModel * place );
+	//! Set DB.
+	void setDb( DbSignals * sigs, Db * db );
 
 public slots:
 	//! Switch to by product code mode.

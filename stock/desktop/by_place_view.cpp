@@ -37,6 +37,8 @@ public:
 	ByPlaceViewPrivate( ByPlaceView * parent )
 		:	m_model( Q_NULLPTR )
 		,	m_filter( Q_NULLPTR )
+		,	m_sigs( Q_NULLPTR )
+		,	m_db( Q_NULLPTR )
 		,	q( parent )
 	{
 	}
@@ -48,6 +50,10 @@ public:
 	ByPlaceModel * m_model;
 	//! Filter model.
 	ByPlaceSortModel * m_filter;
+	//! DB signals.
+	DbSignals * m_sigs;
+	//! DB.
+	Db * m_db;
 	//! Parent.
 	ByPlaceView * q;
 }; // class ByPlaceViewPrivate
@@ -86,6 +92,13 @@ void
 ByPlaceView::setSourceModel( ByPlaceModel * model )
 {
 	d->m_model = model;
+}
+
+void
+ByPlaceView::setDb( DbSignals * sigs, Db * db )
+{
+	d->m_db = db;
+	d->m_sigs = sigs;
 }
 
 } /* namespace Stock */

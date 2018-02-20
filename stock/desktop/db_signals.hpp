@@ -85,6 +85,8 @@ public slots:
 		quint64 count,
 		//! Description of the product.
 		const QString & desc );
+	//! Product's code changed.
+	void emitCodeChanged( const QString & newCode, const QString & oldCode );
 }; // class DbSignals
 
 } /* namespace Stock */

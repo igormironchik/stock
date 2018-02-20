@@ -92,6 +92,8 @@ private slots:
 		quint64 count,
 		//! Description of the product.
 		const QString & desc );
+	//! Code changed.
+	void codeChanged( const QString & newCode, const QString & oldCode );
 
 private:
 	friend class ByPlaceModelPrivate;

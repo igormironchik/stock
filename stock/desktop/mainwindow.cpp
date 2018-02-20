@@ -308,6 +308,8 @@ MainWindow::appStarted()
 
 				d->m_view->setFilterModels( d->m_codeFilterModel, d->m_placeFilterModel );
 				d->m_view->setModels( d->m_codeModel, d->m_placeModel );
+
+				d->m_view->setDb( d->m_sigs, d->m_db );
 			}
 			catch( const Exception & x )
 			{

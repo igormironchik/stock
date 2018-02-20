@@ -151,6 +151,8 @@ ByPlaceModelPrivate::init()
 		q, &ByPlaceModel::productChanged );
 	QObject::connect( m_sigs, &DbSignals::productDeleted,
 		q, &ByPlaceModel::productDeleted );
+	QObject::connect( m_sigs, &DbSignals::codeChanged,
+		q, &ByPlaceModel::codeChanged );
 
 	DbResult state;
 	QStringList places;
@@ -640,6 +642,31 @@ ByPlaceModel::productChanged( const QString & code, const QString & place,
 	{
 		for( const auto & p : qAsConst( d->m_data ) )
 			d->changeProduct( p.data(), code, count, desc, false );
+	}
+}
+
+void
+ByPlaceModel::codeChanged( const QString & newCode, const QString & oldCode )
+{
+	for( const auto & pl : qAsConst( d->m_data ) )
+	{
+		int i = 0;
+
+		for( const auto & pr : qAsConst( pl->m_prods ) )
+		{
+			if( pr->m_code == oldCode )
+			{
+				pr->m_code = newCode;
+
+				const QModelIndex index = createIndex( i, 0, &pr->m_index );
+
+				emit dataChanged( index, index );
+
+				break;
+			}
+
+			++i;
+		}
 	}
 }
 

@@ -153,6 +153,8 @@ ByProductModelPrivate::init()
 		q, &ByProductModel::productChanged );
 	QObject::connect( m_sigs, &DbSignals::productDeleted,
 		q, &ByProductModel::productDeleted );
+	QObject::connect( m_sigs, &DbSignals::codeChanged,
+		q, &ByProductModel::codeChanged );
 
 	DbResult state;
 
@@ -697,6 +699,28 @@ ByProductModel::productChanged( const QString & code, const QString & place,
 
 		if( !place.isEmpty() && count > 0 )
 			d->putNewProductOnPlace( d->findProduct( code ), place, count );
+	}
+}
+
+void
+ByProductModel::codeChanged( const QString & newCode, const QString & oldCode )
+{
+	int i = 0;
+
+	for( const auto & p : qAsConst( d->m_data ) )
+	{
+		if( p->m_code == oldCode )
+		{
+			p->m_code = newCode;
+
+			const QModelIndex index = createIndex( i, 0, &p->m_index );
+
+			emit dataChanged( index, index );
+
+			break;
+		}
+
+		++i;
 	}
 }
 

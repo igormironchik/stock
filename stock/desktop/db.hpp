@@ -80,6 +80,8 @@ public:
 	DbResult deleteProduct( const QString & code );
 	//! Delete place from places table. This will not affect stock table.
 	DbResult deletePlace( const QString & place );
+	//! Change code.
+	DbResult changeCode( const QString & oldCode, const QString & newCode );
 
 private:
 	Q_DISABLE_COPY( Db )

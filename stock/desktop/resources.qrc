@@ -12,5 +12,6 @@
 	<file>img/configure_22x22.png</file>
 	<file>img/qt.png</file>
 	<file>img/list-add_22x22.png</file>
+	<file>img/edit-rename_22x22.png</file>
     </qresource>
 </RCC>

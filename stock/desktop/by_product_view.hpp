@@ -32,6 +32,8 @@ namespace Stock {
 
 class ByProductModel;
 class ByProductSortModel;
+class DbSignals;
+class Db;
 
 //
 // ByProductView
@@ -53,6 +55,15 @@ public:
 	void setFilterModel( ByProductSortModel * filter );
 	//! Set source model.
 	void setSourceModel( ByProductModel * model );
+	//! Set DB.
+	void setDb( DbSignals * sigs, Db * db );
+
+protected:
+	void contextMenuEvent( QContextMenuEvent * e ) Q_DECL_OVERRIDE;
+
+private slots:
+	//! Change code.
+	void changeCode();
 
 private:
 	friend class ByProductViewPrivate;
