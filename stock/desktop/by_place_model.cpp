@@ -153,8 +153,9 @@ ByPlaceModelPrivate::init()
 		q, &ByPlaceModel::productDeleted );
 
 	DbResult state;
+	QStringList places;
 
-	const auto records = m_db->records( &state );
+	const auto records = m_db->records( &state, Q_NULLPTR, &places );
 
 	if( !state.m_ok )
 	{
@@ -175,11 +176,16 @@ ByPlaceModelPrivate::init()
 			putNewProductOnPlace( pl, r.m_code, r.m_count, r.m_desc );
 		else
 		{
+			places.removeOne( r.m_place );
+
 			addNewPlace( r.m_place );
 			putNewProductOnPlace( findPlace( r.m_place ), r.m_code,
 				r.m_count, r.m_desc );
 		}
 	}
+
+	for( const auto & place : qAsConst( places ) )
+		addNewPlace( place );
 
 	if( !records.isEmpty() )
 		emit q->dataChanged( q->index( 0, 0 ), q->index( q->rowCount() - 1, 1 ) );

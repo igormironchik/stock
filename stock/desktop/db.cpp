@@ -110,7 +110,8 @@ bool operator == ( const DbRecord & r1, const DbRecord & r2 )
 }
 
 QVector< DbRecord >
-Db::records( DbResult * res, QVector< DbRecord > * zeroProducts ) const
+Db::records( DbResult * res, QVector< DbRecord > * zeroProducts,
+	QStringList * places ) const
 {
 	QVector< DbRecord > records;
 
@@ -130,6 +131,21 @@ Db::records( DbResult * res, QVector< DbRecord > * zeroProducts ) const
 			zeroProducts->push_back( { all.value( 0 ).toString(),
 				QString(), 0, all.value( 1 ).toString() } );
 		}
+	}
+
+	if( places )
+	{
+		QSqlQuery pl( "SELECT * FROM places" );
+
+		if( res && pl.lastError().isValid() )
+		{
+			*res = { false, pl.lastError().text() };
+
+			return records;
+		}
+
+		while( pl.next() )
+			places->push_back( pl.value( 0 ).toString() );
 	}
 
 	QSqlQuery select( "SELECT t1.code, t1.place, t1.amount, t2.desc "
