@@ -115,11 +115,11 @@ ByProductView::setDb( DbSignals * sigs, Db * db )
 void
 ByProductView::contextMenuEvent( QContextMenuEvent * e )
 {
-	d->m_index = indexAt( e->pos() );
+	d->m_index = d->m_filter->mapToSource( indexAt( e->pos() ) );
 
 	if( d->m_index.isValid() )
 	{
-		if( !d->m_index.parent().isValid() && d->m_index.column() == 0 )
+		if( !d->m_index.parent().isValid() )
 		{
 			QMenu menu;
 			menu.addAction( QIcon( ":/img/edit-rename_22x22.png" ),
@@ -141,14 +141,15 @@ ByProductView::changeCode()
 {
 	if( d->m_db && d->m_sigs && d->m_index.isValid() )
 	{
-		RenameDlg dlg( d->m_index.data().toString(), d->m_model->codes(),
-			this );
+		const auto oldCode = d->m_model->data( d->m_model->index( d->m_index.row(), 0 ) )
+			.toString();
+
+		RenameDlg dlg( oldCode, d->m_model->codes(), this );
 		dlg.setWindowTitle( tr( "Change Product's Code..." ) );
 
 		if( dlg.exec() == QDialog::Accepted )
 		{
-			DbResult res = d->m_db->changeCode( d->m_index.data().toString(),
-				dlg.renamed() );
+			DbResult res = d->m_db->changeCode( oldCode, dlg.renamed() );
 
 			if( !res.m_ok )
 			{
@@ -157,7 +158,7 @@ ByProductView::changeCode()
 						.arg( res.m_error ) );
 			}
 			else
-				d->m_sigs->emitCodeChanged( dlg.renamed(), d->m_index.data().toString() );
+				d->m_sigs->emitCodeChanged( dlg.renamed(), oldCode );
 		}
 	}
 }
