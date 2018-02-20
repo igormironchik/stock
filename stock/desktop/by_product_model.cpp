@@ -421,8 +421,7 @@ ByProductModel::flags( const QModelIndex & index ) const
 				return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 
 			case 2 :
-				return Qt::ItemIsSelectable | Qt::ItemIsEnabled |
-					Qt::ItemIsEditable;
+				return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 
 			default :
 				return Qt::NoItemFlags;
@@ -436,8 +435,7 @@ ByProductModel::flags( const QModelIndex & index ) const
 				return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 
 			case 1 :
-				return Qt::ItemIsSelectable | Qt::ItemIsEnabled |
-					Qt::ItemIsEditable;
+				return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 
 			default :
 				return Qt::ItemIsSelectable | Qt::ItemIsEnabled;

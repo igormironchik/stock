@@ -57,6 +57,12 @@ signals:
 		quint64 count,
 		//! Description of the product.
 		const QString & desc );
+	//! Place deleted (only place, stock database is untouched).
+	void placeDeleted( const QString & place );
+	//! Product's code changed.
+	void codeChanged( const QString & newCode, const QString & oldCode );
+	//! Place renamed.
+	void placeRenamed( const QString & newName, const QString & oldName );
 
 public:
 	explicit DbSignals( QObject * parent );

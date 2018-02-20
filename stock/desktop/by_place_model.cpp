@@ -416,8 +416,7 @@ ByPlaceModel::flags( const QModelIndex & index ) const
 
 			case 1 :
 			case 2 :
-				return Qt::ItemIsSelectable | Qt::ItemIsEnabled |
-					Qt::ItemIsEditable;
+				return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 
 			default :
 				return Qt::NoItemFlags;
