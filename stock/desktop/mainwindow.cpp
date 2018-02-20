@@ -300,12 +300,6 @@ MainWindow::appStarted()
 				d->m_placeModel = new ByPlaceModel( this, d->m_db,
 					d->m_sigs, this );
 
-				auto c = d->m_codeModel->rowCount();
-				auto code = d->m_codeModel->data( d->m_codeModel->index( 3, 0 ) );
-				auto ch = d->m_codeModel->hasChildren( d->m_codeModel->index( 3, 0 ) );
-				auto r = d->m_codeModel->rowCount( d->m_codeModel->index( 3, 0 ) );
-				auto v = d->m_codeModel->index( 3, 0 ).parent().isValid();
-
 				d->m_codeFilterModel = new ByProductSortModel( this );
 				d->m_codeFilterModel->setSourceModel( d->m_codeModel );
 
