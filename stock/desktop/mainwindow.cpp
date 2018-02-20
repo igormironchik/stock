@@ -180,7 +180,7 @@ void MainWindowPrivate::init()
 
 	auto * mode = new QToolBar( q );
 	auto * modeGroup = new QActionGroup( mode );
-	auto * code = new QAction( QIcon( ":/img/feed-subscribe_22x22.png" ),
+	auto * code = new QAction( QIcon( ":/img/view-barcode_22x22.png" ),
 		MainWindow::tr( "By Product Code" ), modeGroup );
 	code->setActionGroup( modeGroup );
 	code->setCheckable( true );

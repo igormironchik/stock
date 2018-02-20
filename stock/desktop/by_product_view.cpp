@@ -57,6 +57,8 @@ public:
 
 	//! Index of context menu.
 	QModelIndex m_index;
+	//! Parent index of context menu.
+	QModelIndex m_parentIndex;
 	//! Source model.
 	ByProductModel * m_model;
 	//! Filter model.
@@ -116,21 +118,23 @@ void
 ByProductView::contextMenuEvent( QContextMenuEvent * e )
 {
 	d->m_index = d->m_filter->mapToSource( indexAt( e->pos() ) );
+	d->m_parentIndex = d->m_index.parent();
 
 	if( d->m_index.isValid() )
 	{
-		if( !d->m_index.parent().isValid() )
-		{
-			QMenu menu;
-			menu.addAction( QIcon( ":/img/edit-rename_22x22.png" ),
-				tr( "Change Product's Code" ), this, &ByProductView::changeCode );
+		QMenu menu;
+		menu.addAction( QIcon( ":/img/view-barcode_22x22.png" ),
+			tr( "Change Code" ), this, &ByProductView::changeCode );
+		menu.addAction( QIcon( ":/img/document-edit_22x22.png" ),
+			tr( "Change Description" ), this, &ByProductView::changeDesc );
 
-			menu.exec( e->globalPos() );
+		if( d->m_index.parent().isValid() )
+			menu.addAction( QIcon( ":/img/flag-blue_22x22.png" ),
+				tr( "Rename Place" ), this, &ByProductView::renamePlace );
 
-			e->accept();
-		}
-		else
-			e->ignore();
+		menu.exec( e->globalPos() );
+
+		e->accept();
 	}
 	else
 		e->ignore();
@@ -139,9 +143,14 @@ ByProductView::contextMenuEvent( QContextMenuEvent * e )
 void
 ByProductView::changeCode()
 {
-	if( d->m_db && d->m_sigs && d->m_index.isValid() )
+	QModelIndex index = d->m_parentIndex;
+
+	if( !index.isValid() )
+		index = d->m_index;
+
+	if( d->m_db && d->m_sigs && index.isValid() )
 	{
-		const auto oldCode = d->m_model->data( d->m_model->index( d->m_index.row(), 0 ) )
+		const auto oldCode = d->m_model->data( d->m_model->index( index.row(), 0 ) )
 			.toString();
 
 		RenameDlg dlg( oldCode, d->m_model->codes(), this );
@@ -161,6 +170,18 @@ ByProductView::changeCode()
 				d->m_sigs->emitCodeChanged( dlg.renamed(), oldCode );
 		}
 	}
+}
+
+void
+ByProductView::changeDesc()
+{
+
+}
+
+void
+ByProductView::renamePlace()
+{
+
 }
 
 } /* namespace Stock */

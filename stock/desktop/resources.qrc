@@ -7,11 +7,12 @@
 	<file>img/icon_64x64.png</file>
 	<file>img/icon_128x128.png</file>
 	<file>img/icon_256x256.png</file>
-	<file>img/feed-subscribe_22x22.png</file>
+	<file>img/view-barcode_22x22.png</file>
 	<file>img/flag-blue_22x22.png</file>
 	<file>img/configure_22x22.png</file>
 	<file>img/qt.png</file>
 	<file>img/list-add_22x22.png</file>
 	<file>img/edit-rename_22x22.png</file>
+	<file>img/document-edit_22x22.png</file>
     </qresource>
 </RCC>

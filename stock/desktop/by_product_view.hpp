@@ -64,6 +64,10 @@ protected:
 private slots:
 	//! Change code.
 	void changeCode();
+	//! Change description.
+	void changeDesc();
+	//! Rename place.
+	void renamePlace();
 
 private:
 	friend class ByProductViewPrivate;
