@@ -100,10 +100,33 @@ Db::~Db()
 {
 }
 
+bool operator == ( const DbRecord & r1, const DbRecord & r2 )
+{
+	return ( r1.m_code == r2.m_code );
+}
+
 QVector< DbRecord >
-Db::records( DbResult * res ) const
+Db::records( DbResult * res, QVector< DbRecord > * zeroProducts ) const
 {
 	QVector< DbRecord > records;
+
+	if( zeroProducts )
+	{
+		QSqlQuery all( "SELECT * FROM products" );
+
+		if( res && all.lastError().isValid() )
+		{
+			*res = { false, all.lastError().text() };
+
+			return records;
+		}
+
+		while( all.next() )
+		{
+			zeroProducts->push_back( { all.value( 0 ).toString(),
+				QString(), 0, all.value( 1 ).toString() } );
+		}
+	}
 
 	QSqlQuery select( "SELECT t1.code, t1.place, t1.amount, t2.desc "
 		"FROM places AS t1, products AS t2 WHERE t1.code = t2.code" );
@@ -121,6 +144,10 @@ Db::records( DbResult * res ) const
 			select.value( 1 ).toString(),
 			select.value( 2 ).toULongLong(),
 			select.value( 3 ).toString() } );
+
+		if( zeroProducts )
+			zeroProducts->removeOne( { select.value( 0 ).toString(),
+				QString(), 0, QString() } );
 	}
 
 	if( res )

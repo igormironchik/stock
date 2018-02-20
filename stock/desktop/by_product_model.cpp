@@ -156,7 +156,9 @@ ByProductModelPrivate::init()
 
 	DbResult state;
 
-	const auto records = m_db->records( &state );
+	QVector< DbRecord > empty;
+
+	const auto records = m_db->records( &state, &empty );
 
 	if( !state.m_ok )
 	{
@@ -182,7 +184,10 @@ ByProductModelPrivate::init()
 		}
 	}
 
-	if( !records.isEmpty() )
+	for( const auto & r : qAsConst( empty ) )
+		addNewProduct( r.m_code, r.m_desc );
+
+	if( !records.isEmpty() || !empty.isEmpty() )
 		emit q->dataChanged( q->index( 0, 0 ), q->index( q->rowCount() - 1, 2 ) );
 }
 

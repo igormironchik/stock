@@ -70,7 +70,8 @@ public:
 	virtual ~Db();
 
 	//! \return All records.
-	QVector< DbRecord > records( DbResult * res = Q_NULLPTR ) const;
+	QVector< DbRecord > records( DbResult * res = Q_NULLPTR,
+		QVector< DbRecord > * zeroProducts = Q_NULLPTR ) const;
 	//! Change product.
 	DbResult changeProduct( const DbRecord & r ) const;
 	//! Totally delete product. If you want to clear position on the place

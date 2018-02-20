@@ -90,15 +90,20 @@ ByProductSortModel::filterAcceptsRow( int sourceRow,
 
 		bool empty = true;
 
-		for( auto i = 0; i < rowsCount; ++i )
+		if( !d->m_place.isEmpty() )
 		{
-			if( dd->acceptPlace( i, code ) )
+			for( auto i = 0; i < rowsCount; ++i )
 			{
-				empty = false;
+				if( dd->acceptPlace( i, code ) )
+				{
+					empty = false;
 
-				break;
+					break;
+				}
 			}
 		}
+		else
+			empty = false;
 
 		return ( code.data().toString().contains( dd->m_code ) &&
 			desc.data().toString().contains( dd->m_desc ) && !empty );

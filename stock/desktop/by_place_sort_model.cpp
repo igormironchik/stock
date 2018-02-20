@@ -91,15 +91,20 @@ ByPlaceSortModel::filterAcceptsRow( int sourceRow,
 
 		bool empty = true;
 
-		for( auto i = 0; i < rowsCount; ++i )
+		if( !d->m_code.isEmpty() || !d->m_desc.isEmpty() )
 		{
-			if( dd->acceptProduct( i, place ) )
+			for( auto i = 0; i < rowsCount; ++i )
 			{
-				empty = false;
+				if( dd->acceptProduct( i, place ) )
+				{
+					empty = false;
 
-				break;
+					break;
+				}
 			}
 		}
+		else
+			empty = false;
 
 		return ( place.data().toString().contains( d->m_place )  && !empty );
 	}
