@@ -77,6 +77,8 @@ public:
 	//! Totally delete product. If you want to clear position on the place
 	//! use changeProduct() with m_count = 0.
 	DbResult deleteProduct( const QString & code );
+	//! Delete place from places table. This will not affect stock table.
+	DbResult deletePlace( const QString & place );
 
 private:
 	Q_DISABLE_COPY( Db )
