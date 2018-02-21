@@ -87,6 +87,8 @@ public slots:
 		const QString & desc );
 	//! Product's code changed.
 	void emitCodeChanged( const QString & newCode, const QString & oldCode );
+	//! Place renamed.
+	void emitPlaceRenamed( const QString & newName, const QString & oldName );
 }; // class DbSignals
 
 } /* namespace Stock */

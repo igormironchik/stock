@@ -395,4 +395,38 @@ Db::changeCode( const QString & oldCode, const QString & newCode )
 	return { true, QString() };
 }
 
+DbResult
+Db::renamePlace( const QString & oldPlace, const QString & newPlace )
+{
+	try {
+		if( !d->m_connection.transaction() )
+			return { false, d->m_connection.lastError().text() };
+
+		QSqlQuery u1( "UPDATE stock SET place = ? WHERE place = ?" );
+		u1.addBindValue( newPlace );
+		u1.addBindValue( oldPlace );
+
+		if( !u1.exec() )
+			throw DbException();
+
+		QSqlQuery u2( "UPDATE places SET place = ? WHERE place = ?" );
+		u2.addBindValue( newPlace );
+		u2.addBindValue( oldPlace );
+
+		if( !u2.exec() )
+			throw DbException();
+
+		if( !d->m_connection.commit() )
+			throw DbException();
+	}
+	catch( const DbException & )
+	{
+		d->m_connection.rollback();
+
+		return { false, d->m_connection.lastError().text() };
+	}
+
+	return { true, QString() };
+}
+
 } /* namespace Stock */

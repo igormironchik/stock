@@ -82,6 +82,8 @@ public:
 	DbResult deletePlace( const QString & place );
 	//! Change code.
 	DbResult changeCode( const QString & oldCode, const QString & newCode );
+	//! Rename place.
+	DbResult renamePlace( const QString & oldPlace, const QString & newPlace );
 
 private:
 	Q_DISABLE_COPY( Db )

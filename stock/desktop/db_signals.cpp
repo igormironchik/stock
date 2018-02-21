@@ -61,4 +61,10 @@ DbSignals::emitCodeChanged( const QString & newCode, const QString & oldCode )
 	emit codeChanged( newCode, oldCode );
 }
 
+void
+DbSignals::emitPlaceRenamed( const QString & newName, const QString & oldName )
+{
+	emit placeRenamed( newName, oldName );
+}
+
 } /* namespace Stock */

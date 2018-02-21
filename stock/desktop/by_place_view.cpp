@@ -24,6 +24,7 @@
 #include "by_place_view.hpp"
 #include "by_place_model.hpp"
 #include "by_place_sort_model.hpp"
+#include "by_product_model.hpp"
 
 
 namespace Stock {
@@ -37,6 +38,7 @@ public:
 	ByPlaceViewPrivate( ByPlaceView * parent )
 		:	m_model( Q_NULLPTR )
 		,	m_filter( Q_NULLPTR )
+		,	m_auxModel( Q_NULLPTR )
 		,	m_sigs( Q_NULLPTR )
 		,	m_db( Q_NULLPTR )
 		,	q( parent )
@@ -50,6 +52,8 @@ public:
 	ByPlaceModel * m_model;
 	//! Filter model.
 	ByPlaceSortModel * m_filter;
+	//! Auxiliary model.
+	ByProductModel * m_auxModel;
 	//! DB signals.
 	DbSignals * m_sigs;
 	//! DB.
@@ -92,6 +96,12 @@ void
 ByPlaceView::setSourceModel( ByPlaceModel * model )
 {
 	d->m_model = model;
+}
+
+void
+ByPlaceView::setAuxiliaryModel( ByProductModel * model )
+{
+	d->m_auxModel = model;
 }
 
 void

@@ -153,6 +153,8 @@ ByPlaceModelPrivate::init()
 		q, &ByPlaceModel::productDeleted );
 	QObject::connect( m_sigs, &DbSignals::codeChanged,
 		q, &ByPlaceModel::codeChanged );
+	QObject::connect( m_sigs, &DbSignals::placeRenamed,
+		q, &ByPlaceModel::placeRenamed );
 
 	DbResult state;
 	QStringList places;
@@ -667,6 +669,28 @@ ByPlaceModel::codeChanged( const QString & newCode, const QString & oldCode )
 
 			++i;
 		}
+	}
+}
+
+void
+ByPlaceModel::placeRenamed( const QString & newName, const QString & oldName )
+{
+	int i = 0;
+
+	for( const auto & pl : qAsConst( d->m_data ) )
+	{
+		if( pl->m_place == oldName )
+		{
+			pl->m_place = newName;
+
+			const QModelIndex index = createIndex( i, 0, &pl->m_index );
+
+			emit dataChanged( index, index);
+
+			break;
+		}
+
+		++i;
 	}
 }
 

@@ -28,6 +28,7 @@
 #include "db.hpp"
 #include "db_signals.hpp"
 #include "edit_desc.hpp"
+#include "by_place_model.hpp"
 
 // Qt include.
 #include <QContextMenuEvent>
@@ -47,6 +48,7 @@ public:
 	ByProductViewPrivate( ByProductView * parent )
 		:	m_model( Q_NULLPTR )
 		,	m_filter( Q_NULLPTR )
+		,	m_auxModel( Q_NULLPTR )
 		,	m_sigs( Q_NULLPTR )
 		,	m_db( Q_NULLPTR )
 		,	q( parent )
@@ -64,6 +66,8 @@ public:
 	ByProductModel * m_model;
 	//! Filter model.
 	ByProductSortModel * m_filter;
+	//! Auxiliary model.
+	ByPlaceModel * m_auxModel;
 	//! DB signals.
 	DbSignals * m_sigs;
 	//! DB.
@@ -106,6 +110,12 @@ void
 ByProductView::setSourceModel( ByProductModel * model )
 {
 	d->m_model = model;
+}
+
+void
+ByProductView::setAuxiliaryModel( ByPlaceModel * model )
+{
+	d->m_auxModel = model;
 }
 
 void
@@ -209,7 +219,28 @@ ByProductView::changeDesc()
 void
 ByProductView::renamePlace()
 {
+	if( d->m_db && d->m_sigs && d->m_index.isValid() && d->m_parentIndex.isValid() )
+	{
+		const auto oldPlace = d->m_model->data( d->m_model->index( d->m_index.row(), 0,
+			d->m_parentIndex ) ).toString();
 
+		RenameDlg dlg( oldPlace, d->m_auxModel->places(), this );
+		dlg.setWindowTitle( tr( "Rename Place..." ) );
+
+		if( dlg.exec() == QDialog::Accepted )
+		{
+			DbResult res = d->m_db->renamePlace( oldPlace, dlg.renamed() );
+
+			if( !res.m_ok )
+			{
+				QMessageBox::critical( this, tr( "Error in the database..." ),
+					tr( "Unable to rename place.\n\n%1" )
+						.arg( res.m_error ) );
+			}
+			else
+				d->m_sigs->emitPlaceRenamed( dlg.renamed(), oldPlace );
+		}
+	}
 }
 
 } /* namespace Stock */

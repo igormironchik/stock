@@ -186,6 +186,9 @@ View::setModels( ByProductModel * product,
 {
 	d->m_codeView->setSourceModel( product );
 	d->m_placeView->setSourceModel( place );
+
+	d->m_codeView->setAuxiliaryModel( place );
+	d->m_placeView->setAuxiliaryModel( product );
 }
 
 void

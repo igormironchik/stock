@@ -34,6 +34,7 @@ class ByPlaceModel;
 class ByPlaceSortModel;
 class DbSignals;
 class Db;
+class ByProductModel;
 
 //
 // ByPlaceView
@@ -55,6 +56,8 @@ public:
 	void setFilterModel( ByPlaceSortModel * filter );
 	//! Set source model.
 	void setSourceModel( ByPlaceModel * model );
+	//! Set auxiliary model.
+	void setAuxiliaryModel( ByProductModel * model );
 	//! Set DB.
 	void setDb( DbSignals * sigs, Db * db );
 
