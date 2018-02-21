@@ -27,6 +27,7 @@
 #include "rename.hpp"
 #include "db.hpp"
 #include "db_signals.hpp"
+#include "edit_desc.hpp"
 
 // Qt include.
 #include <QContextMenuEvent>
@@ -175,7 +176,34 @@ ByProductView::changeCode()
 void
 ByProductView::changeDesc()
 {
+	QModelIndex index = d->m_parentIndex;
 
+	if( !index.isValid() )
+		index = d->m_index;
+
+	if( d->m_db && d->m_sigs && index.isValid() )
+	{
+		const auto oldDesc = d->m_model->data( d->m_model->index( index.row(), 2 ) )
+			.toString();
+		const auto code = d->m_model->data( d->m_model->index( index.row(), 0 ) )
+			.toString();
+
+		EditDescDlg dlg( oldDesc, this );
+
+		if( dlg.exec() == QDialog::Accepted )
+		{
+			DbResult res = d->m_db->changeProduct( { code, QString(), 0, dlg.text() } );
+
+			if( !res.m_ok )
+			{
+				QMessageBox::critical( this, tr( "Error in the database..." ),
+					tr( "Unable to change description of the product.\n\n%1" )
+						.arg( res.m_error ) );
+			}
+			else
+				d->m_sigs->emitProductChanged( code, QString(), 0, dlg.text() );
+		}
+	}
 }
 
 void
