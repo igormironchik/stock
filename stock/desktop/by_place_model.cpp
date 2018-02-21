@@ -701,11 +701,11 @@ ByPlaceModel::placeDeleted( const QString & place )
 {
 	int i = 0;
 
-	for( const auto & r : qAsConst( d->m_data ) )
+	for( const auto & pl : qAsConst( d->m_data ) )
 	{
-		if( r->m_place == place )
+		if( pl->m_place == place )
 		{
-			beginRemoveRows( createIndex( i, 0, &r->m_index ), i, i );
+			beginRemoveRows( QModelIndex(), i, i );
 			d->m_data.removeAt( i );
 			endRemoveRows();
 

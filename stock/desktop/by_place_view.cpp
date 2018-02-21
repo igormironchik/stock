@@ -25,11 +25,16 @@
 #include "by_place_model.hpp"
 #include "by_place_sort_model.hpp"
 #include "by_product_model.hpp"
+#include "rename.hpp"
+#include "db.hpp"
+#include "db_signals.hpp"
+#include "edit_desc.hpp"
 
 // Qt include.
 #include <QContextMenuEvent>
 #include <QMenu>
 #include <QAction>
+#include <QMessageBox>
 
 
 namespace Stock {
@@ -158,25 +163,118 @@ ByPlaceView::contextMenuEvent( QContextMenuEvent * e )
 void
 ByPlaceView::changeCode()
 {
+	if( d->m_db && d->m_sigs && d->m_index.isValid() && d->m_parentIndex.isValid() )
+	{
+		const auto oldCode = d->m_model->data(
+			d->m_model->index( d->m_index.row(), 0, d->m_parentIndex ) ).toString();
 
+		RenameDlg dlg( oldCode, d->m_auxModel->codes(), this );
+		dlg.setWindowTitle( tr( "Change Product's Code..." ) );
+
+		if( dlg.exec() == QDialog::Accepted )
+		{
+			DbResult res = d->m_db->changeCode( oldCode, dlg.renamed() );
+
+			if( !res.m_ok )
+			{
+				QMessageBox::critical( this, tr( "Error in the database..." ),
+					tr( "Unable to change code of the product.\n\n%1" )
+						.arg( res.m_error ) );
+			}
+			else
+				d->m_sigs->emitCodeChanged( dlg.renamed(), oldCode );
+		}
+	}
 }
 
 void
 ByPlaceView::changeDesc()
 {
+	if( d->m_db && d->m_sigs && d->m_index.isValid() && d->m_parentIndex.isValid() )
+	{
+		const auto oldDesc = d->m_model->data(
+			d->m_model->index( d->m_index.row(), 2, d->m_parentIndex ) ).toString();
+		const auto code = d->m_model->data(
+			d->m_model->index( d->m_index.row(), 0, d->m_parentIndex ) ).toString();
 
+		EditDescDlg dlg( oldDesc, this );
+
+		if( dlg.exec() == QDialog::Accepted )
+		{
+			DbResult res = d->m_db->changeProduct( { code, QString(), 0, dlg.text() } );
+
+			if( !res.m_ok )
+			{
+				QMessageBox::critical( this, tr( "Error in the database..." ),
+					tr( "Unable to change description of the product.\n\n%1" )
+						.arg( res.m_error ) );
+			}
+			else
+				d->m_sigs->emitProductChanged( code, QString(), 0, dlg.text() );
+		}
+	}
 }
 
 void
 ByPlaceView::renamePlace()
 {
+	QModelIndex index = d->m_parentIndex;
 
+	if( !index.isValid() )
+		index = d->m_index;
+
+	if( d->m_db && d->m_sigs && index.isValid() )
+	{
+		const auto oldPlace = d->m_model->data(
+			d->m_model->index( index.row(), 0 ) ).toString();
+
+		RenameDlg dlg( oldPlace, d->m_model->places(), this );
+		dlg.setWindowTitle( tr( "Rename Place..." ) );
+
+		if( dlg.exec() == QDialog::Accepted )
+		{
+			DbResult res = d->m_db->renamePlace( oldPlace, dlg.renamed() );
+
+			if( !res.m_ok )
+			{
+				QMessageBox::critical( this, tr( "Error in the database..." ),
+					tr( "Unable to rename place.\n\n%1" )
+						.arg( res.m_error ) );
+			}
+			else
+				d->m_sigs->emitPlaceRenamed( dlg.renamed(), oldPlace );
+		}
+	}
 }
 
 void
 ByPlaceView::deletePlace()
 {
+	if( d->m_db && d->m_sigs && d->m_index.isValid() )
+	{
+		const auto place = d->m_model->data( d->m_model->index( d->m_index.row(), 0 ) )
+			.toString();
 
+		const auto res = QMessageBox::question( this, tr( "Deletion of Place..." ),
+			tr( "You are about to completely remove place from the database.\n\n"
+				"Are you sure that you want to delete place \"%1\"?" )
+					.arg( place ), QMessageBox::Yes,
+				QMessageBox::No | QMessageBox::Default | QMessageBox::Escape );
+
+		if( res == QMessageBox::Yes )
+		{
+			DbResult res = d->m_db->deletePlace( place );
+
+			if( !res.m_ok )
+			{
+				QMessageBox::critical( this, tr( "Error in the database..." ),
+					tr( "Unable to remove place.\n\n%1" )
+						.arg( res.m_error ) );
+			}
+			else
+				d->m_sigs->emitPlaceDeleted( place );
+		}
+	}
 }
 
 } /* namespace Stock */

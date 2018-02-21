@@ -67,4 +67,10 @@ DbSignals::emitPlaceRenamed( const QString & newName, const QString & oldName )
 	emit placeRenamed( newName, oldName );
 }
 
+void
+DbSignals::emitPlaceDeleted( const QString & place )
+{
+	emit placeDeleted( place );
+}
+
 } /* namespace Stock */

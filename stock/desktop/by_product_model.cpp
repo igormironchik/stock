@@ -697,7 +697,7 @@ ByProductModel::productChanged( const QString & code, const QString & place,
 				d->putNewProductOnPlace( p, place, count );
 		}
 	}
-	else
+	else if( !code.isEmpty() )
 	{
 		d->addNewProduct( code, desc );
 
@@ -756,23 +756,27 @@ ByProductModel::placeRenamed( const QString & newName, const QString & oldName )
 void
 ByProductModel::placeDeleted( const QString & place )
 {
+	int i = 0;
+
 	for( const auto & pr : qAsConst( d->m_data ) )
 	{
-		int i = 0;
+		int j = 0;
 
 		for( const auto & pl : qAsConst( pr->m_places ) )
 		{
 			if( pl->m_place == place )
 			{
-				beginRemoveRows( createIndex( i, 0, &pl->m_index ), i, i );
-				pr->m_places.removeAt( i );
+				beginRemoveRows( createIndex( i, 0, &pr->m_index ), j, j );
+				pr->m_places.removeAt( j );
 				endRemoveRows();
 
 				break;
 			}
 
-			++i;
+			++j;
 		}
+
+		++i;
 	}
 }
 

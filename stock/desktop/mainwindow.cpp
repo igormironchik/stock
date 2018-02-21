@@ -138,7 +138,7 @@ void MainWindowPrivate::init()
 	auto * edit = q->menuBar()->addMenu( MainWindow::tr( "&Edit" ) );
 
 	auto * add = edit->addAction( QIcon( ":/img/list-add_22x22.png" ),
-		MainWindow::tr( "Add/Edit Product" ), q, &MainWindow::addProduct,
+		MainWindow::tr( "Add/Edit Product/Place" ), q, &MainWindow::addProduct,
 		QKeySequence( "Ctrl+=" ) );
 
 	auto * opt = q->menuBar()->addMenu( MainWindow::tr( "&Options" ) );

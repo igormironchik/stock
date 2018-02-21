@@ -65,6 +65,7 @@ RenameDlgPrivate::init( const QString & oldName )
 
 	m_ui.m_old->setText( oldName );
 	m_ui.m_btns->button( QDialogButtonBox::Ok )->setEnabled( false );
+	m_ui.m_new->setFocus();
 
 	m_textColor = m_ui.m_new->palette().color( QPalette::Text );
 

@@ -89,6 +89,8 @@ public slots:
 	void emitCodeChanged( const QString & newCode, const QString & oldCode );
 	//! Place renamed.
 	void emitPlaceRenamed( const QString & newName, const QString & oldName );
+	//! Place deleted (only place, stock database is untouched).
+	void emitPlaceDeleted( const QString & place );
 }; // class DbSignals
 
 } /* namespace Stock */
