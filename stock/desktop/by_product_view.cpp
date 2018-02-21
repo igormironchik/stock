@@ -143,6 +143,13 @@ ByProductView::contextMenuEvent( QContextMenuEvent * e )
 			menu.addAction( QIcon( ":/img/flag-blue_22x22.png" ),
 				tr( "Rename Place" ), this, &ByProductView::renamePlace );
 
+		if( !d->m_parentIndex.isValid() && !d->m_model->hasChildren( d->m_index ) )
+		{
+			menu.addSeparator();
+			menu.addAction( QIcon( ":/img/edit-delete_22x22.png" ),
+				tr( "Delete Prduct" ), this, &ByProductView::deleteProduct );
+		}
+
 		menu.exec( e->globalPos() );
 
 		e->accept();
@@ -239,6 +246,36 @@ ByProductView::renamePlace()
 			}
 			else
 				d->m_sigs->emitPlaceRenamed( dlg.renamed(), oldPlace );
+		}
+	}
+}
+
+void
+ByProductView::deleteProduct()
+{
+	if( d->m_db && d->m_sigs && d->m_index.isValid() )
+	{
+		const auto code = d->m_model->data( d->m_model->index( d->m_index.row(), 0 ) )
+			.toString();
+
+		const auto res = QMessageBox::question( this, tr( "Deletion of Product..." ),
+			tr( "You are about to completely remove product from the database.\n\n"
+				"Are you sure that you want to delete product \"%1\"?" )
+					.arg( code ), QMessageBox::Yes,
+				QMessageBox::No | QMessageBox::Default | QMessageBox::Escape );
+
+		if( res == QMessageBox::Yes )
+		{
+			DbResult res = d->m_db->deleteProduct( code );
+
+			if( !res.m_ok )
+			{
+				QMessageBox::critical( this, tr( "Error in the database..." ),
+					tr( "Unable to remove product.\n\n%1" )
+						.arg( res.m_error ) );
+			}
+			else
+				d->m_sigs->emitProductDeleted( code );
 		}
 	}
 }
