@@ -64,6 +64,7 @@ RenameDlgPrivate::init( const QString & oldName )
 	m_ui.setupUi( q );
 
 	m_ui.m_old->setText( oldName );
+	m_ui.m_btns->button( QDialogButtonBox::Ok )->setEnabled( false );
 
 	m_textColor = m_ui.m_new->palette().color( QPalette::Text );
 
@@ -97,7 +98,7 @@ RenameDlg::renamed() const
 void
 RenameDlg::nameChanged( const QString & txt )
 {
-	if( d->m_constraint.contains( txt ) )
+	if( d->m_constraint.contains( txt ) || txt.isEmpty() )
 	{
 		QPalette palette = d->m_ui.m_new->palette();
 		palette.setColor( QPalette::Text, Qt::red );
