@@ -155,6 +155,8 @@ ByPlaceModelPrivate::init()
 		q, &ByPlaceModel::codeChanged );
 	QObject::connect( m_sigs, &DbSignals::placeRenamed,
 		q, &ByPlaceModel::placeRenamed );
+	QObject::connect( m_sigs, &DbSignals::placeDeleted,
+		q, &ByPlaceModel::placeDeleted );
 
 	DbResult state;
 	QStringList places;
@@ -686,6 +688,26 @@ ByPlaceModel::placeRenamed( const QString & newName, const QString & oldName )
 			const QModelIndex index = createIndex( i, 0, &pl->m_index );
 
 			emit dataChanged( index, index);
+
+			break;
+		}
+
+		++i;
+	}
+}
+
+void
+ByPlaceModel::placeDeleted( const QString & place )
+{
+	int i = 0;
+
+	for( const auto & r : qAsConst( d->m_data ) )
+	{
+		if( r->m_place == place )
+		{
+			beginRemoveRows( createIndex( i, 0, &r->m_index ), i, i );
+			d->m_data.removeAt( i );
+			endRemoveRows();
 
 			break;
 		}

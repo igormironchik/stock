@@ -147,7 +147,7 @@ ByProductView::contextMenuEvent( QContextMenuEvent * e )
 		{
 			menu.addSeparator();
 			menu.addAction( QIcon( ":/img/edit-delete_22x22.png" ),
-				tr( "Delete Prduct" ), this, &ByProductView::deleteProduct );
+				tr( "Delete Product" ), this, &ByProductView::deleteProduct );
 		}
 
 		menu.exec( e->globalPos() );

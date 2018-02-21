@@ -26,6 +26,11 @@
 #include "by_place_sort_model.hpp"
 #include "by_product_model.hpp"
 
+// Qt include.
+#include <QContextMenuEvent>
+#include <QMenu>
+#include <QAction>
+
 
 namespace Stock {
 
@@ -48,6 +53,10 @@ public:
 	//! Init.
 	void init();
 
+	//! Index of context menu.
+	QModelIndex m_index;
+	//! Parent index of context menu.
+	QModelIndex m_parentIndex;
 	//! Source model.
 	ByPlaceModel * m_model;
 	//! Filter model.
@@ -109,6 +118,65 @@ ByPlaceView::setDb( DbSignals * sigs, Db * db )
 {
 	d->m_db = db;
 	d->m_sigs = sigs;
+}
+
+void
+ByPlaceView::contextMenuEvent( QContextMenuEvent * e )
+{
+	d->m_index = d->m_filter->mapToSource( indexAt( e->pos() ) );
+	d->m_parentIndex = d->m_index.parent();
+
+	if( d->m_index.isValid() )
+	{
+		QMenu menu;
+		menu.addAction( QIcon( ":/img/flag-blue_22x22.png" ),
+			tr( "Rename Place" ), this, &ByPlaceView::renamePlace );
+
+		if( d->m_index.parent().isValid() )
+		{
+			menu.addAction( QIcon( ":/img/view-barcode_22x22.png" ),
+				tr( "Change Code" ), this, &ByPlaceView::changeCode );
+			menu.addAction( QIcon( ":/img/document-edit_22x22.png" ),
+				tr( "Change Description" ), this, &ByPlaceView::changeDesc );
+		}
+
+		if( !d->m_parentIndex.isValid() && !d->m_model->hasChildren( d->m_index ) )
+		{
+			menu.addSeparator();
+			menu.addAction( QIcon( ":/img/edit-delete_22x22.png" ),
+				tr( "Delete Place" ), this, &ByPlaceView::deletePlace );
+		}
+
+		menu.exec( e->globalPos() );
+
+		e->accept();
+	}
+	else
+		e->ignore();
+}
+
+void
+ByPlaceView::changeCode()
+{
+
+}
+
+void
+ByPlaceView::changeDesc()
+{
+
+}
+
+void
+ByPlaceView::renamePlace()
+{
+
+}
+
+void
+ByPlaceView::deletePlace()
+{
+
 }
 
 } /* namespace Stock */

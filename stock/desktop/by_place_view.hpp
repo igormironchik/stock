@@ -61,6 +61,19 @@ public:
 	//! Set DB.
 	void setDb( DbSignals * sigs, Db * db );
 
+protected:
+	void contextMenuEvent( QContextMenuEvent * e ) Q_DECL_OVERRIDE;
+
+private slots:
+	//! Change code.
+	void changeCode();
+	//! Change description.
+	void changeDesc();
+	//! Rename place.
+	void renamePlace();
+	//! Delete place.
+	void deletePlace();
+
 private:
 	friend class ByPlaceViewPrivate;
 

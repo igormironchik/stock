@@ -96,6 +96,8 @@ private slots:
 	void codeChanged( const QString & newCode, const QString & oldCode );
 	//! Place renamed.
 	void placeRenamed( const QString & newName, const QString & oldName );
+	//! Place deleted.
+	void placeDeleted( const QString & place );
 
 private:
 	friend class ByPlaceModelPrivate;
