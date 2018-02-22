@@ -20,48 +20,47 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Stock include.
-#include "tcp_socket.hpp"
+#ifndef STOCK_BUFFER_HPP_INCLUDED
+#define STOCK_BUFFER_HPP_INCLUDED
+
+// Qt include.
+#include <QByteArray>
 
 
 namespace Stock {
 
 //
-// TcpSocketPrivate
+// Buffer
 //
 
-class TcpSocketPrivate {
+//! Buffer of the socket.
+class Buffer Q_DECL_FINAL {
 public:
-	TcpSocketPrivate( TcpSocket * parent )
-		:	q( parent )
-	{
-	}
+	Buffer();
 
-	//! Parent.
-	TcpSocket * q;
-}; // class TcpSocketPrivate
+	//! \return Data of the buffer.
+	const QByteArray & data() const;
 
+	//! Write data to the end of the buffer.
+	void write( const QByteArray & data );
 
-//
-// TcpSocket
-//
+	//! Remove first bytes from the beginning of the buffer.
+	void remove( int bytes );
 
-TcpSocket::TcpSocket( QObject * parent )
-	:	QTcpSocket( parent )
-	,	d( new TcpSocketPrivate( this ) )
-{
-	connect( this, &QTcpSocket::readyRead,
-		this, &TcpSocket::dataReceived );
-}
+	//! Clear the buffer.
+	void clear();
 
-TcpSocket::~TcpSocket()
-{
-}
+	//! Is buffer empty?
+	bool isEmpty() const;
 
-void
-TcpSocket::dataReceived()
-{
-	readAll();
-}
+	//! \return Size of the buffer.
+	int size() const;
+
+private:
+	//! Data.
+	QByteArray m_data;
+}; // class Buffer
 
 } /* namespace Stock */
+
+#endif // STOCK_BUFFER_HPP_INCLUDED

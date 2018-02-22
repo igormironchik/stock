@@ -22,6 +22,10 @@
 
 // Stock include.
 #include "server.hpp"
+#include "shared/tcp_socket.hpp"
+
+// Qt include.
+#include <QVector>
 
 
 namespace Stock {
@@ -40,6 +44,8 @@ public:
 	//! Init.
 	void init();
 
+	//! Clients.
+	QVector< TcpSocket* > m_clients;
 	//! Parent.
 	Server * q;
 }; // class ServerPrivate
@@ -69,7 +75,28 @@ Server::~Server()
 void
 Server::incomingConnection( qintptr socketDescriptor )
 {
+	TcpSocket * socket = new TcpSocket( this );
 
+	if( socket->setSocketDescriptor( socketDescriptor ) )
+	{
+		connect( socket, &TcpSocket::disconnected,
+			this, &Server::clientDisconnected,
+			Qt::QueuedConnection );
+
+		d->m_clients.push_back( socket );
+	}
+	else
+		delete socket;
+}
+
+void
+Server::clientDisconnected()
+{
+	disconnect( sender(), 0, this, 0 );
+
+	d->m_clients.removeOne( static_cast< TcpSocket* > ( sender() ) );
+
+	sender()->deleteLater();
 }
 
 } /* namespace Stock */

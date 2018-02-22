@@ -50,6 +50,10 @@ protected:
 	//!	Process new incoming connection.
 	void incomingConnection( qintptr socketDescriptor ) Q_DECL_OVERRIDE;
 
+private slots:
+	//! Client disconnected.
+	void clientDisconnected();
+
 private:
 	Q_DISABLE_COPY( Server )
 

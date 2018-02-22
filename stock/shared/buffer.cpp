@@ -20,48 +20,54 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Stock include.
-#include "tcp_socket.hpp"
+// Como include.
+#include "buffer.hpp"
 
 
 namespace Stock {
 
 //
-// TcpSocketPrivate
+// Buffer
 //
 
-class TcpSocketPrivate {
-public:
-	TcpSocketPrivate( TcpSocket * parent )
-		:	q( parent )
-	{
-	}
-
-	//! Parent.
-	TcpSocket * q;
-}; // class TcpSocketPrivate
-
-
-//
-// TcpSocket
-//
-
-TcpSocket::TcpSocket( QObject * parent )
-	:	QTcpSocket( parent )
-	,	d( new TcpSocketPrivate( this ) )
+Buffer::Buffer()
 {
-	connect( this, &QTcpSocket::readyRead,
-		this, &TcpSocket::dataReceived );
 }
 
-TcpSocket::~TcpSocket()
+const QByteArray &
+Buffer::data() const
 {
+	return m_data;
 }
 
 void
-TcpSocket::dataReceived()
+Buffer::write( const QByteArray & data )
 {
-	readAll();
+	m_data.append( data );
+}
+
+void
+Buffer::remove( int bytes )
+{
+	m_data.remove( 0, bytes );
+}
+
+void
+Buffer::clear()
+{
+	m_data.clear();
+}
+
+bool
+Buffer::isEmpty() const
+{
+	return m_data.isEmpty();
+}
+
+int
+Buffer::size() const
+{
+	return m_data.size();
 }
 
 } /* namespace Stock */
