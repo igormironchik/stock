@@ -47,9 +47,10 @@ Buffer::write( const QByteArray & data )
 }
 
 void
-Buffer::remove( int bytes )
+Buffer::remove( qint64 bytes )
 {
-	m_data.remove( 0, bytes );
+	if( bytes > 0 )
+		m_data.remove( 0, bytes );
 }
 
 void

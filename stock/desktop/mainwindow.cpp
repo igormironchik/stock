@@ -358,6 +358,9 @@ MainWindow::startNetwork()
 
 		if( !d->m_srv->listen( host, d->m_cfg.port() ) )
 			cantStartNetwork( d->m_srv->errorString() );
+
+		d->m_srv->setDbAndModels( d->m_db, d->m_sigs,
+			d->m_codeModel, d->m_placeModel );
 	}
 	else
 	{

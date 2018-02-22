@@ -23,6 +23,10 @@
 // Stock include.
 #include "server.hpp"
 #include "shared/tcp_socket.hpp"
+#include "db.hpp"
+#include "db_signals.hpp"
+#include "by_product_model.hpp"
+#include "by_place_model.hpp"
 
 // Qt include.
 #include <QVector>
@@ -37,7 +41,11 @@ namespace Stock {
 class ServerPrivate {
 public:
 	ServerPrivate( Server * parent )
-		:	q( parent )
+		:	m_db( Q_NULLPTR )
+		,	m_sigs( Q_NULLPTR )
+		,	m_codeModel( Q_NULLPTR )
+		,	m_placeModel( Q_NULLPTR )
+		,	q( parent )
 	{
 	}
 
@@ -46,6 +54,14 @@ public:
 
 	//! Clients.
 	QVector< TcpSocket* > m_clients;
+	//! DB.
+	Db * m_db;
+	//! DB signals.
+	DbSignals * m_sigs;
+	//! By product model.
+	ByProductModel * m_codeModel;
+	//! By place mode.
+	ByPlaceModel * m_placeModel;
 	//! Parent.
 	Server * q;
 }; // class ServerPrivate
@@ -73,6 +89,16 @@ Server::~Server()
 }
 
 void
+Server::setDbAndModels( Db * db, DbSignals * sigs,
+	ByProductModel * codeModel, ByPlaceModel * placeModel )
+{
+	d->m_db = db;
+	d->m_sigs = sigs;
+	d->m_codeModel = codeModel;
+	d->m_placeModel = placeModel;
+}
+
+void
 Server::incomingConnection( qintptr socketDescriptor )
 {
 	TcpSocket * socket = new TcpSocket( this );
@@ -82,11 +108,29 @@ Server::incomingConnection( qintptr socketDescriptor )
 		connect( socket, &TcpSocket::disconnected,
 			this, &Server::clientDisconnected,
 			Qt::QueuedConnection );
+		connect( socket, &TcpSocket::addProduct,
+			this, &Server::addProduct,
+			Qt::QueuedConnection );
+		connect( socket, &TcpSocket::giveListOfProducts,
+			this, &Server::giveListOfProducts,
+			Qt::QueuedConnection );
 
 		d->m_clients.push_back( socket );
 	}
 	else
 		delete socket;
+}
+
+void
+Server::addProduct( const Stock::Messages::AddProduct & msg )
+{
+
+}
+
+void
+Server::giveListOfProducts( const Stock::Messages::GiveListOfProducts & msg )
+{
+
 }
 
 void

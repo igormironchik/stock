@@ -45,7 +45,7 @@ public:
 	void write( const QByteArray & data );
 
 	//! Remove first bytes from the beginning of the buffer.
-	void remove( int bytes );
+	void remove( qint64 bytes );
 
 	//! Clear the buffer.
 	void clear();

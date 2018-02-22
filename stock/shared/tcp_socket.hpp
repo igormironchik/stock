@@ -27,6 +27,9 @@
 #include <QTcpSocket>
 #include <QScopedPointer>
 
+// Stock include.
+#include "messages.hpp"
+
 
 namespace Stock {
 
@@ -42,6 +45,18 @@ class TcpSocket Q_DECL_FINAL
 {
 	Q_OBJECT
 
+signals:
+	//! Add/edit product.
+	void addProduct( const Stock::Messages::AddProduct & );
+	//! Give list of products on place.
+	void giveListOfProducts( const Stock::Messages::GiveListOfProducts & );
+	//! List of products on place.
+	void listOfProducts( const Stock::Messages::ListOfProducts & );
+	//! Error.
+	void error( const Stock::Messages::Error & );
+	//! Hello.
+	void hello( const Stock::Messages::Hello & );
+
 public:
 	explicit TcpSocket( QObject * parent );
 	virtual ~TcpSocket();
@@ -51,11 +66,19 @@ private slots:
 	void dataReceived();
 
 private:
+	friend class TcpSocketPrivate;
+
 	Q_DISABLE_COPY( TcpSocket )
 
 	QScopedPointer< TcpSocketPrivate > d;
 }; // class TcpSocket
 
 } /* namespace Stock */
+
+Q_DECLARE_METATYPE( Stock::Messages::AddProduct )
+Q_DECLARE_METATYPE( Stock::Messages::GiveListOfProducts )
+Q_DECLARE_METATYPE( Stock::Messages::ListOfProducts )
+Q_DECLARE_METATYPE( Stock::Messages::Error )
+Q_DECLARE_METATYPE( Stock::Messages::Hello )
 
 #endif // STOCK_TCP_COCKET_HPP_INCLUDED

@@ -27,10 +27,22 @@
 
 // Stock include.
 #include "mainwindow.hpp"
+#include "messages.hpp"
 
 
 int main( int argc, char ** argv )
 {
+	qRegisterMetaType< Stock::Messages::AddProduct >(
+		"Stock::Messages::AddProduct" );
+	qRegisterMetaType< Stock::Messages::GiveListOfProducts >(
+		"Stock::Messages::GiveListOfProducts" );
+	qRegisterMetaType< Stock::Messages::ListOfProducts >(
+		"Stock::Messages::ListOfProducts" );
+	qRegisterMetaType< Stock::Messages::Error >(
+		"Stock::Messages::Error" );
+	qRegisterMetaType< Stock::Messages::Hello >(
+		"Stock::Messages::Hello" );
+
 	QApplication app( argc, argv );
 
 	app.setApplicationDisplayName( QObject::tr( "Stock" ) );

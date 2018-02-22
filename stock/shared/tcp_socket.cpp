@@ -22,9 +22,39 @@
 
 // Stock include.
 #include "tcp_socket.hpp"
+#include "buffer.hpp"
+#include "constants.hpp"
+
+// Qt include.
+#include <QDataStream>
+#include <QTextStream>
+
+// cfgfile include.
+#include <cfgfile/all.hpp>
 
 
 namespace Stock {
+
+//
+// MsgType
+//
+
+//! Type of the message.
+enum class MsgType {
+	//! Unknown.
+	Unknown = 0,
+	//! Add product.
+	AddProduct = 1,
+	//! Give list of products.
+	GiveListOfProducts = 2,
+	//! List of products.
+	ListOfProducts = 3,
+	//! Error.
+	Error = 4,
+	//! Hello.
+	Hello = 5
+}; // enum class MsgType
+
 
 //
 // TcpSocketPrivate
@@ -37,9 +67,144 @@ public:
 	{
 	}
 
+	//! Parse messages. \return false on error.
+	bool parse();
+
+	//! Buffer.
+	Buffer m_buf;
 	//! Parent.
 	TcpSocket * q;
 }; // class TcpSocketPrivate
+
+bool
+TcpSocketPrivate::parse()
+{
+	while( !m_buf.isEmpty() )
+	{
+		QDataStream s( m_buf.data() );
+		s.setVersion( QDataStream::Qt_5_9 );
+
+		quint64 magic = 0;
+		quint16 type = 0;
+		qint32 length = 0;
+
+		s >> magic >> type >> length;
+
+		if( s.status() != QDataStream::Ok )
+			return true;
+
+		if( magic != c_magic )
+			return false;
+
+		QByteArray data( length, 0 );
+
+		if( s.readRawData( data.data(), length ) != length )
+			return true;
+
+		QByteArray msgData;
+
+		{
+			QDataStream ds( data );
+			ds.setVersion( QDataStream::Qt_5_9 );
+			ds >> msgData;
+
+			if( ds.status() != QDataStream::Ok )
+				return false;
+		}
+
+		QTextStream msgStream( msgData );
+
+		switch( static_cast< MsgType > ( type ) )
+		{
+			case MsgType::AddProduct :
+			{
+				try {
+					Messages::tag_AddProduct< cfgfile::qstring_trait_t > tag;
+
+					cfgfile::read_cfgfile( tag, msgStream, QLatin1String( "Network Data" ) );
+
+					emit q->addProduct( tag.get_cfg() );
+				}
+				catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
+				{
+					return false;
+				}
+			}
+				break;
+
+			case MsgType::GiveListOfProducts :
+			{
+				try {
+					Messages::tag_GiveListOfProducts< cfgfile::qstring_trait_t > tag;
+
+					cfgfile::read_cfgfile( tag, msgStream, QLatin1String( "Network Data" ) );
+
+					emit q->giveListOfProducts( tag.get_cfg() );
+				}
+				catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
+				{
+					return false;
+				}
+			}
+				break;
+
+			case MsgType::ListOfProducts :
+			{
+				try {
+					Messages::tag_ListOfProducts< cfgfile::qstring_trait_t > tag;
+
+					cfgfile::read_cfgfile( tag, msgStream, QLatin1String( "Network Data" ) );
+
+					emit q->listOfProducts( tag.get_cfg() );
+				}
+				catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
+				{
+					return false;
+				}
+			}
+				break;
+
+			case MsgType::Error :
+			{
+				try {
+					Messages::tag_Error< cfgfile::qstring_trait_t > tag;
+
+					cfgfile::read_cfgfile( tag, msgStream, QLatin1String( "Network Data" ) );
+
+					emit q->error( tag.get_cfg() );
+				}
+				catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
+				{
+					return false;
+				}
+			}
+				break;
+
+			case MsgType::Hello :
+			{
+				try {
+					Messages::tag_Hello< cfgfile::qstring_trait_t > tag;
+
+					cfgfile::read_cfgfile( tag, msgStream, QLatin1String( "Network Data" ) );
+
+					emit q->hello( tag.get_cfg() );
+				}
+				catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
+				{
+					return false;
+				}
+			}
+				break;
+
+			default :
+				return false;
+		}
+
+		m_buf.remove( s.device()->pos() );
+	}
+
+	return true;
+}
 
 
 //
@@ -61,7 +226,14 @@ TcpSocket::~TcpSocket()
 void
 TcpSocket::dataReceived()
 {
-	readAll();
+	d->m_buf.write( readAll() );
+
+	if( !d->parse() )
+	{
+		d->m_buf.clear();
+
+		disconnectFromHost();
+	}
 }
 
 } /* namespace Stock */

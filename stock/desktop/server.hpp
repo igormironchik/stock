@@ -30,6 +30,21 @@
 
 namespace Stock {
 
+namespace Messages {
+
+class AddProduct;
+class GiveListOfProducts;
+class ListOfProducts;
+
+} /* namespace Messages */
+
+
+class Db;
+class DbSignals;
+class ByProductModel;
+class ByPlaceModel;
+
+
 //
 // Server
 //
@@ -46,11 +61,19 @@ public:
 	explicit Server( QObject * parent );
 	virtual ~Server();
 
+	//! Set DB and models.
+	void setDbAndModels( Db * db, DbSignals * sigs,
+		ByProductModel * codeModel, ByPlaceModel * placeModel );
+
 protected:
 	//!	Process new incoming connection.
 	void incomingConnection( qintptr socketDescriptor ) Q_DECL_OVERRIDE;
 
 private slots:
+	//! Add/edit product.
+	void addProduct( const Stock::Messages::AddProduct & msg );
+	//! Give list of products on place.
+	void giveListOfProducts( const Stock::Messages::GiveListOfProducts & msg );
 	//! Client disconnected.
 	void clientDisconnected();
 
