@@ -46,8 +46,11 @@ SOURCES = mainwindow.cpp \
     
 RESOURCES = resources.qrc
 
+EXE_EXT =
+
 win32 {
     RC_FILE = app.rc
+	EXE_EXT = .exe
 }
 
 OTHER_FILES += config.cfgfile
@@ -65,7 +68,7 @@ generate_cfg.output = ${QMAKE_FILE_BASE}.hpp
 generate_cfg.CONFIG = no_link
 generate_cfg.variable_out = HEADERS
 
-generate_cfg.commands = $$shell_path( $$absolute_path( $${OUT_PWD}/../../3rdparty/cfgfile/cfgfile.generator ) ) \
+generate_cfg.commands = $$shell_path( $$absolute_path( $${OUT_PWD}/../../3rdparty/cfgfile/cfgfile.generator$${EXE_EXT} ) ) \
 -i ${QMAKE_FILE_IN} -o $${OUT_PWD}/${QMAKE_FILE_BASE}.hpp
 
 PRE_TARGETDEPS += compiler_generate_cfg_make_all
