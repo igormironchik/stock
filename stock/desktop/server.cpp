@@ -98,6 +98,12 @@ Server::setDbAndModels( Db * db, DbSignals * sigs,
 	d->m_placeModel = placeModel;
 }
 
+template< typename T >
+std::vector< T > toStdVector( const QList< T > & list )
+{
+	return std::vector< T > ( list.constBegin(), list.constEnd() );
+}
+
 void
 Server::incomingConnection( qintptr socketDescriptor )
 {
@@ -116,6 +122,12 @@ Server::incomingConnection( qintptr socketDescriptor )
 			Qt::QueuedConnection );
 
 		d->m_clients.push_back( socket );
+
+		Stock::Messages::Hello msg;
+		msg.set_places( toStdVector( d->m_placeModel->places() ) );
+		msg.set_products( toStdVector( d->m_codeModel->codes() ) );
+
+		socket->sendHello( msg );
 	}
 	else
 		delete socket;

@@ -28,6 +28,7 @@
 // Qt include.
 #include <QDataStream>
 #include <QTextStream>
+#include <QTextCodec>
 
 // cfgfile include.
 #include <cfgfile/all.hpp>
@@ -96,23 +97,13 @@ TcpSocketPrivate::parse()
 		if( magic != c_magic )
 			return false;
 
-		QByteArray data( length, 0 );
+		QByteArray msgData( length, 0 );
 
-		if( s.readRawData( data.data(), length ) != length )
+		if( s.readRawData( msgData.data(), length ) != length )
 			return true;
 
-		QByteArray msgData;
-
-		{
-			QDataStream ds( data );
-			ds.setVersion( QDataStream::Qt_5_9 );
-			ds >> msgData;
-
-			if( ds.status() != QDataStream::Ok )
-				return false;
-		}
-
 		QTextStream msgStream( msgData );
+		msgStream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
 
 		switch( static_cast< MsgType > ( type ) )
 		{
@@ -221,6 +212,38 @@ TcpSocket::TcpSocket( QObject * parent )
 
 TcpSocket::~TcpSocket()
 {
+}
+
+void
+TcpSocket::sendHello( const Stock::Messages::Hello & msg )
+{
+	try {
+		QByteArray data;
+		QTextStream stream( &data, QIODevice::WriteOnly );
+		stream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
+
+		Messages::tag_Hello< cfgfile::qstring_trait_t > tag( msg );
+
+		cfgfile::write_cfgfile( tag, stream );
+
+		QByteArray msgData;
+		QDataStream s( &msgData, QIODevice::WriteOnly );
+		s.setVersion( QDataStream::Qt_5_9 );
+
+		s << c_magic << static_cast< quint16 > ( MsgType::Hello )
+			<< static_cast< qint32 > ( data.size() );
+		s.writeRawData( data.constData(), data.size() );
+
+		writeData( msgData.constData(), msgData.size() );
+
+		flush();
+	}
+	catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
+	{
+		d->m_buf.clear();
+
+		disconnectFromHost();
+	}
 }
 
 void

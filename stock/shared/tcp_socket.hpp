@@ -61,6 +61,10 @@ public:
 	explicit TcpSocket( QObject * parent );
 	virtual ~TcpSocket();
 
+public slots:
+	//! Send hello.
+	void sendHello( const Stock::Messages::Hello & msg );
+
 private slots:
 	//! Data received.
 	void dataReceived();
