@@ -22,7 +22,6 @@
 
 // Stock include.
 #include "by_place_model.hpp"
-#include "db.hpp"
 #include "db_signals.hpp"
 #include "mainwindow.hpp"
 
@@ -353,6 +352,22 @@ ByPlaceModel::places() const
 
 	for( const auto & p : qAsConst( d->m_data ) )
 		res.push_back( p->m_place );
+
+	return res;
+}
+
+QVector< DbRecord >
+ByPlaceModel::records( const QString & place ) const
+{
+	QVector< DbRecord > res;
+
+	auto * pl = d->findPlace( place );
+
+	if( pl )
+	{
+		for( const auto & pr : qAsConst( pl->m_prods ) )
+			res.push_back( { pr->m_code, place, pr->m_count, pr->m_desc } );
+	}
 
 	return res;
 }

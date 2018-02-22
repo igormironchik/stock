@@ -22,7 +22,6 @@
 
 // Stock include.
 #include "by_product_model.hpp"
-#include "db.hpp"
 #include "db_signals.hpp"
 #include "mainwindow.hpp"
 
@@ -361,6 +360,22 @@ ByProductModel::count( const QString & code, const QString & place ) const
 	}
 
 	return 0;
+}
+
+QVector< DbRecord >
+ByProductModel::records( const QString & code ) const
+{
+	QVector< DbRecord > res;
+
+	auto * pr = d->findProduct( code );
+
+	if( pr )
+	{
+		for( const auto & pl : qAsConst( pr->m_places ) )
+			res.push_back( { code, pl->m_place, pl->m_count, pr->m_desc } );
+	}
+
+	return res;
 }
 
 int

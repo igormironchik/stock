@@ -42,6 +42,8 @@ int main( int argc, char ** argv )
 		"Stock::Messages::Error" );
 	qRegisterMetaType< Stock::Messages::Hello >(
 		"Stock::Messages::Hello" );
+	qRegisterMetaType< Stock::Messages::Ok >(
+		"Stock::Messages::Ok" );
 
 	QApplication app( argc, argv );
 

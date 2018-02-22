@@ -29,6 +29,7 @@
 #include <QDataStream>
 #include <QTextStream>
 #include <QTextCodec>
+#include <QTimer>
 
 // cfgfile include.
 #include <cfgfile/all.hpp>
@@ -53,8 +54,53 @@ enum class MsgType {
 	//! Error.
 	Error = 4,
 	//! Hello.
-	Hello = 5
+	Hello = 5,
+	//! Ok.
+	Ok = 6
 }; // enum class MsgType
+
+
+template< typename T >
+quint16 msgType();
+
+template<>
+quint16 msgType< Stock::Messages::AddProduct > ()
+{
+	return static_cast< quint16 > ( MsgType::AddProduct );
+}
+
+template<>
+quint16 msgType< Stock::Messages::GiveListOfProducts > ()
+{
+	return static_cast< quint16 > ( MsgType::GiveListOfProducts );
+}
+
+template<>
+quint16 msgType< Stock::Messages::ListOfProducts > ()
+{
+	return static_cast< quint16 > ( MsgType::ListOfProducts );
+}
+
+template<>
+quint16 msgType< Stock::Messages::Error > ()
+{
+	return static_cast< quint16 > ( MsgType::Error );
+}
+
+template<>
+quint16 msgType< Stock::Messages::Hello > ()
+{
+	return static_cast< quint16 > ( MsgType::Hello );
+}
+
+template<>
+quint16 msgType< Stock::Messages::Ok > ()
+{
+	return static_cast< quint16 > ( MsgType::Ok );
+}
+
+//! Timeout in seconds for messages with result.
+static const int c_timeout = 15;
 
 
 //
@@ -64,8 +110,14 @@ enum class MsgType {
 class TcpSocketPrivate {
 public:
 	TcpSocketPrivate( TcpSocket * parent )
-		:	q( parent )
+		:	m_timer( new QTimer( parent ) )
+		,	q( parent )
 	{
+		m_timer->setInterval( c_timeout * 1000 );
+		m_timer->setSingleShot( true );
+
+		QObject::connect( m_timer, &QTimer::timeout,
+			q, &TcpSocket::timeout );
 	}
 
 	//! Parse messages. \return false on error.
@@ -73,6 +125,8 @@ public:
 
 	//! Buffer.
 	Buffer m_buf;
+	//! Timer.
+	QTimer * m_timer;
 	//! Parent.
 	TcpSocket * q;
 }; // class TcpSocketPrivate
@@ -187,6 +241,22 @@ TcpSocketPrivate::parse()
 			}
 				break;
 
+			case MsgType::Ok :
+			{
+				try {
+					Messages::tag_Ok< cfgfile::qstring_trait_t > tag;
+
+					cfgfile::read_cfgfile( tag, msgStream, QLatin1String( "Network Data" ) );
+
+					emit q->ok( tag.get_cfg() );
+				}
+				catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
+				{
+					return false;
+				}
+			}
+				break;
+
 			default :
 				return false;
 		}
@@ -217,12 +287,65 @@ TcpSocket::~TcpSocket()
 void
 TcpSocket::sendHello( const Stock::Messages::Hello & msg )
 {
+	sendMsg< Stock::Messages::Hello,
+		Stock::Messages::tag_Hello< cfgfile::qstring_trait_t > > ( msg );
+}
+
+void
+TcpSocket::sendError( const Stock::Messages::Error & msg )
+{
+	sendMsg< Stock::Messages::Error,
+		Stock::Messages::tag_Error< cfgfile::qstring_trait_t > > ( msg );
+}
+
+void
+TcpSocket::sendOk( const Stock::Messages::Ok & msg )
+{
+	sendMsg< Stock::Messages::Ok,
+		Stock::Messages::tag_Ok< cfgfile::qstring_trait_t > > ( msg );
+}
+
+void
+TcpSocket::sendListOfProducts( Stock::Messages::ListOfProducts & msg )
+{
+	sendMsg< Stock::Messages::ListOfProducts,
+		Stock::Messages::tag_ListOfProducts< cfgfile::qstring_trait_t > > ( msg );
+}
+
+void
+TcpSocket::sendGiveListOfProducts( Stock::Messages::GiveListOfProducts & msg )
+{
+	sendMsg< Stock::Messages::GiveListOfProducts,
+		Stock::Messages::tag_GiveListOfProducts< cfgfile::qstring_trait_t > > ( msg );
+
+	d->m_timer->start();
+}
+
+void
+TcpSocket::sendAddProduct( Stock::Messages::AddProduct & msg )
+{
+	sendMsg< Stock::Messages::AddProduct,
+		Stock::Messages::tag_AddProduct< cfgfile::qstring_trait_t > > ( msg );
+
+	d->m_timer->start();
+}
+
+void
+TcpSocket::stopTimer()
+{
+	d->m_timer->stop();
+}
+
+template< typename MSG, typename TAG >
+void
+TcpSocket::sendMsg( const MSG & msg )
+{
 	try {
 		QByteArray data;
 		QTextStream stream( &data, QIODevice::WriteOnly );
 		stream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
 
-		Messages::tag_Hello< cfgfile::qstring_trait_t > tag( msg );
+		TAG tag( msg );
 
 		cfgfile::write_cfgfile( tag, stream );
 
@@ -230,7 +353,7 @@ TcpSocket::sendHello( const Stock::Messages::Hello & msg )
 		QDataStream s( &msgData, QIODevice::WriteOnly );
 		s.setVersion( QDataStream::Qt_5_9 );
 
-		s << c_magic << static_cast< quint16 > ( MsgType::Hello )
+		s << c_magic << msgType< MSG > ()
 			<< static_cast< qint32 > ( data.size() );
 		s.writeRawData( data.constData(), data.size() );
 
@@ -257,6 +380,12 @@ TcpSocket::dataReceived()
 
 		disconnectFromHost();
 	}
+}
+
+void
+TcpSocket::timeout()
+{
+	emit error( Stock::Messages::Error() );
 }
 
 } /* namespace Stock */

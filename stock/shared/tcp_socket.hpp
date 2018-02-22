@@ -56,6 +56,8 @@ signals:
 	void error( const Stock::Messages::Error & );
 	//! Hello.
 	void hello( const Stock::Messages::Hello & );
+	//! Ok.
+	void ok( const Stock::Messages::Ok & );
 
 public:
 	explicit TcpSocket( QObject * parent );
@@ -64,10 +66,29 @@ public:
 public slots:
 	//! Send hello.
 	void sendHello( const Stock::Messages::Hello & msg );
+	//! Send error.
+	void sendError( const Stock::Messages::Error & msg );
+	//! Send ok.
+	void sendOk( const Stock::Messages::Ok & msg );
+	//! Send list of products.
+	void sendListOfProducts( Stock::Messages::ListOfProducts & msg );
+	//! Send "give list of products".
+	void sendGiveListOfProducts( Stock::Messages::GiveListOfProducts & msg );
+	//! Send "add product".
+	void sendAddProduct( Stock::Messages::AddProduct & msg );
+	//! Stop timer.
+	void stopTimer();
 
 private slots:
 	//! Data received.
 	void dataReceived();
+	//! Timeout.
+	void timeout();
+
+private:
+	//! Send message.
+	template< typename MSG, typename TAG >
+	void sendMsg( const MSG & msg );
 
 private:
 	friend class TcpSocketPrivate;
@@ -84,5 +105,6 @@ Q_DECLARE_METATYPE( Stock::Messages::GiveListOfProducts )
 Q_DECLARE_METATYPE( Stock::Messages::ListOfProducts )
 Q_DECLARE_METATYPE( Stock::Messages::Error )
 Q_DECLARE_METATYPE( Stock::Messages::Hello )
+Q_DECLARE_METATYPE( Stock::Messages::Ok )
 
 #endif // STOCK_TCP_COCKET_HPP_INCLUDED

@@ -42,6 +42,14 @@
 
 
 			|#
+				Ok.
+			#|
+			{class Ok
+				{base tagNoValue}
+			} || class Ok
+
+
+			|#
 				Hello from server.
 			#|
 			{class Hello
@@ -128,7 +136,7 @@
 				}
 
 				{tagScalar
-					{valueType "long long"}
+					{valueType "unsigned long long"}
 					{name count}
 					{required}
 				}

@@ -64,6 +64,8 @@ public:
 	//! Set DB and models.
 	void setDbAndModels( Db * db, DbSignals * sigs,
 		ByProductModel * codeModel, ByPlaceModel * placeModel );
+	//! Set secret.
+	void setSecret( const QString & secret );
 
 protected:
 	//!	Process new incoming connection.

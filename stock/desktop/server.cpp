@@ -54,6 +54,8 @@ public:
 
 	//! Clients.
 	QVector< TcpSocket* > m_clients;
+	//! Secret code.
+	QString m_secret;
 	//! DB.
 	Db * m_db;
 	//! DB signals.
@@ -98,6 +100,12 @@ Server::setDbAndModels( Db * db, DbSignals * sigs,
 	d->m_placeModel = placeModel;
 }
 
+void
+Server::setSecret( const QString & secret )
+{
+	d->m_secret = secret;
+}
+
 template< typename T >
 std::vector< T > toStdVector( const QList< T > & list )
 {
@@ -136,13 +144,61 @@ Server::incomingConnection( qintptr socketDescriptor )
 void
 Server::addProduct( const Stock::Messages::AddProduct & msg )
 {
+	if( msg.secret() == d->m_secret && !msg.code().isEmpty() &&
+		!msg.place().isEmpty() && msg.count() != 0 )
+	{
+		const quint64 count = msg.count() +
+			d->m_codeModel->count( msg.code(), msg.place() );
+		const auto desc = d->m_codeModel->desc( msg.code() );
 
+		DbResult res = d->m_db->changeProduct( { msg.code(), msg.place(),
+			count, desc } );
+
+		if( res.m_ok )
+		{
+			static_cast< TcpSocket* > ( sender() )->sendOk( Stock::Messages::Ok() );
+
+			d->m_sigs->emitProductChanged( msg.code(), msg.place(), count, desc );
+		}
+		else
+			static_cast< TcpSocket* > ( sender() )->sendError( Stock::Messages::Error() );
+	}
+	else
+		static_cast< TcpSocket* > ( sender() )->sendError( Stock::Messages::Error() );
 }
 
 void
 Server::giveListOfProducts( const Stock::Messages::GiveListOfProducts & msg )
 {
+	if( msg.secret() == d->m_secret && ( !msg.code().isEmpty() || !msg.place().isEmpty() ) )
+	{
+		QVector< DbRecord > records;
 
+		if( !msg.code().isEmpty() )
+			records = d->m_codeModel->records( msg.code() );
+		else if( !msg.place().isEmpty() )
+			records = d->m_placeModel->records( msg.place() );
+
+		Stock::Messages::ListOfProducts list;
+		std::vector< Stock::Messages::Product > prods;
+
+		for( const auto & r : qAsConst( records ) )
+		{
+			Stock::Messages::Product p;
+			p.set_code( r.m_code );
+			p.set_count( r.m_count );
+			p.set_desc( r.m_desc );
+			p.set_place( r.m_place );
+
+			prods.push_back( p );
+		}
+
+		list.set_product( prods );
+
+		static_cast< TcpSocket* > ( sender() )->sendListOfProducts( list );
+	}
+	else
+		static_cast< TcpSocket* > ( sender() )->sendError( Stock::Messages::Error() );
 }
 
 void
