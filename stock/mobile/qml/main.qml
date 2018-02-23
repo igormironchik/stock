@@ -29,4 +29,20 @@ ApplicationWindow {
     visible: true
     width: 400
     height: 600
+
+    StackView {
+        id: stackView
+        anchors.fill: parent
+        // Implements back key navigation
+        focus: true
+        Keys.onReleased: if( event.key === Qt.Key_Back && stackView.depth > 1 ) {
+                             stackView.pop();
+                             event.accepted = true;
+                         }
+
+        initialItem: Item {
+            width: parent.width
+            height: parent.height
+        }
+    }
 }

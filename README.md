@@ -9,3 +9,9 @@ After clone update submodules with the next command:
 ```
 git submodule update --init --recursive
 ```
+
+# Build
+
+Firts of all you need to build desktop part of the Stock,
+after it you can build mobile part, it's very important to build
+desktop part first.

@@ -68,7 +68,11 @@ generate_cfg.output = ${QMAKE_FILE_BASE}.hpp
 generate_cfg.CONFIG = no_link
 generate_cfg.variable_out = HEADERS
 
-generate_cfg.commands = $$shell_path( $$absolute_path( $${OUT_PWD}/../../3rdparty/cfgfile/cfgfile.generator$${EXE_EXT} ) ) \
+CFGFILE_GENERATOR = $$shell_path( $$absolute_path( $${OUT_PWD}/../../3rdparty/cfgfile/cfgfile.generator$${EXE_EXT} ) )
+
+write_file( $${PWD}/cfgfile_generator_path, CFGFILE_GENERATOR)
+
+generate_cfg.commands = ${CFGFILE_GENERATOR} \
 -i ${QMAKE_FILE_IN} -o $${OUT_PWD}/${QMAKE_FILE_BASE}.hpp
 
 PRE_TARGETDEPS += compiler_generate_cfg_make_all
