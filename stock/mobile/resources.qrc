@@ -4,5 +4,9 @@
         <file>img/icon_128x128.png</file>
         <file>img/icon_256x256.png</file>
         <file>qml/main.qml</file>
+        <file>img/layer-visible-on_48x48.png</file>
+        <file>img/layer-visible-off_48x48.png</file>
+        <file>qml/Connect.qml</file>
+        <file>qml/Actions.qml</file>
     </qresource>
 </RCC>

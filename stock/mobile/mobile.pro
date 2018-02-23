@@ -13,7 +13,9 @@ HEADERS =
 
 RESOURCES = resources.qrc
 
-DISTFILES += qml/main.qml
+DISTFILES += qml/main.qml \
+    qml/Connect.qml \
+    qml/Actions.qml
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 
