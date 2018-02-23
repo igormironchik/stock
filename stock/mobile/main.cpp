@@ -24,6 +24,8 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QIcon>
+#include <QTranslator>
+#include <QLocale>
 
 
 int main( int argc, char ** argv )
@@ -34,6 +36,10 @@ int main( int argc, char ** argv )
 	appIcon.addFile( ":/img/icon_128x128.png" );
 	appIcon.addFile( ":/img/icon_64x64.png" );
 	app.setWindowIcon( appIcon );
+
+	QTranslator appTranslator;
+	appTranslator.load( "./tr/stock_" + QLocale::system().name() );
+	app.installTranslator( &appTranslator );
 
 	QQmlApplicationEngine engine;
 	engine.load( QUrl( "qrc:/qml/main.qml" ) );
