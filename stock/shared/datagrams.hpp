@@ -26,9 +26,18 @@
 // Qt include.
 #include <QNetworkDatagram>
 #include <QUdpSocket>
+#include <QDataStream>
+#include <QTextStream>
+#include <QTextCodec>
+#include <QByteArray>
+
+// cfgfile include.
+#include <cfgfile/all.hpp>
 
 // Stock include.
 #include "messages.hpp"
+#include "constants.hpp"
+#include "exceptions.hpp"
 
 
 namespace Stock {
@@ -50,17 +59,95 @@ enum class DatagramType {
 //
 
 //! \return Type of the datagram.
-DatagramType
-datagramType( const QNetworkDatagram & d );
+template< typename MSG >
+DatagramType datagramType( const MSG & );
+
+template<>
+DatagramType datagramType( const QNetworkDatagram & d )
+{
+	QDataStream s( d.data() );
+	s.setVersion( QDataStream::Qt_5_9 );
+
+	quint64 magic = 0;
+	s >> magic;
+
+	if( s.status() != QDataStream::Ok || magic != c_magic )
+		return DatagramType::Unknown;
+
+	quint32 type = 0;
+	s >> type;
+
+	if( s.status() != QDataStream::Ok )
+		return DatagramType::Unknown;
+
+	switch( static_cast< DatagramType > ( type ) )
+	{
+		case DatagramType::MyIP :
+			return DatagramType::MyIP;
+
+		case DatagramType::TellIP :
+			return DatagramType::TellIP;
+
+		default :
+			return DatagramType::Unknown;
+	}
+}
+
+template<>
+DatagramType datagramType( const Messages::MyIP & )
+{
+	return DatagramType::MyIP;
+}
+
+template<>
+DatagramType datagramType( const Messages::TellMeYourIP & )
+{
+	return DatagramType::TellIP;
+}
 
 
 //
 // readDatagram
 //
 
-//! Read MyIP datagram.
-void
-readDatagram( const QNetworkDatagram & d, Messages::MyIP & msg );
+template< typename MSG, typename TAG >
+void readDatagram( const QNetworkDatagram & d, MSG & msg )
+{
+	QDataStream s( d.data() );
+	s.setVersion( QDataStream::Qt_5_9 );
+
+	quint64 magic = 0;
+	s >> magic;
+
+	if( s.status() != QDataStream::Ok || magic != c_magic )
+		throw Exception( QObject::tr( "Wrong protocol" ) );
+
+	quint32 type = 0;
+	s >> type;
+
+	if( s.status() != QDataStream::Ok &&
+		static_cast< DatagramType > ( type ) != datagramType( msg ) )
+			throw Exception( QObject::tr(
+				"readDatagram(): wrong datagram" ) );
+
+	QString txt;
+	s >> txt;
+
+	QTextStream stream( &txt, QIODevice::ReadOnly );
+	stream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
+
+	try {
+		TAG tag;
+
+		cfgfile::read_cfgfile( tag, stream, QLatin1String( "udp" ) );
+
+		msg = tag.get_cfg();
+	}
+	catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & x )
+	{
+		throw Exception( x.desc() );
+	}
+}
 
 
 //
@@ -69,7 +156,37 @@ readDatagram( const QNetworkDatagram & d, Messages::MyIP & msg );
 
 //! Write TellIP datagram.
 void
-writeTellIpDatargam( QUdpSocket * s );
+writeTellIpDatargam( QUdpSocket * s, const QString & password )
+{
+	QByteArray array;
+	QDataStream stream( &array, QIODevice::WriteOnly );
+	stream.setVersion( QDataStream::Qt_5_9 );
+
+	stream << c_magic;
+	quint32 type = static_cast< quint32 > ( DatagramType::TellIP );
+	stream << type;
+
+	try {
+		QString str;
+		QTextStream text( &str, QIODevice::WriteOnly );
+		text.setCodec( QTextCodec::codecForName( "UTF-8" ) );
+
+		Messages::TellMeYourIP msg;
+		msg.set_secret( password );
+		Messages::tag_TellMeYourIP< cfgfile::qstring_trait_t > tag( msg );
+
+		cfgfile::write_cfgfile( tag, text );
+
+		stream << str;
+
+		s->writeDatagram( QNetworkDatagram( array ) );
+	}
+	catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & x )
+	{
+		throw Exception( x.desc() );
+	}
+}
+
 
 
 //
@@ -79,7 +196,38 @@ writeTellIpDatargam( QUdpSocket * s );
 //! Write MyIP datagram.
 void
 writeMyIpDatargam( QUdpSocket * s, const QString & host, quint16 port,
-	const QHostAddress & receiverHost, quint16 receiverPort );
+	const QHostAddress & receiverHost, quint16 receiverPort )
+{
+	QByteArray array;
+	QDataStream stream( &array, QIODevice::WriteOnly );
+	stream.setVersion( QDataStream::Qt_5_9 );
+
+	stream << c_magic;
+	quint32 type = static_cast< quint32 > ( DatagramType::MyIP );
+	stream << type;
+
+	try {
+		QString str;
+		QTextStream text( &str, QIODevice::WriteOnly );
+		text.setCodec( QTextCodec::codecForName( "UTF-8" ) );
+
+		Messages::MyIP msg;
+		msg.set_ip( host );
+		msg.set_port( port );
+		Messages::tag_MyIP< cfgfile::qstring_trait_t > tag( msg );
+
+		cfgfile::write_cfgfile( tag, text );
+
+		stream << str;
+
+		s->writeDatagram( QNetworkDatagram( array, receiverHost,
+			receiverPort ) );
+	}
+	catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & x )
+	{
+		throw Exception( x.desc() );
+	}
+}
 
 } /* namespace Stock */
 

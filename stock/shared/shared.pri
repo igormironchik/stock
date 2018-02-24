@@ -6,7 +6,6 @@ HEADERS += $$PWD/tcp_socket.hpp \
 	$$PWD/buffer.hpp
 
 SOURCES += $$PWD/tcp_socket.cpp \
-	$$PWD/datagrams.cpp \
 	$$PWD/exceptions.cpp \
 	$$PWD/buffer.cpp
 

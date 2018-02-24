@@ -72,7 +72,7 @@ CFGFILE_GENERATOR = $$shell_path( $$absolute_path( $${OUT_PWD}/../../3rdparty/cf
 
 write_file( $${PWD}/cfgfile_generator_path, CFGFILE_GENERATOR)
 
-generate_cfg.commands = ${CFGFILE_GENERATOR} \
+generate_cfg.commands = $${CFGFILE_GENERATOR} \
 -i ${QMAKE_FILE_IN} -o $${OUT_PWD}/${QMAKE_FILE_BASE}.hpp
 
 PRE_TARGETDEPS += compiler_generate_cfg_make_all
