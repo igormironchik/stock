@@ -64,6 +64,9 @@ public:
 	//! Set DB and models.
 	void setDbAndModels( Db * db, DbSignals * sigs,
 		ByProductModel * codeModel, ByPlaceModel * placeModel );
+
+	//! \return Secret.
+	const QString & secret() const;
 	//! Set secret.
 	void setSecret( const QString & secret );
 

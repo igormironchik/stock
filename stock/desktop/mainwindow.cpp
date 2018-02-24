@@ -346,14 +346,6 @@ MainWindow::startNetwork()
 
 	if( host.setAddress( d->m_cfg.host() ) )
 	{
-		d->m_udp = new QUdpSocket( this );
-
-		if( !d->m_udp->bind( host, d->m_cfg.port() ) )
-			cantStartNetwork( d->m_udp->errorString() );
-
-		connect( d->m_udp, &QUdpSocket::readyRead,
-			this, &MainWindow::readPendingDatagrams );
-
 		d->m_srv = new Server( this );
 
 		if( !d->m_srv->listen( host, d->m_cfg.port() ) )
@@ -361,6 +353,14 @@ MainWindow::startNetwork()
 
 		d->m_srv->setDbAndModels( d->m_db, d->m_sigs,
 			d->m_codeModel, d->m_placeModel );
+
+		d->m_udp = new QUdpSocket( this );
+
+		if( !d->m_udp->bind( host, d->m_cfg.port() ) )
+			cantStartNetwork( d->m_udp->errorString() );
+
+		connect( d->m_udp, &QUdpSocket::readyRead,
+			this, &MainWindow::readPendingDatagrams );
 	}
 	else
 	{
@@ -401,8 +401,22 @@ MainWindow::readPendingDatagrams()
 		QNetworkDatagram datagram = d->m_udp->receiveDatagram();
 
 		if( datagramType( datagram ) == DatagramType::TellIP )
-			writeMyIpDatargam( d->m_udp, d->m_cfg.host(), d->m_cfg.port(),
-				datagram.senderAddress(), datagram.senderPort() );
+		{
+			Messages::TellMeYourIP msg;
+
+			try {
+				readDatagram< Messages::TellMeYourIP,
+					Messages::tag_TellMeYourIP< cfgfile::qstring_trait_t > > (
+						datagram, msg );
+
+				if( msg.secret() == d->m_srv->secret() )
+					writeMyIpDatargam( d->m_udp, d->m_cfg.host(), d->m_cfg.port(),
+						datagram.senderAddress(), datagram.senderPort() );
+			}
+			catch( const Exception & )
+			{
+			}
+		}
 	}
 }
 

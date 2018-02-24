@@ -100,6 +100,12 @@ Server::setDbAndModels( Db * db, DbSignals * sigs,
 	d->m_placeModel = placeModel;
 }
 
+const QString &
+Server::secret() const
+{
+	return d->m_secret;
+}
+
 void
 Server::setSecret( const QString & secret )
 {
