@@ -30,9 +30,6 @@ ApplicationWindow {
     width: 400
     height: 600
 
-    property bool passwordSet: false
-    property string password
-
     Menu {
         id: menu
         x: menuButton.x
@@ -81,10 +78,10 @@ ApplicationWindow {
         id: connectComponent
 
         Connect {
-            password: appWindow.password
+            pwd: password
 
             Component.onCompleted: {
-                connectRequest.connect( connectRequested )
+                qmlCppSignals.connectRequest.connect( connectRequested )
             }
         }
     }
@@ -127,9 +124,22 @@ ApplicationWindow {
         }
     }
 
-    function connectRequested( password ) {
-        appWindow.password = password
+    function connectRequested( pwd ) {
+        password = pwd
         stackView.keyBackEnabled = false
         stackView.push( busyComponent )
+        connectionState.text = qsTr( "Disconnected" )
+    }
+
+    Connections {
+        target: qmlCppSignals
+
+        onConnectionEstablished: {
+            stackView.pop()
+            stackView.push( actionsComponent )
+            stackView.keyBackEnabled = true
+            connectionState.text = qsTr( "Connected" )
+            menuButton.enabled = true
+        }
     }
 }

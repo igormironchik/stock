@@ -1,0 +1,21 @@
+
+{forGeneration STOCK_CONFIG_HPP
+
+	{namespace Stock
+
+		|#
+			Configuration.
+		#|
+		{class Cfg
+			{base tagNoValue}
+
+			{tagScalar
+				{valueType QString}
+				{name secret}
+				{required}
+			}
+		} || class Cfg
+
+	} || namespace Stock
+
+} || forGeneration

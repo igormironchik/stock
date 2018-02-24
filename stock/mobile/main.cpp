@@ -26,6 +26,15 @@
 #include <QIcon>
 #include <QTranslator>
 #include <QLocale>
+#include <QStandardPaths>
+#include <QDir>
+#include <QQmlContext>
+
+// Stock include.
+#include "qml_cpp_signals.hpp"
+
+
+static const QString c_configFoler = QLatin1String( "Stock" );
 
 
 int main( int argc, char ** argv )
@@ -41,7 +50,31 @@ int main( int argc, char ** argv )
 	appTranslator.load( "./tr/stock_" + QLocale::system().name() );
 	app.installTranslator( &appTranslator );
 
+	const auto configsPath = QStandardPaths::standardLocations(
+		QStandardPaths::ConfigLocation ).first();
+
+	QDir dir( configsPath );
+
+	if( !dir.exists( c_configFoler ) )
+		dir.mkdir( c_configFoler );
+
+	const auto cfgFileName = configsPath + QLatin1String( "/" ) + c_configFoler +
+		QLatin1String( "/stock.cfg" );
+
+	bool passwordSet = false;
+	QString password;
+
+	if( QFileInfo::exists( cfgFileName ) )
+	{
+
+	}
+
+	Stock::QmlCppSignals sigs( cfgFileName );
+
 	QQmlApplicationEngine engine;
+	engine.rootContext()->setContextProperty( "passwordSet", passwordSet );
+	engine.rootContext()->setContextProperty( "password", password );
+	engine.rootContext()->setContextProperty( "qmlCppSignals", &sigs );
 	engine.load( QUrl( "qrc:/qml/main.qml" ) );
 
 	if( engine.rootObjects().isEmpty() )

@@ -5,11 +5,12 @@ QT += qml
 CONFIG += c++14 qzxing_qml
 DEFINES += CFGFILE_QT_SUPPORT
 
-OTHER_FILES = qml/main.qml
+SOURCES = main.cpp \
+	qml_cpp_signals.cpp \
+	network.cpp
 
-SOURCES = main.cpp
-
-HEADERS =
+HEADERS = qml_cpp_signals.hpp \
+	network.hpp
 
 RESOURCES = resources.qrc
 
@@ -26,7 +27,8 @@ include( ../../3rdparty/qzxing/qzxing/QZXing.pri )
 include( ../shared/shared.pri )
 include( ../../3rdparty/cfgfile/cfgfile/cfgfile.pri )
 
-TO_GENERATE = ../shared/messages.cfgfile
+TO_GENERATE = ../shared/messages.cfgfile \
+	config.cfgfile
 
 QMAKE_EXTRA_COMPILERS += generate_cfg
 generate_cfg.name = CONF_GEN

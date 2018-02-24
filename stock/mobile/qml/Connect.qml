@@ -27,9 +27,7 @@ import QtQuick.Layouts 1.3
 Item {
     id: connectScreen
 
-    signal connectRequest( string password )
-
-    property string password
+    property string pwd
 
     ColumnLayout {
         anchors.centerIn: parent
@@ -38,10 +36,12 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
 
             TextField {
-                id: pwd
+                id: pwdField
                 placeholderText: qsTr( "Password" )
                 echoMode: TextInput.Password
-                text: connectScreen.password
+                text: connectScreen.pwd
+                selectByMouse: true
+                mouseSelectionMode: TextInput.SelectCharacters
             }
 
             Button {
@@ -62,10 +62,10 @@ Item {
                 onClicked: {
                     if( checked ) {
                         img.source = "qrc:/img/layer-visible-off_48x48.png"
-                        pwd.echoMode = TextInput.Normal
+                        pwdField.echoMode = TextInput.Normal
                     } else {
                         img.source = "qrc:/img/layer-visible-on_48x48.png"
-                        pwd.echoMode = TextInput.Password
+                        pwdField.echoMode = TextInput.Password
                     }
                 }
             }
@@ -77,7 +77,7 @@ Item {
             text: qsTr( "Connect" )
 
             onClicked: {
-                connectScreen.connectRequest( pwd.text )
+                qmlCppSignals.connectRequest( pwdField.text )
             }
         }
     }
