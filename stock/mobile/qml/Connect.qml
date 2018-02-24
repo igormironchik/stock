@@ -27,7 +27,7 @@ import QtQuick.Layouts 1.3
 Item {
     id: connectScreen
 
-    signal connect( string password )
+    signal connectRequest( string password )
 
     property string password
 
@@ -77,7 +77,7 @@ Item {
             text: qsTr( "Connect" )
 
             onClicked: {
-                connectScreen.connect( pwd.text )
+                connectScreen.connectRequest( pwd.text )
             }
         }
     }

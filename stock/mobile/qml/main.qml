@@ -30,7 +30,7 @@ ApplicationWindow {
     width: 400
     height: 600
 
-    property bool loggedIn: true
+    property bool loggedIn: false
     property string password
 
     Menu {
@@ -78,6 +78,10 @@ ApplicationWindow {
         Connect {
             id: connectScreen
             password: appWindow.password
+
+            Component.onCompleted: {
+                connectRequest.connect( onConnect )
+            }
         }
     }
 
@@ -86,6 +90,14 @@ ApplicationWindow {
 
         Actions {
             id: actionsScreen
+        }
+    }
+
+    Component {
+        id: busyComponent
+
+        Busy {
+            id: busyScreen
         }
     }
 
@@ -108,8 +120,14 @@ ApplicationWindow {
 
     Component.onCompleted: {
         if( loggedIn ) {
-            stackView.push( actionsComponent )
-            menuButton.enabled = true
+            stackView.keyBackEnabled = false
+            stackView.push( busyComponent )
         }
+    }
+
+    function onConnect( password ) {
+        appWindow.password = password
+        stackView.keyBackEnabled = false
+        stackView.push( busyComponent )
     }
 }

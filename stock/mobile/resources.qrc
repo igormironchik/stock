@@ -8,5 +8,6 @@
         <file>img/layer-visible-off_48x48.png</file>
         <file>qml/Connect.qml</file>
         <file>qml/Actions.qml</file>
+        <file>qml/Busy.qml</file>
     </qresource>
 </RCC>
