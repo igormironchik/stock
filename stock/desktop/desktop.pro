@@ -5,7 +5,7 @@ TARGET = Stock
 
 QT += widgets network sql
 
-CONFIG += c++11
+CONFIG += c++14
 
 DEFINES += CFGFILE_QT_SUPPORT
 
