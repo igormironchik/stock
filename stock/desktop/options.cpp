@@ -27,6 +27,7 @@
 // Qt include.
 #include <QLineEdit>
 #include <QSpinBox>
+#include <QToolButton>
 
 
 namespace Stock {
@@ -43,7 +44,7 @@ public:
 	}
 
 	//! Init.
-	void init( const QString & host, quint16 port );
+	void init( const QString & host, quint16 port, const QString & pwd );
 
 	//! Ui.
 	Ui::Options m_ui;
@@ -52,12 +53,16 @@ public:
 }; // class OptionsPrivate
 
 void
-OptionsPrivate::init( const QString & host, quint16 port )
+OptionsPrivate::init( const QString & host, quint16 port, const QString & pwd )
 {
 	m_ui.setupUi( q );
 
 	m_ui.m_host->setText( host );
 	m_ui.m_port->setValue( port );
+	m_ui.m_password->setText( pwd );
+
+	QObject::connect( m_ui.m_showHidePwd, &QToolButton::clicked,
+		q, &Options::showHidePassword );
 }
 
 
@@ -65,11 +70,11 @@ OptionsPrivate::init( const QString & host, quint16 port )
 // Options
 //
 
-Options::Options( const QString & host, quint16 port, QWidget * parent )
+Options::Options( const QString & host, quint16 port, const QString & pwd, QWidget * parent )
 	:	QDialog( parent )
 	,	d( new OptionsPrivate( this ) )
 {
-	d->init( host, port );
+	d->init( host, port, pwd );
 }
 
 Options::~Options()
@@ -86,6 +91,27 @@ quint16
 Options::port() const
 {
 	return d->m_ui.m_port->value();
+}
+
+QString
+Options::password() const
+{
+	return d->m_ui.m_password->text();
+}
+
+void
+Options::showHidePassword()
+{
+	if( d->m_ui.m_password->echoMode() == QLineEdit::Password )
+	{
+		d->m_ui.m_password->setEchoMode( QLineEdit::Normal );
+		d->m_ui.m_showHidePwd->setIcon( QIcon( ":/img/layer-visible-off_16x16.png" ) );
+	}
+	else
+	{
+		d->m_ui.m_password->setEchoMode( QLineEdit::Password );
+		d->m_ui.m_showHidePwd->setIcon( QIcon( ":/img/layer-visible-on_16x16.png" ) );
+	}
 }
 
 } /* namespace Stock */

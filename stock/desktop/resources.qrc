@@ -15,5 +15,7 @@
 	<file>img/edit-rename_22x22.png</file>
 	<file>img/document-edit_22x22.png</file>
 	<file>img/edit-delete_22x22.png</file>
+	<file>img/layer-visible-off_16x16.png</file>
+	<file>img/layer-visible-on_16x16.png</file>
     </qresource>
 </RCC>

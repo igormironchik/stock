@@ -43,15 +43,23 @@ class Options Q_DECL_FINAL
 	Q_OBJECT
 
 public:
-	Options( const QString & host, quint16 port, QWidget * parent );
+	Options( const QString & host, quint16 port, const QString & pwd, QWidget * parent );
 	virtual ~Options();
 
 	//! \return Host.
 	QString host() const;
 	//! \return Port.
 	quint16 port() const;
+	//! \return Password.
+	QString password() const;
+
+private slots:
+	//! Show/hide password.
+	void showHidePassword();
 
 private:
+	friend class OptionsPrivate;
+
 	Q_DISABLE_COPY( Options )
 
 	QScopedPointer< OptionsPrivate > d;

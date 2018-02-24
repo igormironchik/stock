@@ -77,6 +77,8 @@ private:
 	void startNetwork();
 	//! Can't start network.
 	void cantStartNetwork( const QString & error );
+	//! Create DB.
+	void createDb();
 
 protected:
 	void closeEvent( QCloseEvent * e ) Q_DECL_OVERRIDE;

@@ -21,6 +21,12 @@
 				{defaultValue 33663}
 				{required}
 			}
+
+			{tagScalar
+				{valueType QString}
+				{name secret}
+				{required}
+			}
 		} || class Cfg
 
 	} || namespace Stock
