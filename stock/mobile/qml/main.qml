@@ -72,11 +72,15 @@ ApplicationWindow {
         }
     }
 
+    footer: Label {
+        id: connectionState
+        text: qsTr( "Disconnected" )
+    }
+
     Component {
         id: connectComponent
 
         Connect {
-            id: connectScreen
             password: appWindow.password
 
             Component.onCompleted: {
@@ -89,7 +93,6 @@ ApplicationWindow {
         id: actionsComponent
 
         Actions {
-            id: actionsScreen
         }
     }
 
@@ -97,7 +100,6 @@ ApplicationWindow {
         id: busyComponent
 
         Busy {
-            id: busyScreen
         }
     }
 

@@ -21,7 +21,26 @@
 */
 
 import QtQuick 2.0
+import QtQuick.Controls 2.2
+import QtQuick.Layouts 1.3
 
 Item {
+    ColumnLayout {
+        anchors.centerIn: parent
 
+        Button {
+            id: put
+            text: qsTr( "Put Product" )
+        }
+
+        Button {
+            id: take
+            text: qsTr( "Take Product" )
+        }
+
+        Button {
+            id: search
+            text: qsTr( "Search" )
+        }
+    }
 }
