@@ -153,7 +153,7 @@ ApplicationWindow {
         }
 
         onConnectRequest: {
-            connectRequested()
+            connectRequested( pwd )
         }
     }
 }
