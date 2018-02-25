@@ -78,10 +78,6 @@ ApplicationWindow {
 
         Connect {
             pwd: password
-
-            Component.onCompleted: {
-                qmlCppSignals.connectRequest.connect( connectRequested )
-            }
         }
     }
 
@@ -154,6 +150,10 @@ ApplicationWindow {
 
         onDisconnected: {
             disconnected( reason )
+        }
+
+        onConnectRequest: {
+            connectRequested()
         }
     }
 }
