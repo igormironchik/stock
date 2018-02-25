@@ -94,6 +94,12 @@ NetworkPrivate::init()
 		q, &Network::disconnected );
 	QObject::connect( m_timer, &QTimer::timeout,
 		q, &Network::timeout );
+	QObject::connect( m_sock, &TcpSocket::hello,
+		q, &Network::hello );
+	QObject::connect( m_sock, &TcpSocket::ok,
+		q, &Network::operationSuccessful );
+	QObject::connect( m_sock, &TcpSocket::error,
+		q, &Network::serverError );
 }
 
 
@@ -167,6 +173,8 @@ Network::readPendingDatagrams()
 				d->m_sock->connectToHost( QHostAddress( d->m_ip ), d->m_port );
 
 				d->m_timer->start();
+
+				break;
 			}
 			catch( const Exception & )
 			{
@@ -221,6 +229,8 @@ Network::hello( const Stock::Messages::Hello & msg )
 
 	std::for_each( msg.places().cbegin(), msg.places().cend(),
 		[&] ( const auto & str ) { places.push_back( str ); } );
+
+	d->m_connected = true;
 
 	emit connected( codes, places );
 }

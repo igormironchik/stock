@@ -214,7 +214,7 @@ Server::clientDisconnected()
 
 	d->m_clients.removeOne( static_cast< TcpSocket* > ( sender() ) );
 
-	sender()->deleteLater();
+	delete sender();
 }
 
 } /* namespace Stock */

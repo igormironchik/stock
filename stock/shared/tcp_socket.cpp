@@ -348,6 +348,7 @@ TcpSocket::sendMsg( const MSG & msg )
 		TAG tag( msg );
 
 		cfgfile::write_cfgfile( tag, stream );
+		stream.flush();
 
 		QByteArray msgData;
 		QDataStream s( &msgData, QIODevice::WriteOnly );

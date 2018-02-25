@@ -368,7 +368,7 @@ MainWindow::startNetwork()
 
 		d->m_udp = new QUdpSocket( this );
 
-		if( !d->m_udp->bind( host, d->m_cfg.port() ) )
+		if( !d->m_udp->bind( c_udpPort, QUdpSocket::ShareAddress ) )
 			cantStartNetwork( d->m_udp->errorString() );
 
 		connect( d->m_udp, &QUdpSocket::readyRead,

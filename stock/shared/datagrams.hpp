@@ -42,6 +42,10 @@
 
 namespace Stock {
 
+//! UDP port.
+static const quint16 c_udpPort = 33663;
+
+
 //
 // DatagramType
 //
@@ -179,7 +183,9 @@ writeTellIpDatargam( QUdpSocket * s, const QString & password )
 
 		stream << str;
 
-		s->writeDatagram( QNetworkDatagram( array ) );
+		s->writeDatagram( array, QHostAddress::Broadcast, c_udpPort );
+
+		s->flush();
 	}
 	catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & x )
 	{
