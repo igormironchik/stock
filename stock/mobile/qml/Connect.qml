@@ -86,6 +86,8 @@ Item {
             text: qsTr( "Connect" )
 
             onClicked: {
+                showHide.checked = false
+                pwdField.echoMode = TextInput.Password
                 qmlCppSignals.connectRequest( pwdField.text )
             }
         }
