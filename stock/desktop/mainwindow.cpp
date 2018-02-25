@@ -239,7 +239,9 @@ MainWindow::quit()
 
 void
 MainWindow::showWindow()
-{	
+{
+	show();
+
 	setWindowState( ( windowState() & ~Qt::WindowMinimized ) | Qt::WindowActive );
 
 	activateWindow();
