@@ -21,7 +21,7 @@
 */
 
 // Stock include.
-#include "qml_cpp_signals.hpp"
+#include "qml_cpp_bridge.hpp"
 #include "network.hpp"
 
 
@@ -31,9 +31,9 @@ namespace Stock {
 // QmlCppSignalsPrivate
 //
 
-class QmlCppSignalsPrivate {
+class QmlCppBridgePrivate {
 public:
-	QmlCppSignalsPrivate( const QString & cfgFileName, QmlCppSignals * parent )
+	QmlCppBridgePrivate( const QString & cfgFileName, QmlCppBridge * parent )
 		:	m_cfgFileName( cfgFileName )
 		,	m_net( Q_NULLPTR )
 		,	q( parent )
@@ -48,11 +48,11 @@ public:
 	//! Network.
 	Network * m_net;
 	//! Parent.
-	QmlCppSignals * q;
+	QmlCppBridge * q;
 }; // class QmlCppSignalsPrivate
 
 void
-QmlCppSignalsPrivate::init()
+QmlCppBridgePrivate::init()
 {
 	m_net = new Network( q );
 }
@@ -62,54 +62,54 @@ QmlCppSignalsPrivate::init()
 // QmlCppSignals
 //
 
-QmlCppSignals::QmlCppSignals( const QString & configFileName )
-	:	d( new QmlCppSignalsPrivate( configFileName, this ) )
+QmlCppBridge::QmlCppBridge( const QString & configFileName )
+	:	d( new QmlCppBridgePrivate( configFileName, this ) )
 {
 	d->init();
 
-	connect( this, &QmlCppSignals::connectRequest,
-		this, &QmlCppSignals::connectRequested, Qt::QueuedConnection );
+	connect( this, &QmlCppBridge::connectRequest,
+		this, &QmlCppBridge::connectRequested, Qt::QueuedConnection );
 	connect( d->m_net, &Network::disconnected,
-		this, &QmlCppSignals::networkDisconnected, Qt::QueuedConnection );
+		this, &QmlCppBridge::networkDisconnected, Qt::QueuedConnection );
 	connect( d->m_net, &Network::error,
-		this, &QmlCppSignals::serverError, Qt::QueuedConnection );
-	connect( this, &QmlCppSignals::disconnectRequest,
-		this, &QmlCppSignals::disconnectRequested, Qt::QueuedConnection );
+		this, &QmlCppBridge::serverError, Qt::QueuedConnection );
+	connect( this, &QmlCppBridge::disconnectRequest,
+		this, &QmlCppBridge::disconnectRequested, Qt::QueuedConnection );
 	connect( d->m_net, &Network::connected,
-		this, &QmlCppSignals::connected, Qt::QueuedConnection );
+		this, &QmlCppBridge::connected, Qt::QueuedConnection );
 }
 
-QmlCppSignals::~QmlCppSignals()
+QmlCppBridge::~QmlCppBridge()
 {
 }
 
 void
-QmlCppSignals::connectRequested( const QString & pwd )
+QmlCppBridge::connectRequested( const QString & pwd )
 {
 	d->m_net->setPassword( pwd );
 	d->m_net->establishConnection();
 }
 
 void
-QmlCppSignals::networkDisconnected()
+QmlCppBridge::networkDisconnected()
 {
 	emit disconnected( tr( "Network error occured. Try to reconnect." ) );
 }
 
 void
-QmlCppSignals::connected( const QStringList & codes, const QStringList & places )
+QmlCppBridge::connected( const QStringList & codes, const QStringList & places )
 {
 	emit connectionEstablished();
 }
 
 void
-QmlCppSignals::disconnectRequested()
+QmlCppBridge::disconnectRequested()
 {
 	d->m_net->disconnectNetwork();
 }
 
 void
-QmlCppSignals::serverError()
+QmlCppBridge::serverError()
 {
 	emit disconnected( tr( "Something went wrong on the server. "
 		"Check your password and try to reconnect." ) );

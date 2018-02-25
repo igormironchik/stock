@@ -33,7 +33,7 @@
 
 namespace Stock {
 
-class QmlCppSignals;
+class QmlCppBridge;
 
 //
 // Network
@@ -58,7 +58,7 @@ signals:
 	void ok();
 
 public:
-	explicit Network( QmlCppSignals * sigs );
+	explicit Network( QmlCppBridge * sigs );
 	virtual ~Network();
 
 	//! Set pasword.

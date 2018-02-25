@@ -22,7 +22,7 @@
 
 // Stock include.
 #include "network.hpp"
-#include "qml_cpp_signals.hpp"
+#include "qml_cpp_bridge.hpp"
 #include "shared/tcp_socket.hpp"
 #include "shared/datagrams.hpp"
 
@@ -42,7 +42,7 @@ namespace Stock {
 
 class NetworkPrivate {
 public:
-	NetworkPrivate( QmlCppSignals * sigs, Network * parent )
+	NetworkPrivate( QmlCppBridge * sigs, Network * parent )
 		:	m_connected( false )
 		,	m_port( 0 )
 		,	m_sigs( sigs )
@@ -65,7 +65,7 @@ public:
 	//! Port.
 	quint16 m_port;
 	//! Qml to C++ bridge.
-	QmlCppSignals * m_sigs;
+	QmlCppBridge * m_sigs;
 	//! TCP socket.
 	TcpSocket * m_sock;
 	//! UDP socket.
@@ -107,7 +107,7 @@ NetworkPrivate::init()
 // Network
 //
 
-Network::Network( QmlCppSignals * sigs )
+Network::Network( QmlCppBridge * sigs )
 	:	QObject( sigs )
 	,	d( new NetworkPrivate( sigs, this ) )
 {

@@ -20,8 +20,8 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef STOCK_QML_CPP_SIGNALS_HPP_INCLUDED
-#define STOCK_QML_CPP_SIGNALS_HPP_INCLUDED
+#ifndef STOCK_QML_CPP_BRIDGE_HPP_INCLUDED
+#define STOCK_QML_CPP_BRIDGE_HPP_INCLUDED
 
 // Qt include.
 #include <QObject>
@@ -31,13 +31,13 @@
 namespace Stock {
 
 //
-// QmlCppSignals
+// QmlCppBridge
 //
 
-class QmlCppSignalsPrivate;
+class QmlCppBridgePrivate;
 
 //! Bridge between QML and C++.
-class QmlCppSignals Q_DECL_FINAL
+class QmlCppBridge Q_DECL_FINAL
 	:	public QObject
 {
 	Q_OBJECT
@@ -55,8 +55,8 @@ signals:
 	void ok();
 
 public:
-	explicit QmlCppSignals( const QString & configFileName );
-	virtual ~QmlCppSignals();
+	explicit QmlCppBridge( const QString & configFileName );
+	virtual ~QmlCppBridge();
 
 private slots:
 	//! Connect requested.
@@ -71,13 +71,13 @@ private slots:
 	void networkDisconnected();
 
 private:
-	friend class QmlCppSignalsPrivate;
+	friend class QmlCppBridgePrivate;
 
-	Q_DISABLE_COPY( QmlCppSignals )
+	Q_DISABLE_COPY( QmlCppBridge )
 
-	QScopedPointer< QmlCppSignalsPrivate > d;
-}; // class QmlCppSignals
+	QScopedPointer< QmlCppBridgePrivate > d;
+}; // class QmlCppBridge
 
 } /* namespace Stock */
 
-#endif // STOCK_QML_CPP_SIGNALS_HPP_INCLUDED
+#endif // STOCK_QML_CPP_BRIDGE_HPP_INCLUDED

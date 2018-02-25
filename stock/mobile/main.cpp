@@ -31,7 +31,7 @@
 #include <QQmlContext>
 
 // Stock include.
-#include "qml_cpp_signals.hpp"
+#include "qml_cpp_bridge.hpp"
 #include "messages.hpp"
 
 
@@ -83,7 +83,7 @@ int main( int argc, char ** argv )
 
 	}
 
-	Stock::QmlCppSignals sigs( cfgFileName );
+	Stock::QmlCppBridge sigs( cfgFileName );
 
 	QQmlApplicationEngine engine;
 	engine.rootContext()->setContextProperty( "passwordSet", passwordSet );
