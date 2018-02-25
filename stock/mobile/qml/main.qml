@@ -118,8 +118,7 @@ ApplicationWindow {
 
     Component.onCompleted: {
         if( passwordSet ) {
-            stackView.keyBackEnabled = false
-            stackView.push( busyComponent )
+            qmlCppSignals.connectRequest( password )
         }
     }
 

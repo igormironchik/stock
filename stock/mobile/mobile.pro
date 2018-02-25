@@ -5,12 +5,14 @@ QT += qml
 CONFIG += c++14 qzxing_qml
 DEFINES += CFGFILE_QT_SUPPORT
 
+HEADERS = qml_cpp_bridge.hpp \
+	network.hpp \
+	cfg_file.hpp
+
 SOURCES = main.cpp \
 	qml_cpp_bridge.cpp \
-	network.cpp
-
-HEADERS = qml_cpp_bridge.hpp \
-	network.hpp
+	network.cpp \
+	cfg_file.cpp
 
 RESOURCES = resources.qrc
 

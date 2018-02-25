@@ -26,16 +26,13 @@
 #include <QIcon>
 #include <QTranslator>
 #include <QLocale>
-#include <QStandardPaths>
-#include <QDir>
 #include <QQmlContext>
+#include <QFileInfo>
 
 // Stock include.
 #include "qml_cpp_bridge.hpp"
 #include "messages.hpp"
-
-
-static const QString c_configFoler = QLatin1String( "Stock" );
+#include "cfg_file.hpp"
 
 
 int main( int argc, char ** argv )
@@ -64,23 +61,17 @@ int main( int argc, char ** argv )
 	appTranslator.load( "./tr/stock_" + QLocale::system().name() );
 	app.installTranslator( &appTranslator );
 
-	const auto configsPath = QStandardPaths::standardLocations(
-		QStandardPaths::ConfigLocation ).first();
-
-	QDir dir( configsPath );
-
-	if( !dir.exists( c_configFoler ) )
-		dir.mkdir( c_configFoler );
-
-	const auto cfgFileName = configsPath + QLatin1String( "/" ) + c_configFoler +
-		QLatin1String( "/stock.cfg" );
+	const auto cfgFileName = Stock::CfgFile::fileName();
 
 	bool passwordSet = false;
 	QString password;
 
 	if( QFileInfo::exists( cfgFileName ) )
 	{
-
+		if( !Stock::CfgFile::read( cfgFileName, password ) )
+			password.clear();
+		else
+			passwordSet = true;
 	}
 
 	Stock::QmlCppBridge sigs( cfgFileName );

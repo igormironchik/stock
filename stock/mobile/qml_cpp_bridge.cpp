@@ -23,6 +23,7 @@
 // Stock include.
 #include "qml_cpp_bridge.hpp"
 #include "network.hpp"
+#include "cfg_file.hpp"
 
 
 namespace Stock {
@@ -88,6 +89,8 @@ QmlCppBridge::connectRequested( const QString & pwd )
 {
 	d->m_net->setPassword( pwd );
 	d->m_net->establishConnection();
+
+	CfgFile::write( Stock::CfgFile::fileName(), pwd );
 }
 
 void
