@@ -30,6 +30,8 @@ ApplicationWindow {
     width: 400
     height: 600
 
+    property bool connected: false
+
     Menu {
         id: menu
         x: menuButton.x
@@ -38,11 +40,8 @@ ApplicationWindow {
         MenuItem {
             text: qsTr( "Change Password" )
             onTriggered: {
-                while( stackView.depth > 1 )
-                    stackView.pop();
-
-                appWindow.loggedIn = false
-                menuButton.enabled = false
+                disconnected( "" )
+                qmlCppSignals.disconnectRequest()
             }
         }
     }
@@ -131,6 +130,17 @@ ApplicationWindow {
         connectionState.text = qsTr( "Disconnected" )
     }
 
+    function disconnected( msg ) {
+        while( stackView.depth > 1 )
+            stackView.pop();
+
+        stackView.currentItem.message = msg
+
+        connected = false
+        menuButton.enabled = false
+        connectionState.text = qsTr( "Disconnected" )
+    }
+
     Connections {
         target: qmlCppSignals
 
@@ -140,6 +150,11 @@ ApplicationWindow {
             stackView.keyBackEnabled = true
             connectionState.text = qsTr( "Connected" )
             menuButton.enabled = true
+            connected = true
+        }
+
+        onDisconnected: {
+            disconnected( reason )
         }
     }
 }

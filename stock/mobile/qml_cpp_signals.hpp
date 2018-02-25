@@ -45,8 +45,14 @@ class QmlCppSignals Q_DECL_FINAL
 signals:
 	//! Connect request.
 	void connectRequest( const QString & pwd );
+	//! Disconnect request.
+	void disconnectRequest();
 	//! Connection established.
 	void connectionEstablished();
+	//! Disconnected.
+	void disconnected( const QString & reason );
+	//! Ok.
+	void ok();
 
 public:
 	explicit QmlCppSignals( const QString & configFileName );
@@ -55,6 +61,14 @@ public:
 private slots:
 	//! Connect requested.
 	void connectRequested( const QString & pwd );
+	//! Network connected.
+	void connected( const QStringList & codes, const QStringList & places );
+	//! Disconnect requested.
+	void disconnectRequested();
+	//! Server error.
+	void serverError();
+	//! Network disconnected.
+	void networkDisconnected();
 
 private:
 	friend class QmlCppSignalsPrivate;

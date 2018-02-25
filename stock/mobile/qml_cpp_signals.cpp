@@ -69,6 +69,14 @@ QmlCppSignals::QmlCppSignals( const QString & configFileName )
 
 	connect( this, &QmlCppSignals::connectRequest,
 		this, &QmlCppSignals::connectRequested, Qt::QueuedConnection );
+	connect( d->m_net, &Network::disconnected,
+		this, &QmlCppSignals::networkDisconnected, Qt::QueuedConnection );
+	connect( d->m_net, &Network::error,
+		this, &QmlCppSignals::serverError, Qt::QueuedConnection );
+	connect( this, &QmlCppSignals::disconnectRequest,
+		this, &QmlCppSignals::disconnectRequested, Qt::QueuedConnection );
+	connect( d->m_net, &Network::connected,
+		this, &QmlCppSignals::connected, Qt::QueuedConnection );
 }
 
 QmlCppSignals::~QmlCppSignals()
@@ -78,7 +86,33 @@ QmlCppSignals::~QmlCppSignals()
 void
 QmlCppSignals::connectRequested( const QString & pwd )
 {
+	d->m_net->setPassword( pwd );
+	d->m_net->establishConnection();
+}
+
+void
+QmlCppSignals::networkDisconnected()
+{
+	emit disconnected( tr( "Network error occured. Try to reconnect." ) );
+}
+
+void
+QmlCppSignals::connected( const QStringList & codes, const QStringList & places )
+{
 	emit connectionEstablished();
+}
+
+void
+QmlCppSignals::disconnectRequested()
+{
+	d->m_net->disconnectNetwork();
+}
+
+void
+QmlCppSignals::serverError()
+{
+	emit disconnected( tr( "Something went wrong on the server. "
+		"Check your password and try to reconnect." ) );
 }
 
 } /* namespace Stock */

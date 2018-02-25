@@ -22,17 +22,26 @@
 
 import QtQuick 2.0
 import QtQuick.Controls 2.0
-import QtQuick.Layouts 1.3
 
 Item {
     id: connectScreen
 
     property string pwd
+    property alias message: msgLabel.text
 
-    ColumnLayout {
+    Column {
         anchors.centerIn: parent
+        spacing: 20
 
-        RowLayout {
+        Text {
+            id: msgLabel
+            anchors.horizontalCenter: parent.horizontalCenter
+            wrapMode: Text.WordWrap
+            width: parent.width - 10
+            horizontalAlignment: Text.AlignHCenter
+        }
+
+        Row {
             anchors.horizontalCenter: parent.horizontalCenter
 
             TextField {

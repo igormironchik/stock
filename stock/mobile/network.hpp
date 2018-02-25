@@ -27,6 +27,9 @@
 #include <QObject>
 #include <QScopedPointer>
 
+// Stock include.
+#include "messages.hpp"
+
 
 namespace Stock {
 
@@ -44,9 +47,42 @@ class Network Q_DECL_FINAL
 {
 	Q_OBJECT
 
+signals:
+	//! Disconnected.
+	void disconnected();
+	//! Connected.
+	void connected( const QStringList & codes, const QStringList & places );
+	//! Error.
+	void error();
+	//! Ok.
+	void ok();
+
 public:
 	explicit Network( QmlCppSignals * sigs );
 	virtual ~Network();
+
+	//! Set pasword.
+	void setPassword( const QString & pwd );
+
+public slots:
+	//! Establish connection.
+	void establishConnection();
+	//! Disconnect network.
+	void disconnectNetwork();
+
+private slots:
+	//! Read UDP datagrams.
+	void readPendingDatagrams();
+	//! Disconnected.
+	void networkDisconnected();
+	//! Timeout.
+	void timeout();
+	//! Error in server.
+	void serverError( const Stock::Messages::Error & );
+	//! Ok.
+	void operationSuccessful( const Stock::Messages::Ok & );
+	//! Hello.
+	void hello( const Stock::Messages::Hello & msg );
 
 private:
 	friend class NetworkPrivate;

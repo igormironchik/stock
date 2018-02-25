@@ -32,6 +32,7 @@
 
 // Stock include.
 #include "qml_cpp_signals.hpp"
+#include "messages.hpp"
 
 
 static const QString c_configFoler = QLatin1String( "Stock" );
@@ -39,6 +40,19 @@ static const QString c_configFoler = QLatin1String( "Stock" );
 
 int main( int argc, char ** argv )
 {
+	qRegisterMetaType< Stock::Messages::AddProduct >(
+		"Stock::Messages::AddProduct" );
+	qRegisterMetaType< Stock::Messages::GiveListOfProducts >(
+		"Stock::Messages::GiveListOfProducts" );
+	qRegisterMetaType< Stock::Messages::ListOfProducts >(
+		"Stock::Messages::ListOfProducts" );
+	qRegisterMetaType< Stock::Messages::Error >(
+		"Stock::Messages::Error" );
+	qRegisterMetaType< Stock::Messages::Hello >(
+		"Stock::Messages::Hello" );
+	qRegisterMetaType< Stock::Messages::Ok >(
+		"Stock::Messages::Ok" );
+
 	QGuiApplication app( argc, argv );
 
 	QIcon appIcon( ":/img/icon_256x256.png" );
