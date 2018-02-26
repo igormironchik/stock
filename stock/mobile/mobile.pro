@@ -3,7 +3,7 @@ TEMPLATE = app
 TARGET = Stock.Mobile
 QT += qml
 CONFIG += c++14 qzxing_qml
-DEFINES += CFGFILE_QT_SUPPORT
+DEFINES += CFGFILE_QT_SUPPORT CFGFILE_DISABLE_STL
 
 HEADERS = qml_cpp_bridge.hpp \
 	network.hpp \
