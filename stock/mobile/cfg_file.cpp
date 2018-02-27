@@ -31,13 +31,10 @@
 #include <QTextStream>
 #include <QTextCodec>
 #include <QFile>
-#include <QStandardPaths>
 #include <QDir>
 
 
 namespace Stock {
-
-static const QString c_configFoler = QLatin1String( "Stock" );
 
 //
 // CfgFile
@@ -104,16 +101,14 @@ CfgFile::write( const QString & fileName, const QString & pwd )
 QString
 CfgFile::fileName()
 {
-	const auto configsPath = QStandardPaths::standardLocations(
-		QStandardPaths::ConfigLocation ).first();
+	const auto configsPath = QLatin1String( "./Stock" );
 
 	QDir dir( configsPath );
 
-	if( !dir.exists( c_configFoler ) )
-		dir.mkdir( c_configFoler );
+	if( !dir.exists() )
+		dir.mkpath( QLatin1String( "." ) );
 
-	return ( configsPath + QLatin1String( "/" ) + c_configFoler +
-		QLatin1String( "/stock.cfg" ) );
+	return ( configsPath + QLatin1String( "/stock.cfg" ) );
 }
 
 } /* namespace Stock */

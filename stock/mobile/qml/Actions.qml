@@ -31,18 +31,21 @@ Item {
 
         Button {
             id: put
+            implicitHeight: appWindow.minimumCtrlHeight
             Layout.fillWidth: true
             text: qsTr( "Put Product" )
         }
 
         Button {
             id: take
+            implicitHeight: appWindow.minimumCtrlHeight
             Layout.fillWidth: true
             text: qsTr( "Take Product" )
         }
 
         Button {
             id: search
+            implicitHeight: appWindow.minimumCtrlHeight
             Layout.fillWidth: true
             text: qsTr( "Search" )
         }

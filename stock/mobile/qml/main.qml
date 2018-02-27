@@ -23,6 +23,7 @@
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtQuick 2.7
+import QtQuick.Window 2.2
 
 ApplicationWindow {
     id: appWindow
@@ -31,6 +32,7 @@ ApplicationWindow {
     height: 600
 
     property bool connected: false
+    property int minimumCtrlHeight: Screen.pixelDensity * 8
 
     Menu {
         id: menu
@@ -39,6 +41,7 @@ ApplicationWindow {
 
         MenuItem {
             text: qsTr( "Change Password" )
+            implicitHeight: minimumCtrlHeight
             onTriggered: {
                 qmlCppSignals.disconnectRequest()
             }
@@ -47,6 +50,7 @@ ApplicationWindow {
 
     header: ToolBar {
         id: toolBar
+        implicitHeight: minimumCtrlHeight
 
         RowLayout {
             anchors.fill: parent
@@ -62,6 +66,8 @@ ApplicationWindow {
                 id: menuButton
                 onClicked: menu.open()
                 enabled: false
+                implicitHeight: parent.height
+                implicitWidth: implicitHeight
 
                 Image {
                     id: menuBtnImg

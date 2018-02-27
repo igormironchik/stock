@@ -51,6 +51,7 @@ Item {
                 text: connectScreen.pwd
                 selectByMouse: true
                 mouseSelectionMode: TextInput.SelectCharacters
+                implicitHeight: appWindow.minimumCtrlHeight
             }
 
             Button {
@@ -58,7 +59,7 @@ Item {
                 checkable: true
                 checked: false
                 width: height
-                height: parent.height
+                height: appWindow.minimumCtrlHeight
                 implicitHeight: height
                 implicitWidth: height
 
@@ -84,6 +85,7 @@ Item {
             id: connectBtn
             anchors.horizontalCenter: parent.horizontalCenter
             text: qsTr( "Connect" )
+            implicitHeight: appWindow.minimumCtrlHeight
 
             onClicked: {
                 showHide.checked = false
