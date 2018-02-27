@@ -68,7 +68,7 @@ private slots:
 	//! Server error.
 	void serverError();
 	//! Network disconnected.
-	void networkDisconnected();
+	void networkDisconnected( bool requestedByUser );
 
 private:
 	friend class QmlCppBridgePrivate;

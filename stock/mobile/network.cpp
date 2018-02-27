@@ -44,6 +44,7 @@ class NetworkPrivate {
 public:
 	NetworkPrivate( QmlCppBridge * sigs, Network * parent )
 		:	m_connected( false )
+		,	m_disconnectRequestedByUser( false )
 		,	m_port( 0 )
 		,	m_sigs( sigs )
 		,	m_sock( Q_NULLPTR )
@@ -58,6 +59,8 @@ public:
 
 	//! Connected?
 	bool m_connected;
+	//! Disconnected reuquested by user.
+	bool m_disconnectRequestedByUser;
 	//! IP.
 	QString m_ip;
 	//! Password.
@@ -91,7 +94,7 @@ NetworkPrivate::init()
 	QObject::connect( m_udp, &QUdpSocket::readyRead,
 		q, &Network::readPendingDatagrams );
 	QObject::connect( m_sock, &TcpSocket::disconnected,
-		q, &Network::disconnected );
+		q, &Network::networkDisconnected );
 	QObject::connect( m_timer, &QTimer::timeout,
 		q, &Network::timeout );
 	QObject::connect( m_sock, &TcpSocket::hello,
@@ -141,8 +144,9 @@ Network::establishConnection()
 }
 
 void
-Network::disconnectNetwork()
+Network::disconnectNetwork( bool requestedByUser )
 {
+	d->m_disconnectRequestedByUser = requestedByUser;
 	d->m_timer->stop();
 	d->m_sock->disconnectFromHost();
 	d->m_udp->close();
@@ -191,7 +195,7 @@ Network::networkDisconnected()
 {
 	d->m_connected = false;
 
-	emit disconnected();
+	emit disconnected( d->m_disconnectRequestedByUser );
 }
 
 void

@@ -34,13 +34,12 @@ ApplicationWindow {
 
     Menu {
         id: menu
-        x: menuButton.x
-        y: menuButton.y
+        x: menuButton.x - width + menuButton.width - 2
+        y: toolBar.y + toolBar.height
 
         MenuItem {
             text: qsTr( "Change Password" )
             onTriggered: {
-                disconnected( "" )
                 qmlCppSignals.disconnectRequest()
             }
         }
@@ -61,9 +60,23 @@ ApplicationWindow {
 
             ToolButton {
                 id: menuButton
-                text: qsTr( "⋮" )
                 onClicked: menu.open()
                 enabled: false
+
+                Image {
+                    id: menuBtnImg
+                    anchors.centerIn: parent
+                    width: parent.width - 20
+                    height: width
+                    source: "qrc:/img/menu-disabled_48x48.png"
+                }
+
+                onEnabledChanged: {
+                    if( enabled )
+                        menuBtnImg.source = "qrc:/img/menu-enabled_48x48.png"
+                    else
+                        menuBtnImg.source = "qrc:/img/menu-disabled_48x48.png"
+                }
             }
         }
     }

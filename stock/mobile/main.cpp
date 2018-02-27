@@ -57,22 +57,22 @@ int main( int argc, char ** argv )
 	appIcon.addFile( ":/img/icon_64x64.png" );
 	app.setWindowIcon( appIcon );
 
-	QTranslator appTranslator;
-	appTranslator.load( "./tr/stock_" + QLocale::system().name() );
-	app.installTranslator( &appTranslator );
+    QTranslator appTranslator;
+    appTranslator.load( "./tr/stock_" + QLocale::system().name() );
+    app.installTranslator( &appTranslator );
 
-	const auto cfgFileName = Stock::CfgFile::fileName();
+    const auto cfgFileName = Stock::CfgFile::fileName();
 
 	bool passwordSet = false;
 	QString password;
 
-	if( QFileInfo::exists( cfgFileName ) )
-	{
-		if( !Stock::CfgFile::read( cfgFileName, password ) )
-			password.clear();
-		else
-			passwordSet = true;
-	}
+    if( QFileInfo::exists( cfgFileName ) )
+    {
+        if( !Stock::CfgFile::read( cfgFileName, password ) )
+            password.clear();
+        else
+            passwordSet = true;
+    }
 
 	Stock::QmlCppBridge sigs( cfgFileName );
 

@@ -49,7 +49,7 @@ class Network Q_DECL_FINAL
 
 signals:
 	//! Disconnected.
-	void disconnected();
+    void disconnected( bool requestedByUser = false );
 	//! Connected.
 	void connected( const QStringList & codes, const QStringList & places );
 	//! Error.
@@ -68,7 +68,7 @@ public slots:
 	//! Establish connection.
 	void establishConnection();
 	//! Disconnect network.
-	void disconnectNetwork();
+    void disconnectNetwork( bool requestedByUser = false );
 
 private slots:
 	//! Read UDP datagrams.

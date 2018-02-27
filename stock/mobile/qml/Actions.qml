@@ -25,21 +25,25 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 
 Item {
-    ColumnLayout {
+    Column {
         anchors.centerIn: parent
+        spacing: 20
 
         Button {
             id: put
+            Layout.fillWidth: true
             text: qsTr( "Put Product" )
         }
 
         Button {
             id: take
+            Layout.fillWidth: true
             text: qsTr( "Take Product" )
         }
 
         Button {
             id: search
+            Layout.fillWidth: true
             text: qsTr( "Search" )
         }
     }

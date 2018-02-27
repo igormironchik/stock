@@ -94,9 +94,10 @@ QmlCppBridge::connectRequested( const QString & pwd )
 }
 
 void
-QmlCppBridge::networkDisconnected()
+QmlCppBridge::networkDisconnected( bool requestedByUser )
 {
-	emit disconnected( tr( "Network error occured. Try to reconnect." ) );
+	emit disconnected( requestedByUser ? QString() :
+		tr( "Network error occured. Try to reconnect." ) );
 }
 
 void
@@ -108,7 +109,7 @@ QmlCppBridge::connected( const QStringList & codes, const QStringList & places )
 void
 QmlCppBridge::disconnectRequested()
 {
-	d->m_net->disconnectNetwork();
+	d->m_net->disconnectNetwork( true );
 }
 
 void
