@@ -31,6 +31,8 @@
 // Qt include.
 #include <QVector>
 
+#include <QDebug>
+
 
 namespace Stock {
 
@@ -121,6 +123,8 @@ std::vector< T > toStdVector( const QList< T > & list )
 void
 Server::incomingConnection( qintptr socketDescriptor )
 {
+	qDebug() << "incoming TCP connection";
+
 	TcpSocket * socket = new TcpSocket( this );
 
 	if( socket->setSocketDescriptor( socketDescriptor ) )
@@ -142,6 +146,8 @@ Server::incomingConnection( qintptr socketDescriptor )
 		msg.set_products( toStdVector( d->m_codeModel->codes() ) );
 
 		socket->sendHello( msg );
+
+		qDebug() << "hello sent";
 	}
 	else
 		delete socket;
@@ -210,6 +216,8 @@ Server::giveListOfProducts( const Stock::Messages::GiveListOfProducts & msg )
 void
 Server::clientDisconnected()
 {
+	qDebug() << "TCP disconnected";
+
 	disconnect( sender(), 0, this, 0 );
 
 	d->m_clients.removeOne( static_cast< TcpSocket* > ( sender() ) );

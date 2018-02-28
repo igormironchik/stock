@@ -34,6 +34,10 @@ ApplicationWindow {
     property bool connected: false
     property int minimumCtrlHeight: Screen.pixelDensity * 8
 
+    // This is internal property. On true change screen will put product,
+    // on false it will take product.
+    property bool changeAction
+
     Menu {
         id: menu
         x: menuButton.x - width + menuButton.width - 2
@@ -114,6 +118,15 @@ ApplicationWindow {
         }
     }
 
+    Component {
+        id: changeComponent
+
+        Change {
+            id: changeScreen
+            put: changeAction
+        }
+    }
+
     StackView {
         id: stackView
         anchors.fill: parent
@@ -176,12 +189,21 @@ ApplicationWindow {
         }
 
         onPutBtnClicked: {
+            changeAction = true
+            stackView.push( changeComponent )
         }
 
         onTakeBtnClicked: {
+            changeAction = false
+            stackView.push( changeComponent )
         }
 
         onSearchBtnClicked: {
+        }
+
+        onReturnBack: {
+            if( stackView.depth > 2 && stackView.keyBackEnabled )
+                stackView.pop()
         }
     }
 }

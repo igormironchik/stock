@@ -25,6 +25,9 @@
 #include "network.hpp"
 #include "cfg_file.hpp"
 
+// Qt include.
+#include <QStringListModel>
+
 
 namespace Stock {
 
@@ -37,6 +40,8 @@ public:
 	QmlCppBridgePrivate( const QString & cfgFileName, QmlCppBridge * parent )
 		:	m_cfgFileName( cfgFileName )
 		,	m_net( Q_NULLPTR )
+		,	m_codesModel( Q_NULLPTR )
+		,	m_placesModel( Q_NULLPTR )
 		,	q( parent )
 	{
 	}
@@ -48,6 +53,10 @@ public:
 	QString m_cfgFileName;
 	//! Network.
 	Network * m_net;
+	//! Codes model.
+	QStringListModel * m_codesModel;
+	//! Places model.
+	QStringListModel * m_placesModel;
 	//! Parent.
 	QmlCppBridge * q;
 }; // class QmlCppSignalsPrivate
@@ -56,6 +65,8 @@ void
 QmlCppBridgePrivate::init()
 {
 	m_net = new Network( q );
+	m_codesModel = new QStringListModel( q );
+	m_placesModel = new QStringListModel( q );
 }
 
 
@@ -84,6 +95,18 @@ QmlCppBridge::~QmlCppBridge()
 {
 }
 
+QStringListModel *
+QmlCppBridge::codesModel() const
+{
+	return d->m_codesModel;
+}
+
+QStringListModel *
+QmlCppBridge::placesModel() const
+{
+	return d->m_placesModel;
+}
+
 void
 QmlCppBridge::connectRequested( const QString & pwd )
 {
@@ -103,6 +126,9 @@ QmlCppBridge::networkDisconnected( bool requestedByUser )
 void
 QmlCppBridge::connected( const QStringList & codes, const QStringList & places )
 {
+	d->m_codesModel->setStringList( codes );
+	d->m_placesModel->setStringList( places );
+
 	emit connectionEstablished();
 }
 

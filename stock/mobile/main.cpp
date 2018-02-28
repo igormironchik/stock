@@ -28,6 +28,7 @@
 #include <QLocale>
 #include <QQmlContext>
 #include <QFileInfo>
+#include <QStringListModel>
 
 // Stock include.
 #include "qml_cpp_bridge.hpp"
@@ -80,6 +81,8 @@ int main( int argc, char ** argv )
 	engine.rootContext()->setContextProperty( "passwordSet", passwordSet );
 	engine.rootContext()->setContextProperty( "password", password );
 	engine.rootContext()->setContextProperty( "qmlCppSignals", &sigs );
+	engine.rootContext()->setContextProperty( "codesModel", sigs.codesModel() );
+	engine.rootContext()->setContextProperty( "placesModel", sigs.placesModel() );
 	engine.load( QUrl( "qrc:/qml/main.qml" ) );
 
 	if( engine.rootObjects().isEmpty() )

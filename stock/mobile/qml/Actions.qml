@@ -36,7 +36,7 @@ Item {
             text: qsTr( "Put Product" )
 
             onClicked: {
-                qmlCppSignals.putClicked()
+                qmlCppSignals.putBtnClicked()
             }
         }
 
@@ -47,7 +47,7 @@ Item {
             text: qsTr( "Take Product" )
 
             onClicked: {
-                qmlCppSignals.takeClicked()
+                qmlCppSignals.takeBtnClicked()
             }
         }
 
@@ -58,7 +58,7 @@ Item {
             text: qsTr( "Search" )
 
             onClicked: {
-                qmlCppSignals.searchClicked()
+                qmlCppSignals.searchBtnClicked()
             }
         }
     }

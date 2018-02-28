@@ -19,7 +19,8 @@ RESOURCES = resources.qrc
 DISTFILES += qml/main.qml \
     qml/Connect.qml \
     qml/Actions.qml \
-    qml/Busy.qml
+    qml/Busy.qml \
+    qml/Change.qml
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 

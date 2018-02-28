@@ -27,6 +27,10 @@
 #include <QObject>
 #include <QScopedPointer>
 
+QT_BEGIN_NAMESPACE
+class QStringListModel;
+QT_END_NAMESPACE
+
 
 namespace Stock {
 
@@ -59,10 +63,17 @@ signals:
     void takeBtnClicked();
 	//! Search button clicked.
     void searchBtnClicked();
+	//! Return back.
+	void returnBack();
 
 public:
 	explicit QmlCppBridge( const QString & configFileName );
 	virtual ~QmlCppBridge();
+
+	//! \return Codes model.
+	QStringListModel * codesModel() const;
+	//! \return Places model.
+	QStringListModel * placesModel() const;
 
 private slots:
 	//! Connect requested.
