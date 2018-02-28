@@ -37,7 +37,7 @@ ApplicationWindow {
     Menu {
         id: menu
         x: menuButton.x - width + menuButton.width - 2
-        y: toolBar.y + toolBar.height
+        y: toolBar.y + toolBar.height + 2
 
         MenuItem {
             text: qsTr( "Change Password" )
@@ -173,6 +173,15 @@ ApplicationWindow {
 
         onConnectRequest: {
             connectRequested( pwd )
+        }
+
+        onPutBtnClicked: {
+        }
+
+        onTakeBtnClicked: {
+        }
+
+        onSearchBtnClicked: {
         }
     }
 }

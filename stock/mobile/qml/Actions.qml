@@ -34,6 +34,10 @@ Item {
             implicitHeight: appWindow.minimumCtrlHeight
             Layout.fillWidth: true
             text: qsTr( "Put Product" )
+
+            onClicked: {
+                qmlCppSignals.putClicked()
+            }
         }
 
         Button {
@@ -41,6 +45,10 @@ Item {
             implicitHeight: appWindow.minimumCtrlHeight
             Layout.fillWidth: true
             text: qsTr( "Take Product" )
+
+            onClicked: {
+                qmlCppSignals.takeClicked()
+            }
         }
 
         Button {
@@ -48,6 +56,10 @@ Item {
             implicitHeight: appWindow.minimumCtrlHeight
             Layout.fillWidth: true
             text: qsTr( "Search" )
+
+            onClicked: {
+                qmlCppSignals.searchClicked()
+            }
         }
     }
 }

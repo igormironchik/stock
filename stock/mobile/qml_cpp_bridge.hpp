@@ -53,6 +53,12 @@ signals:
 	void disconnected( const QString & reason );
 	//! Ok.
 	void ok();
+	//! Put button clicked.
+	void putBtnClicked();
+	//! Take button clicked.
+    void takeBtnClicked();
+	//! Search button clicked.
+    void searchBtnClicked();
 
 public:
 	explicit QmlCppBridge( const QString & configFileName );
