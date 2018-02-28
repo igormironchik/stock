@@ -24,9 +24,15 @@ import QtQuick 2.0
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 
-Item {
+ScrollView {
+    id: screen
+    ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+    ScrollBar.vertical.policy: ScrollBar.AlwaysOff
+    leftPadding: content.width < width ? ( width - content.width ) / 2 : 0
+    topPadding: content.height < height ? ( height - content.height ) / 2 : 0
+
     ColumnLayout {
-        anchors.centerIn: parent
+        id: content
         spacing: 20
 
         Button {

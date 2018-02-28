@@ -42,8 +42,10 @@ ApplicationWindow {
         id: menu
         x: menuButton.x - width + menuButton.width - 2
         y: toolBar.y + toolBar.height + 2
+        width: changePwdMenu.width
 
         MenuItem {
+            id: changePwdMenu
             text: qsTr( "Change Password" )
             implicitHeight: minimumCtrlHeight
             onTriggered: {
