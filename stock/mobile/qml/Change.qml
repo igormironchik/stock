@@ -20,7 +20,7 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import QtQuick 2.0
+import QtQuick 2.7
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 
@@ -100,6 +100,8 @@ ScrollView {
                 editable: false
                 implicitHeight: appWindow.minimumCtrlHeight
                 Layout.fillWidth: true
+                up.indicator.implicitWidth: appWindow.minimumCtrlHeight
+                down.indicator.implicitWidth: appWindow.minimumCtrlHeight
 
                 onValueChanged: {
                     check()
@@ -122,14 +124,14 @@ ScrollView {
 
         Row {
             spacing: 20
-            anchors.horizontalCenter: parent.horizontalCenter
+            leftPadding: place.x
 
             Button {
                 id: okBtn
                 text: qsTr( "OK" )
                 enabled: false
                 implicitHeight: appWindow.minimumCtrlHeight
-                width: cancelBtn.width
+                implicitWidth: ( place.width - 20 ) / 2
 
                 onClicked: {
                     qmlCppSignals.returnBack()
@@ -141,6 +143,7 @@ ScrollView {
                 text: qsTr( "Cancel" )
                 enabled: true
                 implicitHeight: appWindow.minimumCtrlHeight
+                implicitWidth: ( place.width - 20 ) / 2
 
                 onClicked: {
                     qmlCppSignals.returnBack()
