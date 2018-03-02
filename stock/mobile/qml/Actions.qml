@@ -58,13 +58,24 @@ ScrollView {
         }
 
         Button {
-            id: search
+            id: searchByCode
             implicitHeight: appWindow.minimumCtrlHeight
             Layout.fillWidth: true
-            text: qsTr( "Search" )
+            text: qsTr( "Search By Code" )
 
             onClicked: {
-                qmlCppSignals.searchBtnClicked()
+                qmlCppSignals.searchByCodeBtnClicked()
+            }
+        }
+
+        Button {
+            id: searchByPlace
+            implicitHeight: appWindow.minimumCtrlHeight
+            Layout.fillWidth: true
+            text: qsTr( "Search By Place" )
+
+            onClicked: {
+                qmlCppSignals.searchByPlaceBtnClicked()
             }
         }
     }

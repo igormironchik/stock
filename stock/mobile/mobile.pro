@@ -21,7 +21,8 @@ DISTFILES += qml/main.qml \
     qml/Actions.qml \
     qml/Busy.qml \
     qml/Change.qml \
-    qml/Message.qml
+    qml/Message.qml \
+    qml/Search.qml
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 

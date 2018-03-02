@@ -71,8 +71,12 @@ ScrollView {
                 editable: false
                 implicitHeight: appWindow.minimumCtrlHeight
                 Layout.fillWidth: true
-                textRole: "display"
                 currentIndex: -1
+                delegate: ItemDelegate {
+                    implicitHeight: appWindow.minimumCtrlHeight
+                    text: model[ "display" ]
+                    width: parent.width
+                }
 
                 onActivated: {
                     check()
@@ -85,8 +89,12 @@ ScrollView {
                 editable: false
                 implicitHeight: appWindow.minimumCtrlHeight
                 Layout.fillWidth: true
-                textRole: "display"
                 currentIndex: -1
+                delegate: ItemDelegate {
+                    implicitHeight: appWindow.minimumCtrlHeight
+                    text: model[ "display" ]
+                    width: parent.width
+                }
 
                 onActivated: {
                     check()

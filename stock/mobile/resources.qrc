@@ -14,5 +14,6 @@
         <file>qml/Change.qml</file>
         <file>img/view-barcode_48x48.png</file>
         <file>qml/Message.qml</file>
+        <file>qml/Search.qml</file>
     </qresource>
 </RCC>

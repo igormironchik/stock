@@ -63,14 +63,18 @@ signals:
 	void putBtnClicked();
 	//! Take button clicked.
     void takeBtnClicked();
-	//! Search button clicked.
-    void searchBtnClicked();
+	//! Search by code button clicked.
+    void searchByCodeBtnClicked();
+	//! Search by place button clicked.
+    void searchByPlaceBtnClicked();
 	//! Return back.
 	void returnBack();
 	//! Put product.
 	void putProduct( const QString & code, const QString & place, long long count );
 	//! Take product.
 	void takeProduct( const QString & code, const QString & place, long long count );
+	//! Search.
+	void search( const QString & code, const QString & place );
 
 public:
 	explicit QmlCppBridge( const QString & configFileName );
@@ -96,6 +100,8 @@ private slots:
 	void putProductRequested( const QString & code, const QString & place, long long count );
 	//! Take product.
 	void takeProductRequested( const QString & code, const QString & place, long long count );
+	//! Search requested.
+	void searchRequested( const QString & code, const QString & place );
 
 private:
 	friend class QmlCppBridgePrivate;

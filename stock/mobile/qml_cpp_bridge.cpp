@@ -99,6 +99,8 @@ QmlCppBridge::QmlCppBridge( const QString & configFileName )
 		this, &QmlCppBridge::opOk, Qt::QueuedConnection );
 	connect( d->m_net, &Network::opFailed,
 		this, &QmlCppBridge::opFailed, Qt::QueuedConnection );
+	connect( this, &QmlCppBridge::search,
+		this, &QmlCppBridge::searchRequested, Qt::QueuedConnection );
 }
 
 QmlCppBridge::~QmlCppBridge()
@@ -177,6 +179,12 @@ QmlCppBridge::takeProductRequested( const QString & code, const QString & place,
 	msg.set_secret( d->m_net->password() );
 
 	d->m_net->socket()->sendAddProduct( msg );
+}
+
+void
+QmlCppBridge::searchRequested( const QString & code, const QString & place )
+{
+
 }
 
 } /* namespace Stock */

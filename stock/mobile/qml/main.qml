@@ -136,6 +136,13 @@ ApplicationWindow {
         }
     }
 
+    Component {
+        id: searchComponent
+
+        Search {
+        }
+    }
+
     StackView {
         id: stackView
         anchors.fill: parent
@@ -207,7 +214,12 @@ ApplicationWindow {
             stackView.push( changeComponent )
         }
 
-        onSearchBtnClicked: {
+        onSearchByCodeBtnClicked: {
+            stackView.push( searchComponent )
+        }
+
+        onSearchByPlaceBtnClicked: {
+            stackView.push( searchComponent )
         }
 
         onReturnBack: {
