@@ -76,8 +76,6 @@ public slots:
 	void sendGiveListOfProducts( Stock::Messages::GiveListOfProducts & msg );
 	//! Send "add product".
 	void sendAddProduct( Stock::Messages::AddProduct & msg );
-	//! Stop timer.
-	void stopTimer();
 
 private slots:
 	//! Data received.

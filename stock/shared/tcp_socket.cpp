@@ -29,7 +29,6 @@
 #include <QDataStream>
 #include <QTextStream>
 #include <QTextCodec>
-#include <QTimer>
 
 // cfgfile include.
 #include <cfgfile/all.hpp>
@@ -110,14 +109,8 @@ static const int c_timeout = 15;
 class TcpSocketPrivate {
 public:
 	TcpSocketPrivate( TcpSocket * parent )
-		:	m_timer( new QTimer( parent ) )
-		,	q( parent )
+		:	q( parent )
 	{
-		m_timer->setInterval( c_timeout * 1000 );
-		m_timer->setSingleShot( true );
-
-		QObject::connect( m_timer, &QTimer::timeout,
-			q, &TcpSocket::timeout );
 	}
 
 	//! Parse messages. \return false on error.
@@ -125,8 +118,6 @@ public:
 
 	//! Buffer.
 	Buffer m_buf;
-	//! Timer.
-	QTimer * m_timer;
 	//! Parent.
 	TcpSocket * q;
 }; // class TcpSocketPrivate
@@ -317,8 +308,6 @@ TcpSocket::sendGiveListOfProducts( Stock::Messages::GiveListOfProducts & msg )
 {
 	sendMsg< Stock::Messages::GiveListOfProducts,
 		Stock::Messages::tag_GiveListOfProducts< cfgfile::qstring_trait_t > > ( msg );
-
-	d->m_timer->start();
 }
 
 void
@@ -326,14 +315,6 @@ TcpSocket::sendAddProduct( Stock::Messages::AddProduct & msg )
 {
 	sendMsg< Stock::Messages::AddProduct,
 		Stock::Messages::tag_AddProduct< cfgfile::qstring_trait_t > > ( msg );
-
-	d->m_timer->start();
-}
-
-void
-TcpSocket::stopTimer()
-{
-	d->m_timer->stop();
 }
 
 template< typename MSG, typename TAG >

@@ -24,7 +24,8 @@ HEADERS = mainwindow.hpp \
 	by_place_sort_model.hpp \
 	sort_filter_base_model.hpp \
 	rename.hpp \
-	edit_desc.hpp
+	edit_desc.hpp \
+	amount.hpp
 
 SOURCES = mainwindow.cpp \
     main.cpp \
@@ -42,7 +43,8 @@ SOURCES = mainwindow.cpp \
 	by_place_sort_model.cpp \
 	sort_filter_base_model.cpp \
 	rename.cpp \
-	edit_desc.cpp
+	edit_desc.cpp \
+	amount.cpp
     
 RESOURCES = resources.qrc
 
@@ -81,4 +83,5 @@ FORMS += \
     options.ui \
     product.ui \
     rename.ui \
-    edit_desc.ui
+    edit_desc.ui \
+    amount.ui

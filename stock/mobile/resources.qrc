@@ -12,6 +12,7 @@
         <file>qml/Actions.qml</file>
         <file>qml/Busy.qml</file>
         <file>qml/Change.qml</file>
-	<file>img/view-barcode_48x48.png</file>
+        <file>img/view-barcode_48x48.png</file>
+        <file>qml/Message.qml</file>
     </qresource>
 </RCC>

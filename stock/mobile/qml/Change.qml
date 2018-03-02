@@ -134,7 +134,12 @@ ScrollView {
                 implicitWidth: ( place.width - 20 ) / 2
 
                 onClicked: {
-                    qmlCppSignals.returnBack()
+                    if( put )
+                        qmlCppSignals.putProduct( code.currentText,
+                            place.currentText, amount.value )
+                    else
+                        qmlCppSignals.takeProduct( code.currentText,
+                            place.currentText, amount.value )
                 }
             }
 

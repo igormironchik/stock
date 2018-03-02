@@ -121,10 +121,22 @@ Network::~Network()
 {
 }
 
+const QString &
+Network::password() const
+{
+	return d->m_pwd;
+}
+
 void
 Network::setPassword( const QString & pwd )
 {
 	d->m_pwd = pwd;
+}
+
+TcpSocket *
+Network::socket() const
+{
+	return d->m_sock;
 }
 
 void
@@ -209,15 +221,13 @@ Network::timeout()
 void
 Network::serverError( const Stock::Messages::Error & )
 {
-	disconnectNetwork();
-
-	emit error();
+	emit opFailed();
 }
 
 void
 Network::operationSuccessful( const Stock::Messages::Ok & )
 {
-	emit ok();
+	emit opOk();
 }
 
 void

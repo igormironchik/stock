@@ -129,6 +129,13 @@ ApplicationWindow {
         }
     }
 
+    Component {
+        id: messageComponent
+
+        Message {
+        }
+    }
+
     StackView {
         id: stackView
         anchors.fill: parent
@@ -206,6 +213,31 @@ ApplicationWindow {
         onReturnBack: {
             if( stackView.depth > 2 && stackView.keyBackEnabled )
                 stackView.pop()
+        }
+
+        onPutProduct: {
+            stackView.keyBackEnabled = false
+            stackView.push( busyComponent )
+        }
+
+        onTakeProduct: {
+            stackView.keyBackEnabled = false
+            stackView.push( busyComponent )
+        }
+
+        onOpOk: {
+            stackView.keyBackEnabled = true
+            stackView.pop()
+            stackView.pop()
+            stackView.push( messageComponent )
+            stackView.currentItem.message = qsTr( "Data saved. Now you can continue." )
+        }
+
+        onOpFailed: {
+            stackView.keyBackEnabled = true
+            stackView.pop()
+            stackView.push( messageComponent )
+            stackView.currentItem.message = qsTr( "Something went wrong. Please try again later." )
         }
     }
 }

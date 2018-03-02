@@ -73,6 +73,8 @@ private slots:
 	void renamePlace();
 	//! Delete place.
 	void deletePlace();
+	//! Change amount of product.
+	void changeAmount();
 
 private:
 	friend class ByPlaceViewPrivate;

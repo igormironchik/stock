@@ -34,6 +34,7 @@
 namespace Stock {
 
 class QmlCppBridge;
+class TcpSocket;
 
 //
 // Network
@@ -54,15 +55,22 @@ signals:
 	void connected( const QStringList & codes, const QStringList & places );
 	//! Error.
 	void error();
-	//! Ok.
-	void ok();
+	//! Operation ok.
+	void opOk();
+	//! Operation failed.
+	void opFailed();
 
 public:
 	explicit Network( QmlCppBridge * sigs );
 	virtual ~Network();
 
+	//! \return Current password.
+	const QString & password() const;
 	//! Set pasword.
 	void setPassword( const QString & pwd );
+
+	//! \return TCP socket.
+	TcpSocket * socket() const;
 
 public slots:
 	//! Establish connection.

@@ -24,6 +24,8 @@
 #include "qml_cpp_bridge.hpp"
 #include "network.hpp"
 #include "cfg_file.hpp"
+#include "shared/tcp_socket.hpp"
+#include "messages.hpp"
 
 // Qt include.
 #include <QStringListModel>
@@ -89,6 +91,14 @@ QmlCppBridge::QmlCppBridge( const QString & configFileName )
 		this, &QmlCppBridge::disconnectRequested, Qt::QueuedConnection );
 	connect( d->m_net, &Network::connected,
 		this, &QmlCppBridge::connected, Qt::QueuedConnection );
+	connect( this, &QmlCppBridge::putProduct,
+		this, &QmlCppBridge::putProductRequested, Qt::QueuedConnection );
+	connect( this, &QmlCppBridge::takeProduct,
+		this, &QmlCppBridge::takeProductRequested, Qt::QueuedConnection );
+	connect( d->m_net, &Network::opOk,
+		this, &QmlCppBridge::opOk, Qt::QueuedConnection );
+	connect( d->m_net, &Network::opFailed,
+		this, &QmlCppBridge::opFailed, Qt::QueuedConnection );
 }
 
 QmlCppBridge::~QmlCppBridge()
@@ -143,6 +153,30 @@ QmlCppBridge::serverError()
 {
 	emit disconnected( tr( "Something went wrong on the server. "
 		"Check your password and try to reconnect." ) );
+}
+
+void
+QmlCppBridge::putProductRequested( const QString & code, const QString & place, long long count )
+{
+	Messages::AddProduct msg;
+	msg.set_code( code );
+	msg.set_place( place );
+	msg.set_count( count );
+	msg.set_secret( d->m_net->password() );
+
+	d->m_net->socket()->sendAddProduct( msg );
+}
+
+void
+QmlCppBridge::takeProductRequested( const QString & code, const QString & place, long long count )
+{
+	Messages::AddProduct msg;
+	msg.set_code( code );
+	msg.set_place( place );
+	msg.set_count( -count );
+	msg.set_secret( d->m_net->password() );
+
+	d->m_net->socket()->sendAddProduct( msg );
 }
 
 } /* namespace Stock */

@@ -55,8 +55,10 @@ signals:
 	void connectionEstablished();
 	//! Disconnected.
 	void disconnected( const QString & reason );
-	//! Ok.
-	void ok();
+	//! Operation successful.
+	void opOk();
+	//! Operation failed.
+	void opFailed();
 	//! Put button clicked.
 	void putBtnClicked();
 	//! Take button clicked.
@@ -65,6 +67,10 @@ signals:
     void searchBtnClicked();
 	//! Return back.
 	void returnBack();
+	//! Put product.
+	void putProduct( const QString & code, const QString & place, long long count );
+	//! Take product.
+	void takeProduct( const QString & code, const QString & place, long long count );
 
 public:
 	explicit QmlCppBridge( const QString & configFileName );
@@ -86,6 +92,10 @@ private slots:
 	void serverError();
 	//! Network disconnected.
 	void networkDisconnected( bool requestedByUser );
+	//! Put product.
+	void putProductRequested( const QString & code, const QString & place, long long count );
+	//! Take product.
+	void takeProductRequested( const QString & code, const QString & place, long long count );
 
 private:
 	friend class QmlCppBridgePrivate;

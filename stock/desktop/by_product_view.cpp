@@ -29,6 +29,7 @@
 #include "db_signals.hpp"
 #include "edit_desc.hpp"
 #include "by_place_model.hpp"
+#include "amount.hpp"
 
 // Qt include.
 #include <QContextMenuEvent>
@@ -140,8 +141,12 @@ ByProductView::contextMenuEvent( QContextMenuEvent * e )
 			tr( "Change Description" ), this, &ByProductView::changeDesc );
 
 		if( d->m_index.parent().isValid() )
+		{
 			menu.addAction( QIcon( ":/img/flag-blue_22x22.png" ),
 				tr( "Rename Place" ), this, &ByProductView::renamePlace );
+			menu.addAction( QIcon( ":/img/list-add_22x22.png" ),
+				tr( "Change Amount" ), this, &ByProductView::changeAmount );
+		}
 
 		if( !d->m_parentIndex.isValid() && !d->m_model->hasChildren( d->m_index ) )
 		{
@@ -276,6 +281,38 @@ ByProductView::deleteProduct()
 			}
 			else
 				d->m_sigs->emitProductDeleted( code );
+		}
+	}
+}
+
+void
+ByProductView::changeAmount()
+{
+	if( d->m_db && d->m_sigs && d->m_index.isValid() && d->m_parentIndex.isValid() )
+	{
+		const auto code = d->m_model->data( d->m_model->index( d->m_parentIndex.row(), 0 ) )
+			.toString();
+		const auto desc = d->m_model->data( d->m_model->index( d->m_parentIndex.row(), 2 ) )
+			.toString();
+		const auto oldAmount = d->m_model->data( d->m_model->index( d->m_index.row(), 1,
+			d->m_parentIndex ) ).toULongLong();
+		const auto place = d->m_model->data( d->m_model->index( d->m_index.row(), 0,
+			d->m_parentIndex ) ).toString();
+
+		ChangeAmountDlg dlg( oldAmount, this );
+
+		if( dlg.exec() == QDialog::Accepted )
+		{
+			DbResult res = d->m_db->changeProduct( { code, place, dlg.amount(), desc } );
+
+			if( !res.m_ok )
+			{
+				QMessageBox::critical( this, tr( "Error in the database..." ),
+					tr( "Unable to change amount of product.\n\n%1" )
+						.arg( res.m_error ) );
+			}
+			else
+				d->m_sigs->emitProductChanged( code, place, dlg.amount(), desc );
 		}
 	}
 }
