@@ -159,8 +159,14 @@ Server::addProduct( const Stock::Messages::AddProduct & msg )
 	if( msg.secret() == d->m_secret && !msg.code().isEmpty() &&
 		!msg.place().isEmpty() && msg.count() != 0 )
 	{
-		const quint64 count = msg.count() +
-			d->m_codeModel->count( msg.code(), msg.place() );
+		const quint64 inDb = d->m_codeModel->count( msg.code(), msg.place() );
+
+		quint64 count = 0;
+
+		if( msg.count() > 0 || ( msg.count() < 0 &&
+			static_cast< quint64 > ( qAbs( msg.count() ) ) <= inDb ) )
+				count = msg.count() + inDb;
+
 		const auto desc = d->m_codeModel->desc( msg.code() );
 
 		DbResult res = d->m_db->changeProduct( { msg.code(), msg.place(),
