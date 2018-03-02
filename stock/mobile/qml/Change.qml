@@ -179,5 +179,10 @@ ScrollView {
                 okBtn.enabled = true
         else
             okBtn.enabled = false
+
+        code.focus = false
+        place.focus = false
+        amount.focus = false
+        stackView.focus = true
     }
 }
