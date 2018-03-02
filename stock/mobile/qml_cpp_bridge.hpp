@@ -75,6 +75,8 @@ signals:
 	void takeProduct( const QString & code, const QString & place, long long count );
 	//! Search.
 	void search( const QString & code, const QString & place );
+	//! Internal search requested.
+	void internalSearch( const QString & data );
 
 public:
 	explicit QmlCppBridge( const QString & configFileName );

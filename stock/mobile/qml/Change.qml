@@ -35,19 +35,6 @@ ScrollView {
     // otherwise product will be taken.
     property bool put: true
 
-    Component {
-        id: comboboxDelegateComponent
-
-        ItemDelegate {
-            id: control
-            height: appWindow.minimumCtrlHeight
-            width: parent.width
-            text: model[ "display" ]
-            highlighted: code.highlightedIndex === index
-            background.anchors.fill: control
-        }
-    }
-
     ColumnLayout {
         id: content
         spacing: 20
@@ -86,7 +73,14 @@ ScrollView {
                 Layout.fillWidth: true
                 currentIndex: -1
                 textRole: "display"
-                delegate: comboboxDelegateComponent
+                delegate: ItemDelegate {
+                    id: codeDelegateControl
+                    height: appWindow.minimumCtrlHeight
+                    width: parent.width
+                    text: model[ "display" ]
+                    highlighted: code.highlightedIndex === index
+                    background.anchors.fill: codeDelegateControl
+                }
 
                 onActivated: {
                     check()
@@ -101,7 +95,14 @@ ScrollView {
                 Layout.fillWidth: true
                 currentIndex: -1
                 textRole: "display"
-                delegate: comboboxDelegateComponent
+                delegate: ItemDelegate {
+                    id: placeDelegateControl
+                    height: appWindow.minimumCtrlHeight
+                    width: parent.width
+                    text: model[ "display" ]
+                    highlighted: place.highlightedIndex === index
+                    background.anchors.fill: placeDelegateControl
+                }
 
                 onActivated: {
                     check()

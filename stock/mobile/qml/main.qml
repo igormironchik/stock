@@ -187,6 +187,8 @@ ApplicationWindow {
     Connections {
         target: qmlCppSignals
 
+        property int searchType: 0
+
         onConnectionEstablished: {
             stackView.pop()
             stackView.push( actionsComponent )
@@ -216,10 +218,16 @@ ApplicationWindow {
 
         onSearchByCodeBtnClicked: {
             stackView.push( searchComponent )
+            stackView.currentItem.model = codesModel
+            stackView.currentItem.currentIndex = -1
+            searchType = 0
         }
 
         onSearchByPlaceBtnClicked: {
             stackView.push( searchComponent )
+            stackView.currentItem.model = placesModel
+            stackView.currentItem.currentIndex = -1
+            searchType = 1
         }
 
         onReturnBack: {
@@ -250,6 +258,17 @@ ApplicationWindow {
             stackView.pop()
             stackView.push( messageComponent )
             stackView.currentItem.message = qsTr( "Something went wrong. Please try again later." )
+        }
+
+        onInternalSearch: {
+            stackView.pop();
+            stackView.keyBackEnabled = false
+            stackView.push( busyComponent )
+
+            if( searchType === 0 )
+                qmlCppSignals.search( data, "" )
+            else
+                qmlCppSignals.search( "", data )
         }
     }
 }
