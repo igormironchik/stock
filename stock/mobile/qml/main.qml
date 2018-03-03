@@ -302,8 +302,16 @@ ApplicationWindow {
 
         onListReceived: {
             stackView.keyBackEnabled = true
-            stackView.pop()
-            stackView.push( searchResultComponent )
+
+            if( searchModel.rowCount() === 0 ) {
+                stackView.pop()
+                stackView.push( messageComponent )
+                stackView.currentItem.message = qsTr( "Nothing found." )
+            }
+            else {
+                stackView.pop()
+                stackView.push( searchResultComponent )
+            }
         }
     }
 }

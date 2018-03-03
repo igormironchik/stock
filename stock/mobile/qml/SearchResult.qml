@@ -28,22 +28,54 @@ ScrollView {
     id: screen
     ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
     ScrollBar.vertical.policy: ScrollBar.AlwaysOff
-    leftPadding: content.width < width ? ( width - content.width ) / 2 : 0
-    topPadding: content.height < height ? ( height - content.height ) / 2 : 0
 
     //! 0 - by product search, 1 - by place.
     property int type: 0
 
-    ListView {
-        id: content
+    ColumnLayout {
         width: appWindow.width
-        model: searchModel
-        delegate: Item {
-            implicitHeight: appWindow.minimumCtrlHeight
 
-            Text {
-                anchors.fill: parent
-                text: type === 0 ? model[ "PlaceRole" ] : model[ "CodeRole" ]
+        Repeater {
+            model: searchModel
+
+            delegate: Item {
+                Layout.fillWidth: true
+                implicitHeight: row.implicitHeight + 1
+
+                Rectangle {
+                    color: "#C7C8C9FF"
+                    anchors.bottom: parent.bottom
+                    height: 1
+                    width: parent.width - 5
+                    x: 5
+                }
+
+                Row {
+                    id: row
+                    anchors.fill: parent
+                    spacing: 20
+                    width: parent.width
+
+                    Column {
+                        id: col
+                        spacing: 5
+
+                        Text {
+                            text: type === 0 ? qsTr( "<b>Place: </b>" ) + model[ "PlaceRole" ] :
+                                qsTr( "<b>Code: </b>" ) + model[ "CodeRole" ]
+                        }
+
+                        Text {
+                            text: qsTr( "<b>Amount: </b>" ) + model[ "AmountRole" ]
+                        }
+                    }
+
+                    Text {
+                        text: model[ "DescRole" ]
+                        width: parent.width - col.width - 20
+                        wrapMode: Text.WordWrap
+                    }
+                }
             }
         }
     }
