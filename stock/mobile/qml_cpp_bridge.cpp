@@ -25,7 +25,7 @@
 #include "network.hpp"
 #include "cfg_file.hpp"
 #include "shared/tcp_socket.hpp"
-#include "messages.hpp"
+#include "list_model.hpp"
 
 // Qt include.
 #include <QStringListModel>
@@ -44,6 +44,7 @@ public:
 		,	m_net( Q_NULLPTR )
 		,	m_codesModel( Q_NULLPTR )
 		,	m_placesModel( Q_NULLPTR )
+		,	m_searchModel( Q_NULLPTR )
 		,	q( parent )
 	{
 	}
@@ -59,6 +60,8 @@ public:
 	QStringListModel * m_codesModel;
 	//! Places model.
 	QStringListModel * m_placesModel;
+	//! Search model.
+	ListModel * m_searchModel;
 	//! Parent.
 	QmlCppBridge * q;
 }; // class QmlCppSignalsPrivate
@@ -69,6 +72,7 @@ QmlCppBridgePrivate::init()
 	m_net = new Network( q );
 	m_codesModel = new QStringListModel( q );
 	m_placesModel = new QStringListModel( q );
+	m_searchModel = new ListModel( q );
 }
 
 
@@ -101,6 +105,8 @@ QmlCppBridge::QmlCppBridge( const QString & configFileName )
 		this, &QmlCppBridge::opFailed, Qt::QueuedConnection );
 	connect( this, &QmlCppBridge::search,
 		this, &QmlCppBridge::searchRequested, Qt::QueuedConnection );
+	connect( d->m_net->socket(), &TcpSocket::listOfProducts,
+		this, &QmlCppBridge::listOfProductsReceived, Qt::QueuedConnection );
 }
 
 QmlCppBridge::~QmlCppBridge()
@@ -117,6 +123,12 @@ QStringListModel *
 QmlCppBridge::placesModel() const
 {
 	return d->m_placesModel;
+}
+
+ListModel *
+QmlCppBridge::searchModel() const
+{
+	return d->m_searchModel;
 }
 
 void
@@ -184,7 +196,20 @@ QmlCppBridge::takeProductRequested( const QString & code, const QString & place,
 void
 QmlCppBridge::searchRequested( const QString & code, const QString & place )
 {
+	Messages::GiveListOfProducts msg;
+	msg.set_code( code );
+	msg.set_place( place );
+	msg.set_secret( d->m_net->password() );
 
+	d->m_net->socket()->sendGiveListOfProducts( msg );
+}
+
+void
+QmlCppBridge::listOfProductsReceived( const Stock::Messages::ListOfProducts & msg )
+{
+	d->m_searchModel->setData( msg.product() );
+
+	emit listReceived();
 }
 
 } /* namespace Stock */

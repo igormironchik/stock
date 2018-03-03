@@ -27,12 +27,17 @@
 #include <QObject>
 #include <QScopedPointer>
 
+// Stock include.
+#include "messages.hpp"
+
 QT_BEGIN_NAMESPACE
 class QStringListModel;
 QT_END_NAMESPACE
 
 
 namespace Stock {
+
+class ListModel;
 
 //
 // QmlCppBridge
@@ -77,6 +82,8 @@ signals:
 	void search( const QString & code, const QString & place );
 	//! Internal search requested.
 	void internalSearch( const QString & data );
+	//! List of products received.
+	void listReceived();
 
 public:
 	explicit QmlCppBridge( const QString & configFileName );
@@ -86,6 +93,8 @@ public:
 	QStringListModel * codesModel() const;
 	//! \return Places model.
 	QStringListModel * placesModel() const;
+	//! \return Search model.
+	ListModel * searchModel() const;
 
 private slots:
 	//! Connect requested.
@@ -104,6 +113,8 @@ private slots:
 	void takeProductRequested( const QString & code, const QString & place, long long count );
 	//! Search requested.
 	void searchRequested( const QString & code, const QString & place );
+	//! List of products received.
+	void listOfProductsReceived( const Stock::Messages::ListOfProducts & msg );
 
 private:
 	friend class QmlCppBridgePrivate;

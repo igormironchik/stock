@@ -34,6 +34,7 @@
 #include "qml_cpp_bridge.hpp"
 #include "messages.hpp"
 #include "cfg_file.hpp"
+#include "list_model.hpp"
 
 
 int main( int argc, char ** argv )
@@ -83,6 +84,7 @@ int main( int argc, char ** argv )
 	engine.rootContext()->setContextProperty( "qmlCppSignals", &sigs );
 	engine.rootContext()->setContextProperty( "codesModel", sigs.codesModel() );
 	engine.rootContext()->setContextProperty( "placesModel", sigs.placesModel() );
+	engine.rootContext()->setContextProperty( "searchModel", sigs.searchModel() );
 	engine.load( QUrl( "qrc:/qml/main.qml" ) );
 
 	if( engine.rootObjects().isEmpty() )

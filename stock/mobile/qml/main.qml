@@ -61,6 +61,23 @@ ApplicationWindow {
         RowLayout {
             anchors.fill: parent
 
+            ToolButton {
+                id: backBtn
+                onClicked: qmlCppSignals.returnBack()
+                enabled: stackView.keyBackEnabled
+                implicitWidth: parent.height
+                implicitHeight: implicitWidth
+
+                Image {
+                    id: backBtnImg
+                    source: backBtn.enabled ? "qrc:/img/back-enabled_48x48.png" :
+                        "qrc:/img/back-disabled_48x48.png"
+                    width: parent.width - 20
+                    height: width
+                    anchors.centerIn: parent
+                }
+            }
+
             Label {
                 text: qsTr( "Stock" )
                 horizontalAlignment: Qt.AlignHCenter
@@ -80,14 +97,8 @@ ApplicationWindow {
                     anchors.centerIn: parent
                     width: parent.width - 20
                     height: width
-                    source: "qrc:/img/menu-disabled_48x48.png"
-                }
-
-                onEnabledChanged: {
-                    if( enabled )
-                        menuBtnImg.source = "qrc:/img/menu-enabled_48x48.png"
-                    else
-                        menuBtnImg.source = "qrc:/img/menu-disabled_48x48.png"
+                    source: enabled ? "qrc:/img/menu-enabled_48x48.png" :
+                        "qrc:/img/menu-disabled_48x48.png"
                 }
             }
         }
@@ -143,6 +154,14 @@ ApplicationWindow {
         }
     }
 
+    Component {
+        id: searchResultComponent
+
+        SearchResult {
+            type: connections.searchType
+        }
+    }
+
     StackView {
         id: stackView
         anchors.fill: parent
@@ -178,6 +197,7 @@ ApplicationWindow {
             stackView.pop();
 
         stackView.currentItem.message = msg
+        stackView.keyBackEnabled = false
 
         connected = false
         menuButton.enabled = false
@@ -185,6 +205,7 @@ ApplicationWindow {
     }
 
     Connections {
+        id: connections
         target: qmlCppSignals
 
         property int searchType: 0
@@ -192,7 +213,7 @@ ApplicationWindow {
         onConnectionEstablished: {
             stackView.pop()
             stackView.push( actionsComponent )
-            stackView.keyBackEnabled = true
+            stackView.keyBackEnabled = false
             connectionState.text = qsTr( "Connected" )
             menuButton.enabled = true
             connected = true
@@ -209,11 +230,13 @@ ApplicationWindow {
         onPutBtnClicked: {
             changeAction = true
             stackView.push( changeComponent )
+            stackView.keyBackEnabled = true
         }
 
         onTakeBtnClicked: {
             changeAction = false
             stackView.push( changeComponent )
+            stackView.keyBackEnabled = true
         }
 
         onSearchByCodeBtnClicked: {
@@ -221,6 +244,7 @@ ApplicationWindow {
             stackView.currentItem.model = codesModel
             stackView.currentItem.currentIndex = -1
             searchType = 0
+            stackView.keyBackEnabled = true
         }
 
         onSearchByPlaceBtnClicked: {
@@ -228,11 +252,15 @@ ApplicationWindow {
             stackView.currentItem.model = placesModel
             stackView.currentItem.currentIndex = -1
             searchType = 1
+            stackView.keyBackEnabled = true
         }
 
         onReturnBack: {
             if( stackView.depth > 2 && stackView.keyBackEnabled )
                 stackView.pop()
+
+            if( stackView.depth === 2 )
+                stackView.keyBackEnabled = false
         }
 
         onPutProduct: {
@@ -257,7 +285,8 @@ ApplicationWindow {
             stackView.keyBackEnabled = true
             stackView.pop()
             stackView.push( messageComponent )
-            stackView.currentItem.message = qsTr( "Something went wrong. Please try again later." )
+            stackView.currentItem.message = qsTr(
+                "Something went wrong. Please try again later. Possibly password was changed." )
         }
 
         onInternalSearch: {
@@ -269,6 +298,12 @@ ApplicationWindow {
                 qmlCppSignals.search( data, "" )
             else
                 qmlCppSignals.search( "", data )
+        }
+
+        onListReceived: {
+            stackView.keyBackEnabled = true
+            stackView.pop()
+            stackView.push( searchResultComponent )
         }
     }
 }

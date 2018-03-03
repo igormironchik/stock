@@ -15,5 +15,8 @@
         <file>img/view-barcode_48x48.png</file>
         <file>qml/Message.qml</file>
         <file>qml/Search.qml</file>
+        <file>qml/SearchResult.qml</file>
+	<file>img/back-disabled_48x48.png</file>
+	<file>img/back-enabled_48x48.png</file>
     </qresource>
 </RCC>
