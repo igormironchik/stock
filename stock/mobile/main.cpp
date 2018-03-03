@@ -59,8 +59,14 @@ int main( int argc, char ** argv )
 	appIcon.addFile( ":/img/icon_64x64.png" );
 	app.setWindowIcon( appIcon );
 
-    QTranslator appTranslator;
-    appTranslator.load( "./tr/stock_" + QLocale::system().name() );
+	QTranslator appTranslator;
+
+#ifdef Q_OS_ANDROID
+    appTranslator.load( "stock_" + QLocale::system().name(), "assets:/" );
+#else
+	appTranslator.load( "./tr/stock_" + QLocale::system().name() );
+#endif
+
     app.installTranslator( &appTranslator );
 
     const auto cfgFileName = Stock::CfgFile::fileName();
