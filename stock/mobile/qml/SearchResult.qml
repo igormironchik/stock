@@ -27,7 +27,7 @@ import QtQuick.Layouts 1.3
 ScrollView {
     id: screen
     ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
-    ScrollBar.vertical.policy: ScrollBar.AlwaysOff
+    ScrollBar.vertical.policy: ScrollBar.AsNeeded
 
     //! 0 - by product search, 1 - by place.
     property int type: 0
