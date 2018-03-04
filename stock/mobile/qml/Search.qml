@@ -31,38 +31,35 @@ ScrollView {
     leftPadding: content.width < width ? ( width - content.width ) / 2 : 0
     topPadding: content.height < height ? ( height - content.height ) / 2 : 0
 
-    // If this property is true then dialog will add new product,
-    // otherwise product will be taken.
-    property bool put: true
+    // If this property is true then search will be by product's code,
+    // otherwise search will be by place.
+    property bool byCode: true
 
     property alias model: combo.model
     property alias currentIndex: combo.currentIndex
-
-    Component {
-        id: comboboxDelegateComponent
-
-        ItemDelegate {
-            id: control
-            height: appWindow.minimumCtrlHeight
-            width: parent.width
-            text: model[ "display" ]
-            highlighted: parent.highlightedIndex === index
-            background.anchors.fill: control
-        }
-    }
 
     ColumnLayout {
         id: content
         spacing: 20
         width: appWindow.width - 40
 
+        Text {
+            id: headerLabel
+            anchors.horizontalCenter: parent.horizontalCenter
+            wrapMode: Text.WordWrap
+            width: parent.width
+            horizontalAlignment: Text.AlignHCenter
+            text: byCode ? qsTr( "Search by Code" ) : qsTr( "Search by Place" )
+            Layout.fillWidth: true
+        }
+
         ComboBox {
             id: combo
             editable: false
             implicitHeight: appWindow.minimumCtrlHeight
-            Layout.fillWidth: true
             currentIndex: -1
             textRole: "display"
+            Layout.fillWidth: true
             delegate: ItemDelegate {
                 id: comboDelegateControl
                 height: appWindow.minimumCtrlHeight

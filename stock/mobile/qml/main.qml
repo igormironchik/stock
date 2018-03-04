@@ -243,6 +243,7 @@ ApplicationWindow {
             stackView.push( searchComponent )
             stackView.currentItem.model = codesModel
             stackView.currentItem.currentIndex = -1
+            stackView.currentItem.byCode = true
             searchType = 0
             stackView.keyBackEnabled = true
         }
@@ -251,6 +252,7 @@ ApplicationWindow {
             stackView.push( searchComponent )
             stackView.currentItem.model = placesModel
             stackView.currentItem.currentIndex = -1
+            stackView.currentItem.byCode = false
             searchType = 1
             stackView.keyBackEnabled = true
         }
