@@ -59,7 +59,7 @@ ByPlaceSortModelPrivate::acceptProduct( int sourceRow,
 		sourceParent );
 
 	return ( code.data().toString().contains( m_code ) &&
-		desc.data().toString().contains( m_desc ) );
+		desc.data().toString().toLower().contains( m_desc.toLower() ) );
 }
 
 

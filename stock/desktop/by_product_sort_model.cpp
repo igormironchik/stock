@@ -106,7 +106,7 @@ ByProductSortModel::filterAcceptsRow( int sourceRow,
 			empty = false;
 
 		return ( code.data().toString().contains( dd->m_code ) &&
-			desc.data().toString().contains( dd->m_desc ) && !empty );
+			desc.data().toString().toLower().contains( dd->m_desc.toLower() ) && !empty );
 	}
 	else
 		return dd->acceptPlace( sourceRow, sourceParent );
