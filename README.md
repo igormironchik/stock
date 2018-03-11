@@ -19,10 +19,10 @@ connection with the given address and port it receives hello message from the se
 And sure the server will answer only if password is correct. Once mobile app received
 hello message with list of all product's codes and places in the warehouse it is
 connected and can speak with the server. At this point mobile part can add or delete
-some amount of the given product on the give place. And user can look for the list
+some amount of the given product on the given place. And user can look for the list
 of products on the given places, or find all places where the given product is placed.
 
-That's all. And sure on the destop part all interactions of mobile part are shown in
+That's all. And sure on the desktop part all interactions of mobile part are shown in
 real time.
 
 # Getting from Repository
