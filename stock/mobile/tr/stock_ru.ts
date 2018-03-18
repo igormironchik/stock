@@ -86,14 +86,12 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../shared/datagrams.hpp" line="127"/>
         <source>Wrong protocol</source>
-        <translation>Ошибка сетевого протокола</translation>
+        <translation type="vanished">Ошибка сетевого протокола</translation>
     </message>
     <message>
-        <location filename="../../shared/datagrams.hpp" line="134"/>
         <source>readDatagram(): wrong datagram</source>
-        <translation>readDatagram(): ошибка в пакете</translation>
+        <translation type="vanished">readDatagram(): ошибка в пакете</translation>
     </message>
 </context>
 <context>
@@ -112,12 +110,22 @@
 <context>
     <name>Search</name>
     <message>
-        <location filename="../qml/Search.qml" line="88"/>
+        <location filename="../qml/Search.qml" line="52"/>
+        <source>Search by Code</source>
+        <translation>Поиск по коду</translation>
+    </message>
+    <message>
+        <location filename="../qml/Search.qml" line="52"/>
+        <source>Search by Place</source>
+        <translation>Поиск по месту</translation>
+    </message>
+    <message>
+        <location filename="../qml/Search.qml" line="85"/>
         <source>OK</source>
         <translation>ОК</translation>
     </message>
     <message>
-        <location filename="../qml/Search.qml" line="100"/>
+        <location filename="../qml/Search.qml" line="97"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
@@ -165,17 +173,17 @@
         <translation>Подключено</translation>
     </message>
     <message>
-        <location filename="../qml/main.qml" line="281"/>
+        <location filename="../qml/main.qml" line="283"/>
         <source>Data saved. Now you can continue.</source>
         <translation>Данные сохранены. Теперь можно продолжить.</translation>
     </message>
     <message>
-        <location filename="../qml/main.qml" line="288"/>
+        <location filename="../qml/main.qml" line="290"/>
         <source>Something went wrong. Please try again later. Possibly password was changed.</source>
         <translation>Что-то пошло не так. Попробуйте снова позже. Возможно на сервере был изменен пароль.</translation>
     </message>
     <message>
-        <location filename="../qml/main.qml" line="309"/>
+        <location filename="../qml/main.qml" line="311"/>
         <source>Nothing found.</source>
         <translation>Ничего не найдено.</translation>
     </message>
