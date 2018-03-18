@@ -165,7 +165,7 @@ ApplicationWindow {
     StackView {
         id: stackView
         anchors.fill: parent
-        property bool keyBackEnabled: true
+        property bool keyBackEnabled: false
         focus: true
 
         Keys.onReleased: {
