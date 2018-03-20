@@ -1,3 +1,5 @@
+[![Donate](https://liberapay.com/assets/widgets/donate.svg)](https://liberapay.com/imironchik/donate)
+
 # About
 
 Stock is a desktop and mobile applications to manage a small warehouse.
