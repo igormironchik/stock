@@ -21,17 +21,23 @@
 */
 
 import QtQuick 2.0
-import QtQuick.Controls 2.0
+import QtQuick.Controls 2.2
+import QtQuick.Layouts 1.3
 
-Item {
+ScrollView {
+    ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+    ScrollBar.vertical.policy: ScrollBar.AlwaysOff
+    leftPadding: content.width < width ? ( width - content.width ) / 2 : 0
+    topPadding: content.height < height ? ( height - content.height ) / 2 : 0
     id: connectScreen
 
     property string pwd
     property alias message: msgLabel.text
 
-    Column {
-        anchors.centerIn: parent
+    ColumnLayout {
         spacing: 20
+        width: appWindow.width - 40
+        id: content
 
         Text {
             id: msgLabel
@@ -39,10 +45,13 @@ Item {
             wrapMode: Text.WordWrap
             width: parent.width - 10
             horizontalAlignment: Text.AlignHCenter
+            Layout.fillWidth: true
         }
 
-        Row {
+        RowLayout {
             anchors.horizontalCenter: parent.horizontalCenter
+            spacing: 20
+            id: row
 
             TextField {
                 id: pwdField
@@ -86,6 +95,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             text: qsTr( "Connect" )
             implicitHeight: appWindow.minimumCtrlHeight
+            implicitWidth: row.width
 
             onClicked: {
                 showHide.checked = false
