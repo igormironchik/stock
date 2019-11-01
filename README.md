@@ -25,6 +25,8 @@ of products on the given places, or find all places where the given product is p
 That's all. And sure on the desktop part all interactions of mobile part are shown in
 real time.
 
+But this is just a preview, just basic options are implemented...
+
 # Getting from Repository
 
 After clone update submodules with the next command:
