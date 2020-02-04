@@ -45,7 +45,7 @@ ScrollView {
 
         Text {
             id: headerLabel
-            anchors.horizontalCenter: parent.horizontalCenter
+            Layout.alignment: Qt.AlignHCenter
             wrapMode: Text.WordWrap
             width: parent.width
             horizontalAlignment: Text.AlignHCenter

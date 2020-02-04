@@ -41,7 +41,7 @@ ScrollView {
 
         Text {
             id: msgLabel
-            anchors.horizontalCenter: parent.horizontalCenter
+            Layout.alignment: Qt.AlignHCenter
             wrapMode: Text.WordWrap
             width: parent.width - 10
             horizontalAlignment: Text.AlignHCenter
@@ -49,7 +49,7 @@ ScrollView {
         }
 
         RowLayout {
-            anchors.horizontalCenter: parent.horizontalCenter
+            Layout.alignment: Qt.AlignHCenter
             spacing: 20
             id: row
 
@@ -92,7 +92,7 @@ ScrollView {
 
         Button {
             id: connectBtn
-            anchors.horizontalCenter: parent.horizontalCenter
+            Layout.alignment: Qt.AlignHCenter
             text: qsTr( "Connect" )
             implicitHeight: appWindow.minimumCtrlHeight
             implicitWidth: row.width

@@ -32,6 +32,7 @@
 
 QT_BEGIN_NAMESPACE
 class QStringListModel;
+class QSortFilterProxyModel;
 QT_END_NAMESPACE
 
 
@@ -90,9 +91,9 @@ public:
 	virtual ~QmlCppBridge();
 
 	//! \return Codes model.
-	QStringListModel * codesModel() const;
+	QSortFilterProxyModel * codesModel() const;
 	//! \return Places model.
-	QStringListModel * placesModel() const;
+	QSortFilterProxyModel * placesModel() const;
 	//! \return Search model.
 	ListModel * searchModel() const;
 

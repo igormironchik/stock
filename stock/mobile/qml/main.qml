@@ -46,7 +46,7 @@ ApplicationWindow {
 
         MenuItem {
             id: changePwdMenu
-            text: qsTr( "Change Password" )
+            text: qsTr( "Reconnect" )
             implicitHeight: minimumCtrlHeight
             onTriggered: {
                 qmlCppSignals.disconnectRequest()

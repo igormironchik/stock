@@ -43,7 +43,7 @@ ScrollView {
         Label {
             height: appWindow.minimumCtrlHeight
             text: ( put ? qsTr( "Put Product" ) : qsTr( "Take Product" ) )
-            anchors.horizontalCenter: parent.horizontalCenter
+            Layout.alignment: Qt.AlignHCenter
         }
 
         GridLayout {

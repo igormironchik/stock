@@ -28,7 +28,7 @@
 #include <QLocale>
 #include <QQmlContext>
 #include <QFileInfo>
-#include <QStringListModel>
+#include <QSortFilterProxyModel>
 
 // Stock include.
 #include "qml_cpp_bridge.hpp"
