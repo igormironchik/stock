@@ -44,3 +44,9 @@ desktop part first.
 To build desktop part use stock.pro in the root directory.
 
 To build mobile part use stock/mobile/mobile.pro
+
+# Screenshots
+
+![](doc/desktop.png)
+![](doc/connect.png)
+![](doc/actions.png)
