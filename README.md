@@ -22,6 +22,11 @@ connected and can speak with the server. At this point mobile part can add or de
 some amount of the given product on the given place. And user can look for the list
 of products on the given places, or find all places where the given product is placed.
 
+Mobile part can operate only with exist product codes and places, user can't
+add any new product or place to the database. So, first of all, on the server
+side should be added all products and places. Add dialog in the desktop part
+allow to do it without actual placing of prducts on places.
+
 That's all. And sure on the desktop part all interactions of mobile part are shown in
 real time.
 
