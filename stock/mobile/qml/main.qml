@@ -210,7 +210,7 @@ ApplicationWindow {
 
         property int searchType: 0
 
-        onConnectionEstablished: {
+        function onConnectionEstablished() {
             stackView.pop()
             stackView.push( actionsComponent )
             stackView.keyBackEnabled = false
@@ -219,27 +219,27 @@ ApplicationWindow {
             connected = true
         }
 
-        onDisconnected: {
+        function onDisconnected( reason ) {
             disconnected( reason )
         }
 
-        onConnectRequest: {
+        function onConnectRequest( pwd ) {
             connectRequested( pwd )
         }
 
-        onPutBtnClicked: {
+        function onPutBtnClicked() {
             changeAction = true
             stackView.push( changeComponent )
             stackView.keyBackEnabled = true
         }
 
-        onTakeBtnClicked: {
+        function onTakeBtnClicked() {
             changeAction = false
             stackView.push( changeComponent )
             stackView.keyBackEnabled = true
         }
 
-        onSearchByCodeBtnClicked: {
+        function onSearchByCodeBtnClicked() {
             stackView.push( searchComponent )
             stackView.currentItem.model = codesModel
             stackView.currentItem.currentIndex = -1
@@ -248,7 +248,7 @@ ApplicationWindow {
             stackView.keyBackEnabled = true
         }
 
-        onSearchByPlaceBtnClicked: {
+        function onSearchByPlaceBtnClicked() {
             stackView.push( searchComponent )
             stackView.currentItem.model = placesModel
             stackView.currentItem.currentIndex = -1
@@ -257,7 +257,7 @@ ApplicationWindow {
             stackView.keyBackEnabled = true
         }
 
-        onReturnBack: {
+        function onReturnBack() {
             if( stackView.depth > 2 && stackView.keyBackEnabled )
                 stackView.pop()
 
@@ -265,17 +265,17 @@ ApplicationWindow {
                 stackView.keyBackEnabled = false
         }
 
-        onPutProduct: {
+        function onPutProduct( code, place, count ) {
             stackView.keyBackEnabled = false
             stackView.push( busyComponent )
         }
 
-        onTakeProduct: {
+        function onTakeProduct( code, place, count ) {
             stackView.keyBackEnabled = false
             stackView.push( busyComponent )
         }
 
-        onOpOk: {
+        function onOpOk() {
             stackView.keyBackEnabled = true
             stackView.pop()
             stackView.pop()
@@ -283,7 +283,7 @@ ApplicationWindow {
             stackView.currentItem.message = qsTr( "Data saved. Now you can continue." )
         }
 
-        onOpFailed: {
+        function onOpFailed() {
             stackView.keyBackEnabled = true
             stackView.pop()
             stackView.push( messageComponent )
@@ -291,7 +291,7 @@ ApplicationWindow {
                 "Something went wrong. Please try again later. Possibly password was changed." )
         }
 
-        onInternalSearch: {
+        function onInternalSearch( data ) {
             stackView.pop();
             stackView.keyBackEnabled = false
             stackView.push( busyComponent )
@@ -302,7 +302,7 @@ ApplicationWindow {
                 qmlCppSignals.search( "", data )
         }
 
-        onListReceived: {
+        function onListReceived() {
             stackView.keyBackEnabled = true
 
             if( searchModel.rowCount() === 0 ) {

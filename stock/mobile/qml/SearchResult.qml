@@ -40,7 +40,7 @@ ScrollView {
 
             delegate: Item {
                 Layout.fillWidth: true
-                implicitHeight: row.implicitHeight + 1
+                implicitHeight: row.implicitHeight + 11
 
                 Rectangle {
                     color: "#C7C8C9FF"
@@ -53,6 +53,7 @@ ScrollView {
                 Row {
                     id: row
                     anchors.fill: parent
+                    anchors.margins: 5
                     spacing: 20
                     width: parent.width
 
@@ -61,19 +62,26 @@ ScrollView {
                         spacing: 5
 
                         Text {
+                            font.pointSize: 12
                             text: type === 0 ? qsTr( "<b>Place: </b>" ) + model[ "PlaceRole" ] :
                                 qsTr( "<b>Code: </b>" ) + model[ "CodeRole" ]
                         }
 
                         Text {
+                            font.pointSize: 12
                             text: qsTr( "<b>Amount: </b>" ) + model[ "AmountRole" ]
                         }
                     }
 
-                    Text {
-                        text: model[ "DescRole" ]
+                    Column {
                         width: parent.width - col.width - 20
-                        wrapMode: Text.WordWrap
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        Text {
+                            width: parent.width
+                            text: model[ "DescRole" ]
+                            wrapMode: Text.WordWrap
+                        }
                     }
                 }
             }

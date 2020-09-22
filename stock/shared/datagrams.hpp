@@ -129,7 +129,7 @@ void readDatagram( const QNetworkDatagram & d, MSG & msg )
 	quint32 type = 0;
 	s >> type;
 
-	if( s.status() != QDataStream::Ok &&
+	if( s.status() != QDataStream::Ok ||
 		static_cast< DatagramType > ( type ) != datagramType( msg ) )
 			throw Exception( QObject::tr(
 				"readDatagram(): wrong datagram" ) );

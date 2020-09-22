@@ -56,8 +56,6 @@
 // cfgfile include.
 #include <cfgfile/all.hpp>
 
-#include <QDebug>
-
 
 namespace Stock {
 
@@ -412,16 +410,12 @@ MainWindow::cantStartNetwork( const QString & error )
 void
 MainWindow::readPendingDatagrams()
 {
-	qDebug() << "datargams received";
-
 	while( d->m_udp->hasPendingDatagrams() )
 	{
 		QNetworkDatagram datagram = d->m_udp->receiveDatagram();
 
 		if( datagramType( datagram ) == DatagramType::TellIP )
 		{
-			qDebug() << "tell IP datagram";
-
 			Messages::TellMeYourIP msg;
 
 			try {
@@ -429,21 +423,15 @@ MainWindow::readPendingDatagrams()
 					Messages::tag_TellMeYourIP< cfgfile::qstring_trait_t > > (
 						datagram, msg );
 
-				qDebug() << "datargam is ok";
-
 				if( msg.secret() == d->m_cfg.secret() )
 				{
 					writeMyIpDatargam( d->m_udp, d->m_cfg.host(), d->m_cfg.port(),
 						datagram.senderAddress(), datagram.senderPort() );
 
-					qDebug() << "answer sent";
 				}
-				else
-					qDebug() << "wrong password";
 			}
 			catch( const Exception & )
 			{
-				qDebug() << "datagram is broken";
 			}
 		}
 	}
