@@ -338,8 +338,8 @@ MainWindow::createDb()
 		d->m_placeFilterModel = new ByPlaceSortModel( this );
 		d->m_placeFilterModel->setSourceModel( d->m_placeModel );
 
-		d->m_view->setFilterModels( d->m_codeFilterModel, d->m_placeFilterModel );
 		d->m_view->setModels( d->m_codeModel, d->m_placeModel );
+		d->m_view->setFilterModels( d->m_codeFilterModel, d->m_placeFilterModel );
 
 		d->m_view->setDb( d->m_sigs, d->m_db );
 	}

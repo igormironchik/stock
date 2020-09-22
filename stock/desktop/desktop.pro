@@ -25,7 +25,8 @@ HEADERS = mainwindow.hpp \
 	sort_filter_base_model.hpp \
 	rename.hpp \
 	edit_desc.hpp \
-	amount.hpp
+	amount.hpp \
+	word_wrap_delegate.hpp
 
 SOURCES = mainwindow.cpp \
     main.cpp \
@@ -44,8 +45,9 @@ SOURCES = mainwindow.cpp \
 	sort_filter_base_model.cpp \
 	rename.cpp \
 	edit_desc.cpp \
-	amount.cpp
-    
+	amount.cpp \
+	word_wrap_delegate.cpp
+
 RESOURCES = resources.qrc
 
 EXE_EXT =

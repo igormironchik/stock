@@ -30,12 +30,14 @@
 #include "db_signals.hpp"
 #include "edit_desc.hpp"
 #include "amount.hpp"
+#include "word_wrap_delegate.hpp"
 
 // Qt include.
 #include <QContextMenuEvent>
 #include <QMenu>
 #include <QAction>
 #include <QMessageBox>
+#include <QHeaderView>
 
 
 namespace Stock {
@@ -52,6 +54,7 @@ public:
 		,	m_auxModel( Q_NULLPTR )
 		,	m_sigs( Q_NULLPTR )
 		,	m_db( Q_NULLPTR )
+		,	m_delegate( nullptr )
 		,	q( parent )
 	{
 	}
@@ -73,6 +76,8 @@ public:
 	DbSignals * m_sigs;
 	//! DB.
 	Db * m_db;
+	//! Delegate for description.
+	WordWrapItemDelegate * m_delegate;
 	//! Parent.
 	ByPlaceView * q;
 }; // class ByPlaceViewPrivate
@@ -80,7 +85,8 @@ public:
 void
 ByPlaceViewPrivate::init()
 {
-
+	m_delegate = new WordWrapItemDelegate( q );
+	q->setItemDelegateForColumn( m_model->columnCount() - 1, m_delegate );
 }
 
 
@@ -93,10 +99,23 @@ ByPlaceView::ByPlaceView( QWidget * parent )
 	,	d( new ByPlaceViewPrivate( this ) )
 {
 	d->init();
+
+	connect( header(), &QHeaderView::sectionResized,
+		this, &ByPlaceView::sectionResized );
 }
 
 ByPlaceView::~ByPlaceView()
 {
+}
+
+void
+ByPlaceView::sectionResized( int section, int, int )
+{
+	if( section == d->m_model->columnCount() - 1 )
+	{
+		for( int i = 0; i < d->m_model->rowCount(); ++i )
+			emit d->m_delegate->sizeHintChanged( d->m_model->index( i, section ) );
+	}
 }
 
 void
@@ -105,6 +124,8 @@ ByPlaceView::setFilterModel( ByPlaceSortModel * filter )
 	d->m_filter = filter;
 
 	setModel( d->m_filter );
+
+	header()->resizeSections( QHeaderView::ResizeToContents );
 }
 
 void

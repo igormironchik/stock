@@ -75,6 +75,8 @@ private slots:
 	void deletePlace();
 	//! Change amount of product.
 	void changeAmount();
+	//! Section resized.
+	void sectionResized( int section, int, int );
 
 private:
 	friend class ByPlaceViewPrivate;

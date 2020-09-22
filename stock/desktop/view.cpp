@@ -115,7 +115,7 @@ ViewPrivate::init()
 	m_codeView->setSelectionBehavior( QAbstractItemView::SelectRows );
 	m_codeView->setSelectionMode( QAbstractItemView::SingleSelection );
 	m_codeView->header()->setStretchLastSection( true );
-	m_codeView->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
+	m_codeView->header()->setSectionResizeMode( QHeaderView::Interactive );
 	m_codeView->header()->setSortIndicator( 0, Qt::AscendingOrder );
 	m_stack->addWidget( m_codeView );
 
@@ -128,7 +128,7 @@ ViewPrivate::init()
 	m_placeView->setSelectionBehavior( QAbstractItemView::SelectRows );
 	m_placeView->setSelectionMode( QAbstractItemView::SingleSelection );
 	m_placeView->header()->setStretchLastSection( true );
-	m_placeView->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
+	m_placeView->header()->setSectionResizeMode( QHeaderView::Interactive );
 	m_placeView->header()->setSortIndicator( 0, Qt::AscendingOrder );
 	m_stack->addWidget( m_placeView );
 
