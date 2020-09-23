@@ -1,7 +1,6 @@
 #include "MaskUtil.h"
 #include <zxing/common/IllegalArgumentException.h>
 #include <stdlib.h>
-#include <algorithm> 
 
 namespace zxing {
 namespace qrcode {
@@ -33,10 +32,9 @@ int MaskUtil::applyMaskPenaltyRule2(const ByteMatrix& matrix)
     int width = matrix.getWidth();
     int height = matrix.getHeight();
     for (int y = 0; y < height - 1; y++) {
-        const std::vector<byte>& arrayY = array[y];
         for (int x = 0; x < width - 1; x++) {
-            int value = arrayY[x];
-            if (value == arrayY[x + 1] && value == array[y + 1][x] && value == array[y + 1][x + 1]) {
+            int value = array[y][x];
+            if (value == array[y][x + 1] && value == array[y + 1][x] && value == array[y + 1][x + 1]) {
                 penalty++;
             }
         }
@@ -87,10 +85,8 @@ int MaskUtil::applyMaskPenaltyRule3(const ByteMatrix& matrix)
 
 bool MaskUtil::isWhiteHorizontal(const std::vector<byte>& rowArray, int from, int to)
 {
-    from = std::max(from, 0);
-    to = std::min(to, (int)rowArray.size());
     for (int i = from; i < to; i++) {
-        if (rowArray[i] == 1) {
+        if (i >= 0 && i < rowArray.size() && rowArray[i] == 1) {
             return false;
         }
     }
@@ -99,10 +95,8 @@ bool MaskUtil::isWhiteHorizontal(const std::vector<byte>& rowArray, int from, in
 
 bool MaskUtil::isWhiteVertical(const std::vector<std::vector<byte> > &array, int col, int from, int to)
 {
-    from = std::max(from, 0);
-    to = std::min(to, (int)array.size());
     for (int i = from; i < to; i++) {
-        if (array[i][col] == 1) {
+        if (i >= 0 && i < array.size() && array[i][col] == 1) {
             return false;
         }
     }
@@ -154,7 +148,7 @@ bool MaskUtil::getDataMaskBit(int maskPattern, int x, int y)
         intermediate = (y + x) % 3;
         break;
     case 4:
-        intermediate = ((y / 2) + (x / 3)) & 0x1;
+        intermediate = ((((unsigned int)y) >> 1) + (x / 3)) & 0x1;
         break;
     case 5:
         temp = y * x;

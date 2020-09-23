@@ -81,7 +81,7 @@ ITFReader::ITFReader() : narrowLineWidth(-1) {
 }
 
 
-Ref<Result> ITFReader::decodeRow(int rowNumber, Ref<BitArray> row, zxing::DecodeHints /*hints*/) {
+Ref<Result> ITFReader::decodeRow(int rowNumber, Ref<BitArray> row) {
   // Find out where the Middle section (payload) starts & ends
 
   Range startRange = decodeStart(row);

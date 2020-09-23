@@ -45,8 +45,6 @@ public:
   typedef std::map<DecodeHintType, std::string> Hashtable;
 
   static std::string guessEncoding(byte *bytes, int length, Hashtable const& hints);
-
-  static std::string intToStr(int number);
 };
 
 }

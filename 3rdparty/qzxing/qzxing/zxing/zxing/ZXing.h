@@ -36,49 +36,32 @@
 #if defined(_WIN32) || defined(_WIN64)
 
 #include <float.h>
-#include <cmath>
-
-namespace zxing {
-inline bool isnan_z(float v) {return std::isnan(v) != 0;}
-inline bool isnan_z(double v) {return std::isnan(v) != 0;}
-}
-
-#elif (__cplusplus >= 201103L)
-#include <cmath>
-namespace zxing {
-inline bool isnan_z(float v) {
-    return std::isnan(v);
-}
-inline bool isnan_z(double v) {
-    return std::isnan(v);
-}
-}
-#elif(__STDC_VERSION__ >= 199901L)
 #include <math.h>
-namespace zxing {
-inline bool isnan_z(float v) {
-    return isnan(v);
-}
-inline bool isnan_z(double v) {
-    return isnan(v);
-}
-}
-#else
-namespace zxing {
-inline bool isnan_z(float v) {
-    volatile float d = v;
-    return d != d;
-}
-inline bool isnan_z(double v) {
-    volatile double d = v;
-    return d != d;
-}
-}
-#endif
 
 namespace zxing {
-	inline float nan() {return std::numeric_limits<float>::quiet_NaN();}
+inline bool isnan_z(float v) {return _isnan(v) != 0;}
+inline bool isnan_z(double v) {return _isnan(v) != 0;}
+inline float nan() {return std::numeric_limits<float>::quiet_NaN();}
 }
+
+#else
+
+//#include <cmath>
+
+#include <math.h>
+
+
+namespace zxing {
+inline bool isnan_z(float v) {
+    return isnan(v);
+}
+inline bool isnan_z(double v) {
+    return isnan(v);
+}
+inline float nan() {return std::numeric_limits<float>::quiet_NaN();}
+}
+
+#endif
 
 #if ZXING_DEBUG
 

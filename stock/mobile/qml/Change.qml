@@ -35,6 +35,17 @@ ScrollView {
     // otherwise product will be taken.
     property bool put: true
 
+    property string code: ""
+
+    onCodeChanged: {
+		var i = codeField.find( code );
+
+		if( i !== -1 ) {
+			codeField.currentIndex = i
+			check();
+		}
+    }
+
     ColumnLayout {
         id: content
         spacing: 20
@@ -66,7 +77,7 @@ ScrollView {
             }
 
             ComboBox {
-                id: code
+                id: codeField
                 model: codesModel
                 editable: false
                 implicitHeight: appWindow.minimumCtrlHeight
@@ -78,7 +89,7 @@ ScrollView {
                     height: appWindow.minimumCtrlHeight
                     width: parent.width
                     text: model[ "display" ]
-                    highlighted: code.highlightedIndex === index
+                    highlighted: codeField.highlightedIndex === index
                     background.anchors.fill: codeDelegateControl
                 }
 
@@ -155,10 +166,10 @@ ScrollView {
 
                 onClicked: {
                     if( put )
-                        qmlCppSignals.putProduct( code.currentText,
+                        qmlCppSignals.putProduct( codeField.currentText,
                             place.currentText, amount.value )
                     else
-                        qmlCppSignals.takeProduct( code.currentText,
+                        qmlCppSignals.takeProduct( codeField.currentText,
                             place.currentText, amount.value )
                 }
             }
@@ -178,14 +189,14 @@ ScrollView {
     }
 
     function check() {
-        if( code.currentText.length != 0 &&
+        if( codeField.currentText.length != 0 &&
             place.currentText.length != 0 &&
             amount.value > 0 )
                 okBtn.enabled = true
         else
             okBtn.enabled = false
 
-        code.focus = false
+        codeField.focus = false
         place.focus = false
         amount.focus = false
         stackView.focus = true

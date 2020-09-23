@@ -118,7 +118,7 @@ UPCEANReader::L_AND_G_PATTERNS (VECTOR_INIT(L_AND_G_PATTERNS_));
 
 UPCEANReader::UPCEANReader() {}
 
-Ref<Result> UPCEANReader::decodeRow(int rowNumber, Ref<BitArray> row, zxing::DecodeHints /*hints*/) {
+Ref<Result> UPCEANReader::decodeRow(int rowNumber, Ref<BitArray> row) {
   return decodeRow(rowNumber, row, findStartGuardPattern(row));
 }
 

@@ -43,6 +43,10 @@ class Frames
 
 	Q_PROPERTY( QAbstractVideoSurface * videoSurface READ videoSurface WRITE setVideoSurface )
 
+signals:
+	//! Code detected.
+	void codeDetected( const QString & code );
+
 public:
 	static void registerQmlType();
 
@@ -60,6 +64,10 @@ public:
 	//! Set video surface.
 	void setVideoSurface( QAbstractVideoSurface * s );
 
+public slots:
+	//! Emit code.
+	void emitCode( const QString & code );
+
 private:
 	Q_DISABLE_COPY( Frames )
 
@@ -69,6 +77,8 @@ private:
 	QAbstractVideoSurface * m_qml;
 	//! Camera.
 	QCamera * m_cam;
+	//! Counter.
+	int m_counter;
 }; // class Frames
 
 } /* namespace Stock */

@@ -59,7 +59,7 @@ int ECBlocks::getECCodewordsPerBloc()
 
 int ECBlocks::getTotalECCodewords()
 {
-    return ecCodewordsPerBloc_ * ecBlocks_.size();
+    return ecBlocks_.size();
 }
 
 std::vector<ECB*>& ECBlocks::getECBlocks() {

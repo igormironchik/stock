@@ -38,6 +38,19 @@ ScrollView {
     property alias model: combo.model
     property alias currentIndex: combo.currentIndex
 
+    property string code: ""
+
+    onCodeChanged: {
+		console.log( code )
+		var i = combo.find( code );
+
+		if( i !== -1 ) {
+			combo.currentIndex = i
+			okBtn.enabled = true
+			stackView.focus = true
+		}
+    }
+
     ColumnLayout {
         id: content
         spacing: 20

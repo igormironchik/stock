@@ -80,12 +80,12 @@ MultiFormatOneDReader::MultiFormatOneDReader(DecodeHints hints) : readers() {
 
 #include <typeinfo>
 
-Ref<Result> MultiFormatOneDReader::decodeRow(int rowNumber, Ref<BitArray> row, zxing::DecodeHints hints) {
+Ref<Result> MultiFormatOneDReader::decodeRow(int rowNumber, Ref<BitArray> row) {
   int size = readers.size();
   for (int i = 0; i < size; i++) {
     OneDReader* reader = readers[i];
     try {
-      Ref<Result> result = reader->decodeRow(rowNumber, row, hints);
+      Ref<Result> result = reader->decodeRow(rowNumber, row);
       return result;
     } catch (ReaderException const& re) {
       (void)re;

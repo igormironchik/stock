@@ -37,7 +37,7 @@ private:
 public:
   CodaBarReader();
 
-  Ref<Result> decodeRow(int rowNumber, Ref<BitArray> row, DecodeHints hints);
+  Ref<Result> decodeRow(int rowNumber, Ref<BitArray> row);
   
   void validatePattern(int start);
 

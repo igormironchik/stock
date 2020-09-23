@@ -167,6 +167,10 @@ ApplicationWindow {
 		id: cameraViewComponent
 
 		CameraView {
+			onCodeChanged: {
+				stackView.pop();
+				stackView.currentItem.code = code
+			}
 		}
     }
 

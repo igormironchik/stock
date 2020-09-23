@@ -39,15 +39,6 @@ BitArray::BitArray(): size(0), bits(1) {}
 BitArray::BitArray(int size_)
     : size(size_), bits(makeArraySize(size)) {}
 
-//this could be wrong. TODO: check size value
-BitArray::BitArray(std::vector<int> other)
-    : size(other.size()), bits(other.size())
-{
-    for(int i=0; i<other.size(); i++)
-        if(other[i])
-            set(i);
-}
-
 BitArray::~BitArray() {
 }
 
@@ -84,17 +75,15 @@ bool BitArray::isRange(int start, int end, bool value) {
     for (int i = firstInt; i <= lastInt; i++) {
         int firstBit = i > firstInt ? 0 : start & 0x1F;
         int lastBit = i < lastInt ? 31 : end & 0x1F;
-
-        int mask = (2 << lastBit) - (1 << firstBit);
-//        int mask;
-//        if (firstBit == 0 && lastBit == 31) {
-//            mask = -1;
-//        } else {
-//            mask = 0;
-//            for (int j = firstBit; j <= lastBit; j++) {
-//                mask |= 1 << j;
-//            }
-//        }
+        int mask;
+        if (firstBit == 0 && lastBit == 31) {
+            mask = -1;
+        } else {
+            mask = 0;
+            for (int j = firstBit; j <= lastBit; j++) {
+                mask |= 1 << j;
+            }
+        }
 
         // Return false if we're looking for 1s and the masked bits[i] isn't all 1s (that is,
         // equals the mask, or we're looking for 0s and the masked portion is not all 0s
@@ -155,9 +144,6 @@ namespace {
 // N.B.: This only works for 32 bit ints ...
 int numberOfTrailingZeros(int i) {
     // HD, Figure 5-14
-#if defined(__clang__) || defined(__GNUC__)
-    return __builtin_ctz(i);
-#else
     int y;
     if (i == 0) return 32;
     int n = 31;
@@ -166,7 +152,6 @@ int numberOfTrailingZeros(int i) {
     y = i << 4; if (y != 0) { n = n - 4; i = y; }
     y = i << 2; if (y != 0) { n = n - 2; i = y; }
     return n - (((unsigned int)(i << 1)) >> 31);
-#endif
 }
 }
 

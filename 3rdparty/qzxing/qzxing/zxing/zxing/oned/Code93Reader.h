@@ -35,7 +35,7 @@ namespace oned {
 class Code93Reader : public OneDReader {
 public:
   Code93Reader();
-  Ref<Result> decodeRow(int rowNumber, Ref<BitArray> row, DecodeHints hints);
+  Ref<Result> decodeRow(int rowNumber, Ref<BitArray> row);
 
 private:
   std::string decodeRowResult;

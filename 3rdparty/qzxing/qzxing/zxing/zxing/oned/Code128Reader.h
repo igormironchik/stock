@@ -35,7 +35,7 @@ private:
                         int rowOffset);
 			
 public:
-  Ref<Result> decodeRow(int rowNumber, Ref<BitArray> row, DecodeHints hints);
+  Ref<Result> decodeRow(int rowNumber, Ref<BitArray> row);
   Code128Reader();
   ~Code128Reader();
 

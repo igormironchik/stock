@@ -21,18 +21,15 @@
 
 #include <map>
 #include <zxing/DecodeHints.h>
-#include <zxing/common/Counted.h>
-#include <vector>
 
 namespace zxing {
 namespace common {
 
-class CharacterSetECI : public Counted {
+class CharacterSetECI {
 private:
   static std::map<int, CharacterSetECI*> VALUE_TO_ECI;
   static std::map<std::string, CharacterSetECI*> NAME_TO_ECI;
-  static std::vector<CharacterSetECI*> ECItables;
-  static bool inited;
+  static const bool inited;
   static bool init_tables();
 
   int const* const values_;
@@ -48,7 +45,6 @@ public:
 
   static CharacterSetECI* getCharacterSetECIByValue(int value);
   static CharacterSetECI* getCharacterSetECIByName(std::string const& name);
-  static void removeAllCharacterSets();
 };
 
 }

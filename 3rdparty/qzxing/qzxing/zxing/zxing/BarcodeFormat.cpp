@@ -36,6 +36,5 @@ const char* zxing::BarcodeFormat::barcodeFormatNames[] = {
   "RSS_EXPANDED",
   "UPC_A",
   "UPC_E",
-  "UPC_EAN_EXTENSION",
-  "ASSUME_GS1"
+  "UPC_EAN_EXTENSION"
 };

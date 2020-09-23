@@ -61,11 +61,10 @@ public:
   bool operator==(const Mode& other);
   bool operator!=(const Mode& other);
 
-  std::string getName() const {
-      if(name_ == "")
-          return "null";
-      else
-          return name_;
+  std::string getName() const { return name_; }
+
+  std::string toString() const {
+      return getName();
   }
 };
 }

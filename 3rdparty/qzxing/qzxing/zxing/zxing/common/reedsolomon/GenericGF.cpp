@@ -49,8 +49,8 @@ GenericGF::GenericGF(int primitive_, int size_, int b)
 }
   
 void GenericGF::initialize() {
-  expTable = std::vector<int>(size);
-  logTable = std::vector<int>(size);
+  expTable.resize(size);
+  logTable.resize(size);
     
   int x = 1;
     
@@ -66,14 +66,12 @@ void GenericGF::initialize() {
     logTable[expTable[i]] = i;
   }
   //logTable[0] == 0 but this should never be used
-  ArrayRef<int> coefficients_zero(1);
-  ArrayRef<int> coefficients_one(1);
-
-  coefficients_zero[0] = 0;
-  coefficients_one[0] = 1;
-
-  zero = Ref<GenericGFPoly>(new GenericGFPoly(this, coefficients_zero));
-  one = Ref<GenericGFPoly>(new GenericGFPoly(this, coefficients_one));
+  zero =
+    Ref<GenericGFPoly>(new GenericGFPoly(Ref<GenericGF>(this), ArrayRef<int>(new Array<int>(1))));
+  zero->getCoefficients()[0] = 0;
+  one =
+    Ref<GenericGFPoly>(new GenericGFPoly(Ref<GenericGF>(this), ArrayRef<int>(new Array<int>(1))));
+  one->getCoefficients()[0] = 1;
   initialized = true;
 }
   
@@ -102,10 +100,10 @@ Ref<GenericGFPoly> GenericGF::buildMonomial(int degree, int coefficient) {
   if (coefficient == 0) {
     return zero;
   }
-  ArrayRef<int> coefficients(degree + 1);
+  ArrayRef<int> coefficients(new Array<int>(degree + 1));
   coefficients[0] = coefficient;
     
-  return Ref<GenericGFPoly>(new GenericGFPoly(this, coefficients));
+  return Ref<GenericGFPoly>(new GenericGFPoly(Ref<GenericGF>(this), coefficients));
 }
   
 int GenericGF::addOrSubtract(int a, int b) {

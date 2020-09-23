@@ -50,7 +50,7 @@ private:
   static std::string decodeByteSegment(Ref<BitSource> bits_,
                                 std::string& result,
                                 int count,
-                                common::CharacterSetECI const *currentCharacterSetECI,
+                                zxing::common::CharacterSetECI* currentCharacterSetECI,
                                 ArrayRef<ArrayRef<byte> > &byteSegments,
                                 Hashtable const& hints);
   static void decodeAlphanumericSegment(Ref<BitSource> bits, std::string &result, int count, bool fc1InEffect);

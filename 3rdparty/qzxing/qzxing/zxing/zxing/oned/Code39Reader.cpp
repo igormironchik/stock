@@ -37,7 +37,7 @@ using zxing::oned::Code39Reader;
 using zxing::BitArray;
 
 namespace {
-  const char ALPHABET[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. *$/+%";
+  const char* ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. *$/+%";
 
   /**
    * These represent the encodings of characters, as patterns of wide and narrow
@@ -46,7 +46,7 @@ namespace {
    * and narrow, with 1s representing "wide" and 0s representing narrow.
    */
   const int CHARACTER_ENCODINGS_LEN = 44;
-  const int CHARACTER_ENCODINGS[CHARACTER_ENCODINGS_LEN] = {
+  int CHARACTER_ENCODINGS[CHARACTER_ENCODINGS_LEN] = {
     0x034, 0x121, 0x061, 0x160, 0x031, 0x130, 0x070, 0x025, 0x124, 0x064, // 0-9
     0x109, 0x049, 0x148, 0x019, 0x118, 0x058, 0x00D, 0x10C, 0x04C, 0x01C, // A-J
     0x103, 0x043, 0x142, 0x013, 0x112, 0x052, 0x007, 0x106, 0x046, 0x016, // K-T
@@ -54,11 +54,11 @@ namespace {
     0x0A8, 0x0A2, 0x08A, 0x02A // $-%
   };
 
-  const int ASTERISK_ENCODING = 0x094;
-  const char ALPHABET_STRING[] =
+  int ASTERISK_ENCODING = 0x094;
+  const char* ALPHABET_STRING =
     "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. *$/+%";
 
-  const std::string alphabet_string (ALPHABET_STRING);
+  std::string alphabet_string (ALPHABET_STRING);
 }
 
 void Code39Reader::init(bool usingCheckDigit_, bool extendedMode_) {
@@ -92,7 +92,7 @@ Code39Reader::Code39Reader(bool usingCheckDigit_, bool extendedMode_) {
   init(usingCheckDigit_, extendedMode_);
 }
 
-Ref<Result> Code39Reader::decodeRow(int rowNumber, Ref<BitArray> row, zxing::DecodeHints /*hints*/) {
+Ref<Result> Code39Reader::decodeRow(int rowNumber, Ref<BitArray> row) {
   std::vector<int>& theCounters (counters);
   { // Arrays.fill(counters, 0);
     int size = theCounters.size();

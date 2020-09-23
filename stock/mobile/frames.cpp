@@ -26,11 +26,16 @@
 // Qt include.
 #include <QVideoSurfaceFormat>
 #include <QQmlEngine>
+#include <QRunnable>
+#include <QMetaObject>
 
-#include <QDebug>
+// QZXing include.
+#include <QZXing.h>
 
 
 namespace Stock {
+
+static const int c_framesCount = 30;
 
 //
 // Frames
@@ -40,6 +45,7 @@ Frames::Frames( QObject * parent )
 	:	QAbstractVideoSurface( parent )
 	,	m_qml( nullptr )
 	,	m_cam( new QCamera( this ) )
+	,	m_counter( 0 )
 {
 	m_cam->setViewfinder( this );
 	m_cam->start();
@@ -52,6 +58,58 @@ Frames::~Frames()
 	if( m_qml )
 		m_qml->stop();
 }
+
+namespace /* anonymous */ {
+
+class DetectCode final
+	:	public QRunnable
+{
+public:
+	DetectCode( const QImage & img, Frames * provider )
+		:	m_img( img )
+		,	m_provider( provider )
+	{
+		setAutoDelete( true );
+	}
+
+	void run() override
+	{
+		QZXing decoder;
+		decoder.setDecoder( QZXing::DecoderFormat_Aztec |
+			QZXing::DecoderFormat_CODABAR |
+			QZXing::DecoderFormat_CODE_39 |
+			QZXing::DecoderFormat_CODE_93 |
+			QZXing::DecoderFormat_CODE_128 |
+			QZXing::DecoderFormat_DATA_MATRIX |
+			QZXing::DecoderFormat_EAN_8 |
+			QZXing::DecoderFormat_EAN_13 |
+			QZXing::DecoderFormat_ITF |
+			QZXing::DecoderFormat_MAXICODE |
+			QZXing::DecoderFormat_PDF_417 |
+			QZXing::DecoderFormat_QR_CODE |
+			QZXing::DecoderFormat_RSS_14 |
+			QZXing::DecoderFormat_RSS_EXPANDED |
+			QZXing::DecoderFormat_UPC_A |
+			QZXing::DecoderFormat_UPC_E |
+			QZXing::DecoderFormat_UPC_EAN_EXTENSION );
+
+		decoder.setTryHarder( true );
+
+		const auto code = decoder.decodeImage( m_img );
+
+		if( !code.isEmpty() )
+			QMetaObject::invokeMethod( m_provider, "emitCode", Qt::QueuedConnection,
+				Q_ARG( QString, code ) );
+	}
+
+private:
+	//! Image.
+	QImage m_img;
+	//! Provider.
+	Frames * m_provider;
+}; // class ReadGIF
+
+} /* namespace anonymous */
 
 bool
 Frames::present( const QVideoFrame & frame )
@@ -66,6 +124,17 @@ Frames::present( const QVideoFrame & frame )
 		QVideoFrame::imageFormatFromPixelFormat( f.pixelFormat() ) );
 
 	f.unmap();
+
+	if( m_counter == 0 )
+	{
+		auto * detect = new DetectCode( image.copy(), this );
+		QThreadPool::globalInstance()->start( detect );
+	}
+
+	++m_counter;
+
+	if( m_counter == c_framesCount )
+		m_counter = 0;
 
 	QMutexLocker lock( &m_mutex );
 
@@ -121,6 +190,12 @@ void
 Frames::registerQmlType()
 {
 	qmlRegisterType< Stock::Frames > ( "Frames", 0, 1, "Frames" );
+}
+
+void
+Frames::emitCode( const QString & code )
+{
+	emit codeDetected( code );
 }
 
 } /* namespace Stock */

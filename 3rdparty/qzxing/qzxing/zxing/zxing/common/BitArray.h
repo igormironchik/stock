@@ -25,6 +25,7 @@
 #include <vector>
 #include <limits>
 #include <iostream>
+#include <vector>
 
 namespace zxing {
 
@@ -41,7 +42,6 @@ private:
 public:
     BitArray();
     BitArray(int size);
-    BitArray(std::vector<int> other);
     ~BitArray();
     int getSize() const;
     int getSizeInBytes() const;

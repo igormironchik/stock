@@ -1,20 +1,7 @@
-#
-# Copyright 2011 QZXing authors
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
+QT       += core gui widgets
 
-CONFIG += qt
+greaterThan(QT_VERSION, 4.7): lessThan(QT_VERSION, 5.0): QT += declarative
+greaterThan(QT_MAJOR_VERSION, 4): QT += quick
 
 DEFINES += QZXING_LIBRARY \
         ZXING_ICONV_CONST \
@@ -25,7 +12,7 @@ INCLUDEPATH  += $$PWD \
 
 HEADERS += $$PWD/QZXing_global.h \
     $$PWD/CameraImageWrapper.h \
-    $$PWD/ImageHandler.h \
+    $$PWD/imagehandler.h \
     $$PWD/QZXing.h \
     $$PWD/zxing/zxing/ZXing.h \
     $$PWD/zxing/zxing/IllegalStateException.h \
@@ -146,11 +133,13 @@ HEADERS += $$PWD/QZXing_global.h \
     $$PWD/zxing/zxing/EncodeHint.h \
     $$PWD/zxing/zxing/UnsupportedEncodingException.h \
     $$PWD/zxing/zxing/common/reedsolomon/ReedSolomonEncoder.h \
-    $$PWD/zxing/zxing/common/Types.h
+    $$PWD/zxing/zxing/common/Types.h \
+    $$PWD/QZXingImageProvider.h
 
 SOURCES += $$PWD/CameraImageWrapper.cpp \
-    $$PWD/QZXing.cpp \
-    $$PWD/ImageHandler.cpp \
+    $$PWD/QZXingImageProvider.cpp\
+    $$PWD/qzxing.cpp \
+    $$PWD/imagehandler.cpp \
     $$PWD/zxing/zxing/ResultIO.cpp \
     $$PWD/zxing/zxing/InvertedLuminanceSource.cpp \
     $$PWD/zxing/zxing/ChecksumException.cpp \
@@ -258,33 +247,6 @@ SOURCES += $$PWD/CameraImageWrapper.cpp \
     $$PWD/zxing/zxing/qrcode/encoder/QRCode.cpp \
     $$PWD/zxing/zxing/EncodeHint.cpp \
     $$PWD/zxing/zxing/common/reedsolomon/ReedSolomonEncoder.cpp
-
-qzxing_multimedia {
-    QT += multimedia
-
-    CONFIG += qzxing_qml
-
-    DEFINES += QZXING_MULTIMEDIA
-
-    HEADERS += \
-        $$PWD/QZXingFilter.h
-
-    SOURCES += \
-        $$PWD/QZXingFilter.cpp
-}
-
-qzxing_qml {
-    greaterThan(QT_VERSION, 4.7): lessThan(QT_VERSION, 5.0): QT += declarative
-    greaterThan(QT_MAJOR_VERSION, 4): QT += quick
-
-    DEFINES += QZXING_QML
-
-    HEADERS +=  \
-        $$PWD/QZXingImageProvider.h
-
-    SOURCES +=  \
-        $$PWD/QZXingImageProvider.cpp
-}
 
 symbian {
     TARGET.UID3 = 0xE618743C
