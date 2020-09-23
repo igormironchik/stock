@@ -47,10 +47,10 @@ Frames::Frames( QObject * parent )
 
 Frames::~Frames()
 {
+	m_cam->stop();
+
 	if( m_qml )
 		m_qml->stop();
-
-	m_cam->stop();
 }
 
 bool
