@@ -48,6 +48,10 @@ class ByProductView Q_DECL_FINAL
 {
 	Q_OBJECT
 
+signals:
+	//! Update size hint for description column.
+	void updateDescColumn( int section, int, int );
+
 public:
 	explicit ByProductView( QWidget * parent );
 	virtual ~ByProductView();
@@ -64,6 +68,10 @@ public:
 protected:
 	void contextMenuEvent( QContextMenuEvent * e ) Q_DECL_OVERRIDE;
 
+public slots:
+	//! Section resized.
+	void sectionResized( int section, int, int );
+
 private slots:
 	//! Change code.
 	void changeCode();
@@ -75,8 +83,6 @@ private slots:
 	void deleteProduct();
 	//! Change amount of product.
 	void changeAmount();
-	//! Section resized.
-	void sectionResized( int section, int, int );
 
 private:
 	friend class ByProductViewPrivate;

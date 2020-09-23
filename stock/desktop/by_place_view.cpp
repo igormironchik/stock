@@ -102,6 +102,8 @@ ByPlaceView::ByPlaceView( QWidget * parent )
 
 	connect( header(), &QHeaderView::sectionResized,
 		this, &ByPlaceView::sectionResized );
+	connect( this, &ByPlaceView::updateDescColumn,
+		this, &ByPlaceView::sectionResized );
 }
 
 ByPlaceView::~ByPlaceView()
@@ -234,7 +236,11 @@ ByPlaceView::changeDesc()
 						.arg( res.m_error ) );
 			}
 			else
+			{
 				d->m_sigs->emitProductChanged( code, QString(), 0, dlg.text() );
+
+				emit updateDescColumn( d->m_model->columnCount() - 1, 0, 0 );
+			}
 		}
 	}
 }

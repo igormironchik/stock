@@ -102,6 +102,8 @@ ByProductView::ByProductView( QWidget * parent )
 
 	connect( header(), &QHeaderView::sectionResized,
 		this, &ByProductView::sectionResized );
+	connect( this, &ByProductView::updateDescColumn,
+		this, &ByProductView::sectionResized );
 }
 
 ByProductView::~ByProductView()
@@ -244,7 +246,11 @@ ByProductView::changeDesc()
 						.arg( res.m_error ) );
 			}
 			else
+			{
 				d->m_sigs->emitProductChanged( code, QString(), 0, dlg.text() );
+
+				emit updateDescColumn( d->m_model->columnCount() - 1, 0, 0 );
+			}
 		}
 	}
 }

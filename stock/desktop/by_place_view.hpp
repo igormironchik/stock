@@ -48,6 +48,10 @@ class ByPlaceView Q_DECL_FINAL
 {
 	Q_OBJECT
 
+signals:
+	//! Update size hint for description column.
+	void updateDescColumn( int section, int, int );
+
 public:
 	explicit ByPlaceView( QWidget * parent );
 	virtual ~ByPlaceView();
@@ -64,6 +68,10 @@ public:
 protected:
 	void contextMenuEvent( QContextMenuEvent * e ) Q_DECL_OVERRIDE;
 
+public slots:
+	//! Section resized.
+	void sectionResized( int section, int, int );
+
 private slots:
 	//! Change code.
 	void changeCode();
@@ -75,8 +83,6 @@ private slots:
 	void deletePlace();
 	//! Change amount of product.
 	void changeAmount();
-	//! Section resized.
-	void sectionResized( int section, int, int );
 
 private:
 	friend class ByPlaceViewPrivate;

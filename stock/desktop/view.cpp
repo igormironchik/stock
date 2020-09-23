@@ -132,6 +132,11 @@ ViewPrivate::init()
 	m_placeView->header()->setSortIndicator( 0, Qt::AscendingOrder );
 	m_stack->addWidget( m_placeView );
 
+	View::connect( m_codeView, &ByProductView::updateDescColumn,
+		m_placeView, &ByPlaceView::sectionResized );
+	View::connect( m_placeView, &ByPlaceView::updateDescColumn,
+		m_codeView, &ByProductView::sectionResized );
+
 	l->addWidget( m_stack );
 
 	View::connect( m_code, &QLineEdit::textChanged,
