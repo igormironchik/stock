@@ -31,6 +31,8 @@ ScrollView {
     leftPadding: content.width < width ? ( width - content.width ) / 2 : 0
     topPadding: content.height < height ? ( height - content.height ) / 2 : 0
 
+    signal unknownCode()
+
     // If this property is true then dialog will add new product,
     // otherwise product will be taken.
     property bool put: true
@@ -44,6 +46,8 @@ ScrollView {
 			codeField.currentIndex = i
 			check();
 		}
+		else
+			unknownCode();
     }
 
     ColumnLayout {

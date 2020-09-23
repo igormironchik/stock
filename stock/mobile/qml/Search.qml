@@ -31,6 +31,8 @@ ScrollView {
     leftPadding: content.width < width ? ( width - content.width ) / 2 : 0
     topPadding: content.height < height ? ( height - content.height ) / 2 : 0
 
+    signal unknownCode()
+
     // If this property is true then search will be by product's code,
     // otherwise search will be by place.
     property bool byCode: true
@@ -41,7 +43,6 @@ ScrollView {
     property string code: ""
 
     onCodeChanged: {
-		console.log( code )
 		var i = combo.find( code );
 
 		if( i !== -1 ) {
@@ -49,6 +50,8 @@ ScrollView {
 			okBtn.enabled = true
 			stackView.focus = true
 		}
+		else
+			unknownCode();
     }
 
     ColumnLayout {

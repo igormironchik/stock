@@ -132,12 +132,20 @@ ApplicationWindow {
         }
     }
 
+    property string unknowmCodeMsg:
+		qsTr( "Unknown code. Please contact administrator to add new product to the database. And reconnect after." )
+
     Component {
         id: changeComponent
 
         Change {
             id: changeScreen
             put: changeAction
+
+            onUnknownCode: {
+				stackView.push( messageComponent )
+				stackView.currentItem.message = unknowmCodeMsg
+			}
         }
     }
 
@@ -152,6 +160,10 @@ ApplicationWindow {
         id: searchComponent
 
         Search {
+			onUnknownCode: {
+				stackView.push( messageComponent )
+				stackView.currentItem.message = unknowmCodeMsg
+			}
         }
     }
 
