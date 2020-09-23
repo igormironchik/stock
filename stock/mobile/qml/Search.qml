@@ -53,28 +53,47 @@ ScrollView {
             Layout.fillWidth: true
         }
 
-        ComboBox {
-            id: combo
-            editable: false
-            implicitHeight: appWindow.minimumCtrlHeight
-            currentIndex: -1
-            textRole: "display"
-            Layout.fillWidth: true
-            delegate: ItemDelegate {
-                id: comboDelegateControl
-                height: appWindow.minimumCtrlHeight
-                width: parent.width
-                text: model[ "display" ]
-                highlighted: combo.highlightedIndex === index
-                background.anchors.fill: comboDelegateControl
-            }
+		RowLayout {
+			spacing: 20
+			id: comboRow
 
-            onActivated: {
-                focus = false
-                okBtn.enabled = true
-                stackView.focus = true
+			ComboBox {
+				id: combo
+				editable: false
+				implicitHeight: appWindow.minimumCtrlHeight
+				currentIndex: -1
+				textRole: "display"
+				Layout.fillWidth: true
+				delegate: ItemDelegate {
+					id: comboDelegateControl
+					height: appWindow.minimumCtrlHeight
+					width: parent.width
+					text: model[ "display" ]
+					highlighted: combo.highlightedIndex === index
+					background.anchors.fill: comboDelegateControl
+				}
+
+				onActivated: {
+					focus = false
+					okBtn.enabled = true
+					stackView.focus = true
+				}
+			}
+
+			Button {
+                id: scanBtn
+                width: height
+                height: appWindow.minimumCtrlHeight
+                implicitHeight: height
+                implicitWidth: height
+                visible: byCode ? true : false
+
+                Image {
+                    anchors.fill: parent
+                    source: "qrc:/img/view-barcode_48x48.png"
+                }
             }
-        }
+		}
 
         Row {
             spacing: 20
@@ -85,7 +104,7 @@ ScrollView {
                 text: qsTr( "OK" )
                 enabled: false
                 implicitHeight: appWindow.minimumCtrlHeight
-                implicitWidth: ( combo.width - 20 ) / 2
+                implicitWidth: ( comboRow.width - 20 ) / 2
 
                 onClicked: {
                     qmlCppSignals.internalSearch( combo.currentText )
@@ -97,7 +116,7 @@ ScrollView {
                 text: qsTr( "Cancel" )
                 enabled: true
                 implicitHeight: appWindow.minimumCtrlHeight
-                implicitWidth: ( combo.width - 20 ) / 2
+                implicitWidth: ( comboRow.width - 20 ) / 2
 
                 onClicked: {
                     qmlCppSignals.returnBack()
