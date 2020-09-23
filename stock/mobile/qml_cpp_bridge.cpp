@@ -147,12 +147,13 @@ QmlCppBridge::searchModel() const
 }
 
 void
-QmlCppBridge::connectRequested( const QString & pwd )
+QmlCppBridge::connectRequested( const QString & pwd, quint16 port )
 {
 	d->m_net->setPassword( pwd );
+	d->m_net->setUdpPort( port );
 	d->m_net->establishConnection();
 
-	CfgFile::write( Stock::CfgFile::fileName(), pwd );
+	CfgFile::write( Stock::CfgFile::fileName(), pwd, port );
 }
 
 void

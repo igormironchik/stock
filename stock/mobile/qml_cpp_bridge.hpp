@@ -54,7 +54,7 @@ class QmlCppBridge Q_DECL_FINAL
 
 signals:
 	//! Connect request.
-	void connectRequest( const QString & pwd );
+	void connectRequest( const QString & pwd, quint16 port );
 	//! Disconnect request.
 	void disconnectRequest();
 	//! Connection established.
@@ -99,7 +99,7 @@ public:
 
 private slots:
 	//! Connect requested.
-	void connectRequested( const QString & pwd );
+	void connectRequested( const QString & pwd, quint16 port );
 	//! Network connected.
 	void connected( const QStringList & codes, const QStringList & places );
 	//! Disconnect requested.

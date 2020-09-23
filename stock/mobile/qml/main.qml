@@ -114,6 +114,7 @@ ApplicationWindow {
 
         Connect {
             pwd: password
+            port: defaultUdpPort
         }
     }
 
@@ -181,7 +182,7 @@ ApplicationWindow {
 
     Component.onCompleted: {
         if( passwordSet ) {
-            qmlCppSignals.connectRequest( password )
+            qmlCppSignals.connectRequest( password, defaultUdpPort )
         }
     }
 

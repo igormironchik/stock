@@ -31,6 +31,8 @@ namespace Stock {
 
 //! Magic number to identify protocol.
 static const quint64 c_magic = 0x53544F434B4D5347;
+//! UDP port.
+static const quint16 c_udpPort = 33663;
 
 } /* namespace Stock */
 

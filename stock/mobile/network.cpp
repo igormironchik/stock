@@ -46,6 +46,7 @@ public:
 		:	m_connected( false )
 		,	m_disconnectRequestedByUser( false )
 		,	m_port( 0 )
+		,	m_udpPort( c_udpPort )
 		,	m_sigs( sigs )
 		,	m_sock( Q_NULLPTR )
 		,	m_udp( Q_NULLPTR )
@@ -67,6 +68,8 @@ public:
 	QString m_pwd;
 	//! Port.
 	quint16 m_port;
+	//! UDP port.
+	quint16 m_udpPort;
 	//! Qml to C++ bridge.
 	QmlCppBridge * m_sigs;
 	//! TCP socket.
@@ -133,6 +136,18 @@ Network::setPassword( const QString & pwd )
 	d->m_pwd = pwd;
 }
 
+quint16
+Network::udpPort() const
+{
+	return d->m_udpPort;
+}
+
+void
+Network::setUdpPort( quint16 port )
+{
+	d->m_udpPort = port;
+}
+
 TcpSocket *
 Network::socket() const
 {
@@ -152,7 +167,7 @@ Network::establishConnection()
 
 	d->m_udp->bind();
 
-	writeTellIpDatargam( d->m_udp, d->m_pwd );
+	writeTellIpDatargam( d->m_udp, d->m_pwd, d->m_udpPort );
 }
 
 void

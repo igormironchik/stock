@@ -57,7 +57,8 @@ win32 {
 	EXE_EXT = .exe
 }
 
-OTHER_FILES += config.cfgfile
+OTHER_FILES += config.cfgfile \
+	../shared/messages.cfgfile
 
 include( ../../3rdparty/cfgfile/cfgfile/cfgfile.pri )
 include( ../shared/shared.pri )

@@ -69,6 +69,11 @@ public:
 	//! Set pasword.
 	void setPassword( const QString & pwd );
 
+	//! \return UDP port.
+	quint16 udpPort() const;
+	//! Set UDP port.
+	void setUdpPort( quint16 port );
+
 	//! \return TCP socket.
 	TcpSocket * socket() const;
 

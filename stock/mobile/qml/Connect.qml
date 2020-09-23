@@ -33,6 +33,7 @@ ScrollView {
 
     property string pwd
     property alias message: msgLabel.text
+    property int port
 
     ColumnLayout {
         spacing: 20
@@ -48,10 +49,38 @@ ScrollView {
             Layout.fillWidth: true
         }
 
-        RowLayout {
+        GridLayout {
             Layout.alignment: Qt.AlignHCenter
-            spacing: 20
-            id: row
+            columns: 3
+            rowSpacing: 20
+            columnSpacing: 20
+
+            Text {
+                text: qsTr( "Port" )
+            }
+
+            SpinBox {
+                id: portField
+                editable: true
+                from: 1
+                to: 65535
+                value: connectScreen.port
+                textFromValue: function( value ) {
+                   return value;
+                }
+                implicitHeight: appWindow.minimumCtrlHeight
+                implicitWidth: pwdField.width
+            }
+
+            Rectangle {
+                width: 1
+                height: 1
+            }
+
+            Text {
+                text: qsTr( "Password" )
+                id: pwdText
+            }
 
             TextField {
                 id: pwdField
@@ -88,19 +117,29 @@ ScrollView {
                     }
                 }
             }
-        }
 
-        Button {
-            id: connectBtn
-            Layout.alignment: Qt.AlignHCenter
-            text: qsTr( "Connect" )
-            implicitHeight: appWindow.minimumCtrlHeight
-            implicitWidth: row.width
+            Rectangle {
+                width: 1
+                height: 1
+            }
 
-            onClicked: {
-                showHide.checked = false
-                pwdField.echoMode = TextInput.Password
-                qmlCppSignals.connectRequest( pwdField.text )
+            Button {
+                id: connectBtn
+                Layout.alignment: Qt.AlignHCenter
+                text: qsTr( "Connect" )
+                implicitHeight: appWindow.minimumCtrlHeight
+                implicitWidth: pwdField.width
+
+                onClicked: {
+                    showHide.checked = false
+                    pwdField.echoMode = TextInput.Password
+                    qmlCppSignals.connectRequest( pwdField.text, portField.value )
+                }
+            }
+
+            Rectangle {
+                width: 1
+                height: 1
             }
         }
     }

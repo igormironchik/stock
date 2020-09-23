@@ -41,7 +41,7 @@ namespace Stock {
 //
 
 bool
-CfgFile::read( const QString & fileName, QString & pwd )
+CfgFile::read( const QString & fileName, QString & pwd, quint16 & port )
 {
 	QFile file( fileName );
 
@@ -56,6 +56,7 @@ CfgFile::read( const QString & fileName, QString & pwd )
 			cfgfile::read_cfgfile( tag, s, fileName );
 
 			pwd = tag.get_cfg().secret();
+			port = tag.get_cfg().port();
 
 			file.close();
 
@@ -73,7 +74,7 @@ CfgFile::read( const QString & fileName, QString & pwd )
 }
 
 void
-CfgFile::write( const QString & fileName, const QString & pwd )
+CfgFile::write( const QString & fileName, const QString & pwd, quint16 port )
 {
 	QFile file( fileName );
 
@@ -85,6 +86,7 @@ CfgFile::write( const QString & fileName, const QString & pwd )
 		try {
 			Cfg cfg;
 			cfg.set_secret( pwd );
+			cfg.set_port( port );
 			tag_Cfg< cfgfile::qstring_trait_t> tag( cfg );
 
 			cfgfile::write_cfgfile( tag, s );

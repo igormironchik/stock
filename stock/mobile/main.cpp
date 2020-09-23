@@ -35,6 +35,7 @@
 #include "messages.hpp"
 #include "cfg_file.hpp"
 #include "list_model.hpp"
+#include "shared/constants.hpp"
 
 
 int main( int argc, char ** argv )
@@ -73,10 +74,11 @@ int main( int argc, char ** argv )
 
 	bool passwordSet = false;
 	QString password;
+	quint16 port = Stock::c_udpPort;
 
     if( QFileInfo::exists( cfgFileName ) )
     {
-        if( !Stock::CfgFile::read( cfgFileName, password ) )
+        if( !Stock::CfgFile::read( cfgFileName, password, port ) )
             password.clear();
         else
             passwordSet = true;
@@ -86,6 +88,7 @@ int main( int argc, char ** argv )
 
 	QQmlApplicationEngine engine;
 	engine.rootContext()->setContextProperty( "passwordSet", passwordSet );
+	engine.rootContext()->setContextProperty( "defaultUdpPort", port );
 	engine.rootContext()->setContextProperty( "password", password );
 	engine.rootContext()->setContextProperty( "qmlCppSignals", &sigs );
 	engine.rootContext()->setContextProperty( "codesModel", sigs.codesModel() );

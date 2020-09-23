@@ -42,10 +42,6 @@
 
 namespace Stock {
 
-//! UDP port.
-static const quint16 c_udpPort = 33663;
-
-
 //
 // DatagramType
 //
@@ -160,7 +156,7 @@ void readDatagram( const QNetworkDatagram & d, MSG & msg )
 
 //! Write TellIP datagram.
 void
-writeTellIpDatargam( QUdpSocket * s, const QString & password )
+writeTellIpDatargam( QUdpSocket * s, const QString & password, quint16 port = c_udpPort )
 {
 	QByteArray array;
 	QDataStream stream( &array, QIODevice::WriteOnly );
@@ -183,7 +179,7 @@ writeTellIpDatargam( QUdpSocket * s, const QString & password )
 
 		stream << str;
 
-		s->writeDatagram( array, QHostAddress::Broadcast, c_udpPort );
+		s->writeDatagram( array, QHostAddress::Broadcast, port );
 
 		s->flush();
 	}
