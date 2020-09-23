@@ -7,7 +7,8 @@ HEADERS += $$PWD/tcp_socket.hpp \
 
 SOURCES += $$PWD/tcp_socket.cpp \
 	$$PWD/exceptions.cpp \
-	$$PWD/buffer.cpp
+	$$PWD/buffer.cpp \
+	$$PWD/datagrams.cpp
 
 OTHER_FILES += $$PWD/messages.cfgfile
 

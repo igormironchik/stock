@@ -25,7 +25,6 @@
 
 // Qt include.
 #include <QNetworkDatagram>
-#include <QUdpSocket>
 #include <QDataStream>
 #include <QTextStream>
 #include <QTextCodec>
@@ -38,6 +37,10 @@
 #include "messages.hpp"
 #include "constants.hpp"
 #include "exceptions.hpp"
+
+QT_BEGIN_NAMESPACE
+class QUdpSocket;
+QT_END_NAMESPACE
 
 
 namespace Stock {
@@ -63,6 +66,7 @@ template< typename MSG >
 DatagramType datagramType( const MSG & );
 
 template<>
+inline
 DatagramType datagramType( const QNetworkDatagram & d )
 {
 	QDataStream s( d.data() );
@@ -94,12 +98,14 @@ DatagramType datagramType( const QNetworkDatagram & d )
 }
 
 template<>
+inline
 DatagramType datagramType( const Messages::MyIP & )
 {
 	return DatagramType::MyIP;
 }
 
 template<>
+inline
 DatagramType datagramType( const Messages::TellMeYourIP & )
 {
 	return DatagramType::TellIP;
@@ -156,39 +162,7 @@ void readDatagram( const QNetworkDatagram & d, MSG & msg )
 
 //! Write TellIP datagram.
 void
-writeTellIpDatargam( QUdpSocket * s, const QString & password, quint16 port = c_udpPort )
-{
-	QByteArray array;
-	QDataStream stream( &array, QIODevice::WriteOnly );
-	stream.setVersion( QDataStream::Qt_5_9 );
-
-	stream << c_magic;
-	quint32 type = static_cast< quint32 > ( DatagramType::TellIP );
-	stream << type;
-
-	try {
-		QString str;
-		QTextStream text( &str, QIODevice::WriteOnly );
-		text.setCodec( QTextCodec::codecForName( "UTF-8" ) );
-
-		Messages::TellMeYourIP msg;
-		msg.set_secret( password );
-		Messages::tag_TellMeYourIP< cfgfile::qstring_trait_t > tag( msg );
-
-		cfgfile::write_cfgfile( tag, text );
-
-		stream << str;
-
-		s->writeDatagram( array, QHostAddress::Broadcast, port );
-
-		s->flush();
-	}
-	catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & x )
-	{
-		throw Exception( x.desc() );
-	}
-}
-
+writeTellIpDatargam( QUdpSocket * s, const QString & password, quint16 port = c_udpPort );
 
 
 //
@@ -198,38 +172,7 @@ writeTellIpDatargam( QUdpSocket * s, const QString & password, quint16 port = c_
 //! Write MyIP datagram.
 void
 writeMyIpDatargam( QUdpSocket * s, const QString & host, quint16 port,
-	const QHostAddress & receiverHost, quint16 receiverPort )
-{
-	QByteArray array;
-	QDataStream stream( &array, QIODevice::WriteOnly );
-	stream.setVersion( QDataStream::Qt_5_9 );
-
-	stream << c_magic;
-	quint32 type = static_cast< quint32 > ( DatagramType::MyIP );
-	stream << type;
-
-	try {
-		QString str;
-		QTextStream text( &str, QIODevice::WriteOnly );
-		text.setCodec( QTextCodec::codecForName( "UTF-8" ) );
-
-		Messages::MyIP msg;
-		msg.set_ip( host );
-		msg.set_port( port );
-		Messages::tag_MyIP< cfgfile::qstring_trait_t > tag( msg );
-
-		cfgfile::write_cfgfile( tag, text );
-
-		stream << str;
-
-		s->writeDatagram( QNetworkDatagram( array, receiverHost,
-			receiverPort ) );
-	}
-	catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & x )
-	{
-		throw Exception( x.desc() );
-	}
-}
+	const QHostAddress & receiverHost, quint16 receiverPort );
 
 } /* namespace Stock */
 
