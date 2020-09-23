@@ -163,6 +163,13 @@ ApplicationWindow {
         }
     }
 
+    Component {
+		id: cameraViewComponent
+
+		CameraView {
+		}
+    }
+
     StackView {
         id: stackView
         anchors.fill: parent
@@ -315,6 +322,12 @@ ApplicationWindow {
                 stackView.pop()
                 stackView.push( searchResultComponent )
             }
+        }
+
+        function onShowCamera() {
+			stackView.keyBackEnabled = true
+
+			stackView.push( cameraViewComponent )
         }
     }
 }

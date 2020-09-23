@@ -18,5 +18,6 @@
         <file>qml/SearchResult.qml</file>
         <file>img/back-disabled_48x48.png</file>
         <file>img/back-enabled_48x48.png</file>
+        <file>qml/CameraView.qml</file>
     </qresource>
 </RCC>

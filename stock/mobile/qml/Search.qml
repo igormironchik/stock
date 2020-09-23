@@ -92,6 +92,10 @@ ScrollView {
                     anchors.fill: parent
                     source: "qrc:/img/view-barcode_48x48.png"
                 }
+
+                onClicked: {
+					qmlCppSignals.showCamera()
+                }
             }
 		}
 

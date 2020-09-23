@@ -36,6 +36,7 @@
 #include "cfg_file.hpp"
 #include "list_model.hpp"
 #include "shared/constants.hpp"
+#include "frames.hpp"
 
 
 int main( int argc, char ** argv )
@@ -52,6 +53,8 @@ int main( int argc, char ** argv )
 		"Stock::Messages::Hello" );
 	qRegisterMetaType< Stock::Messages::Ok >(
 		"Stock::Messages::Ok" );
+
+	Stock::Frames::registerQmlType();
 
 	QGuiApplication app( argc, argv );
 

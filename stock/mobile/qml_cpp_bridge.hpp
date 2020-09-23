@@ -85,6 +85,8 @@ signals:
 	void internalSearch( const QString & data );
 	//! List of products received.
 	void listReceived();
+	//! Show camera.
+	void showCamera();
 
 public:
 	explicit QmlCppBridge( const QString & configFileName );
