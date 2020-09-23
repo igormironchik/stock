@@ -99,7 +99,7 @@ ScrollView {
             }
 
             ComboBox {
-                id: place
+                id: placeField
                 model: placesModel
                 editable: false
                 implicitHeight: appWindow.minimumCtrlHeight
@@ -111,7 +111,7 @@ ScrollView {
                     height: appWindow.minimumCtrlHeight
                     width: parent.width
                     text: model[ "display" ]
-                    highlighted: place.highlightedIndex === index
+                    highlighted: placeField.highlightedIndex === index
                     background.anchors.fill: placeDelegateControl
                 }
 
@@ -155,22 +155,22 @@ ScrollView {
 
         Row {
             spacing: 20
-            leftPadding: place.x
+            leftPadding: placeField.x
 
             Button {
                 id: okBtn
                 text: qsTr( "OK" )
                 enabled: false
                 implicitHeight: appWindow.minimumCtrlHeight
-                implicitWidth: ( place.width - 20 ) / 2
+                implicitWidth: ( placeField.width - 20 ) / 2
 
                 onClicked: {
                     if( put )
                         qmlCppSignals.putProduct( codeField.currentText,
-                            place.currentText, amount.value )
+                            placeField.currentText, amount.value )
                     else
                         qmlCppSignals.takeProduct( codeField.currentText,
-                            place.currentText, amount.value )
+                            placeField.currentText, amount.value )
                 }
             }
 
@@ -179,7 +179,7 @@ ScrollView {
                 text: qsTr( "Cancel" )
                 enabled: true
                 implicitHeight: appWindow.minimumCtrlHeight
-                implicitWidth: ( place.width - 20 ) / 2
+                implicitWidth: ( placeField.width - 20 ) / 2
 
                 onClicked: {
                     qmlCppSignals.returnBack()
@@ -190,14 +190,14 @@ ScrollView {
 
     function check() {
         if( codeField.currentText.length != 0 &&
-            place.currentText.length != 0 &&
+            placeField.currentText.length != 0 &&
             amount.value > 0 )
                 okBtn.enabled = true
         else
             okBtn.enabled = false
 
         codeField.focus = false
-        place.focus = false
+        placeField.focus = false
         amount.focus = false
         stackView.focus = true
     }
