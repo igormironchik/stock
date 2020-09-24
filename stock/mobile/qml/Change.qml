@@ -77,10 +77,12 @@ ScrollView {
 
             Label {
                 text: qsTr( "Place" )
+                id: placeLabel
             }
 
             Label {
                 text: qsTr( "Amount" )
+                id: amountLabel
             }
 
             ComboBox {
@@ -88,7 +90,9 @@ ScrollView {
                 model: codesModel
                 editable: false
                 implicitHeight: appWindow.minimumCtrlHeight
-                implicitWidth: content.width - codeLabel.width - scanBtn.implicitWidth - 40
+                implicitWidth: content.width -
+					Math.max( codeLabel.width, placeLabel.width, amountLabel.width ) -
+					scanBtn.implicitWidth - 40
                 currentIndex: -1
                 textRole: "display"
                 delegate: ItemDelegate {
