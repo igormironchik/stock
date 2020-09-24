@@ -87,6 +87,8 @@ signals:
 	void listReceived();
 	//! Show camera.
 	void showCamera();
+	//! Show camera settings.
+	void showCameraSettings();
 
 public:
 	explicit QmlCppBridge( const QString & configFileName );

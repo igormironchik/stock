@@ -345,5 +345,11 @@ ApplicationWindow {
 
 			stackView.push( cameraViewComponent )
         }
+
+        function onShowCameraSettings() {
+			stackView.keyBackEnabled = true
+
+			stackView.push( stackView.currentItem.cameraSettings )
+        }
     }
 }

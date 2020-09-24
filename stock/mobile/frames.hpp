@@ -42,10 +42,13 @@ class Frames
 	Q_OBJECT
 
 	Q_PROPERTY( QAbstractVideoSurface * videoSurface READ videoSurface WRITE setVideoSurface )
+	Q_PROPERTY( QImage currentFrame READ currentFrame NOTIFY currentFrameChanged )
 
 signals:
 	//! Code detected.
 	void codeDetected( const QString & code );
+	//! Current frame changed.
+	void currentFrameChanged();
 
 public:
 	static void registerQmlType();
@@ -64,6 +67,9 @@ public:
 	//! Set video surface.
 	void setVideoSurface( QAbstractVideoSurface * s );
 
+	//! \return Current frame.
+	QImage currentFrame() const;
+
 public slots:
 	//! Emit code.
 	void emitCode( const QString & code );
@@ -72,13 +78,15 @@ private:
 	Q_DISABLE_COPY( Frames )
 
 	//! Mutex.
-	QMutex m_mutex;
+	mutable QMutex m_mutex;
 	//! QML surface.
 	QAbstractVideoSurface * m_qml;
 	//! Camera.
 	QCamera * m_cam;
 	//! Counter.
 	int m_counter;
+	//! Current frame.
+	QImage m_currentFrame;
 }; // class Frames
 
 } /* namespace Stock */

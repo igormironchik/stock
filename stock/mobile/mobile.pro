@@ -37,14 +37,16 @@ HEADERS = qml_cpp_bridge.hpp \
 	network.hpp \
 	cfg_file.hpp \
 	list_model.hpp \
-	frames.hpp
+	frames.hpp \
+	image.hpp
 
 SOURCES = main.cpp \
 	qml_cpp_bridge.cpp \
 	network.cpp \
 	cfg_file.cpp \
 	list_model.cpp \
-	frames.cpp
+	frames.cpp \
+	image.cpp
 
 RESOURCES = resources.qrc
 
@@ -55,6 +57,7 @@ DISTFILES += qml/main.qml \
     android/gradlew \
     android/gradlew.bat \
     android/res/values/libs.xml \
+    qml/CameraSettings.qml \
     qml/Connect.qml \
     qml/Actions.qml \
     qml/Busy.qml \

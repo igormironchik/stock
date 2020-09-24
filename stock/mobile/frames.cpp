@@ -196,6 +196,8 @@ Frames::present( const QVideoFrame & frame )
 		m_qml->present( QVideoFrame( image.copy() ) );
 	}
 
+	m_currentFrame = image.copy();
+
 	return true;
 }
 
@@ -226,6 +228,14 @@ Frames::setVideoSurface( QAbstractVideoSurface * s )
 		m_qml->stop();
 
 	m_qml = s;
+}
+
+QImage
+Frames::currentFrame() const
+{
+	QMutexLocker lock( &m_mutex );
+
+	return m_currentFrame;
 }
 
 void

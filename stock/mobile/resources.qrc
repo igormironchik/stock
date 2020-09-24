@@ -19,5 +19,9 @@
         <file>img/back-disabled_48x48.png</file>
         <file>img/back-enabled_48x48.png</file>
         <file>qml/CameraView.qml</file>
+        <file>img/rotate_48x48.png</file>
+        <file>img/settings_48x48.png</file>
+        <file>img/mirror_48x48.png</file>
+        <file>qml/CameraSettings.qml</file>
     </qresource>
 </RCC>
