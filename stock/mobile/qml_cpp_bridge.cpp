@@ -226,7 +226,7 @@ QmlCppBridge::searchRequested( const QString & code, const QString & place )
 void
 QmlCppBridge::listOfProductsReceived( const Stock::Messages::ListOfProducts & msg )
 {
-	d->m_searchModel->setData( msg.product() );
+	d->m_searchModel->setVectorData( msg.product() );
 
 	emit listReceived();
 }

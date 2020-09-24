@@ -50,7 +50,7 @@ public:
 	virtual ~ListModel();
 
 	//! Set data.
-	void setData( const std::vector< Messages::Product > & data );
+	void setVectorData( const std::vector< Messages::Product > & data );
 
 	enum RoleNames {
 		CodeRole = Qt::UserRole,

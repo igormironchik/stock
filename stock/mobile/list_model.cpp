@@ -75,7 +75,7 @@ ListModel::~ListModel()
 }
 
 void
-ListModel::setData( const std::vector< Messages::Product > & data )
+ListModel::setVectorData( const std::vector< Messages::Product > & data )
 {
 	beginResetModel();
 	d->m_data.clear();
