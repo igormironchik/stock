@@ -54,6 +54,12 @@ Frames::Frames( QObject * parent )
 Frames::~Frames()
 {
 	m_cam->stop();
+	m_cam->unload();
+
+	disconnect( m_cam, 0, 0, 0 );
+	m_cam->setParent( nullptr );
+
+	delete m_cam;
 
 	if( m_qml )
 		m_qml->stop();
@@ -120,8 +126,44 @@ Frames::present( const QVideoFrame & frame )
 	QVideoFrame f = frame;
 	f.map( QAbstractVideoBuffer::ReadOnly );
 
-	QImage image( f.bits(), f.width(), f.height(), f.bytesPerLine(),
-		QVideoFrame::imageFormatFromPixelFormat( f.pixelFormat() ) );
+	const auto fmt = QVideoFrame::imageFormatFromPixelFormat( f.pixelFormat() );
+
+	QImage image;
+
+	if( fmt != QImage::Format_Invalid )
+		image = QImage( f.bits(), f.width(), f.height(), f.bytesPerLine(), fmt );
+	else if( f.pixelFormat() == QVideoFrame::Format_ABGR32 )
+	{
+		const auto max = f.width() * f.height() * 4;
+		std::vector< uchar > buf;
+		buf.reserve( max );
+		uchar * bits = f.bits();
+
+		static const size_t i1 = ( Q_BYTE_ORDER == Q_LITTLE_ENDIAN ? 2 : 0 );
+		static const size_t i2 = ( Q_BYTE_ORDER == Q_LITTLE_ENDIAN ? 1 : 3 );
+		static const size_t i3 = ( Q_BYTE_ORDER == Q_LITTLE_ENDIAN ? 0 : 2 );
+		static const size_t i4 = ( Q_BYTE_ORDER == Q_LITTLE_ENDIAN ? 3 : 1 );
+
+		for( auto i = 0; i < max; )
+		{
+			buf.push_back( bits[ i1 ] );
+			buf.push_back( bits[ i2 ] );
+			buf.push_back( bits[ i3 ] );
+			buf.push_back( bits[ i4 ] );
+
+			bits += 4;
+			i += 4;
+		}
+
+		image = QImage( &buf[ 0 ], f.width(), f.height(), f.bytesPerLine(),
+			QImage::Format_ARGB32 ).copy();
+	}
+	else
+	{
+		f.unmap();
+
+		return true;
+	}
 
 	f.unmap();
 

@@ -20,7 +20,7 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import QtQuick 2.0
+import QtQuick 2.15
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 
@@ -35,25 +35,26 @@ ScrollView {
     property alias message: msgLabel.text
     property int port
 
-    ColumnLayout {
+    Column {
         spacing: 20
         width: appWindow.width - 40
         id: content
 
         Text {
             id: msgLabel
-            Layout.alignment: Qt.AlignHCenter
+            anchors.horizontalCenter: content.horizontalCenter
             wrapMode: Text.WordWrap
             width: parent.width - 10
             horizontalAlignment: Text.AlignHCenter
             Layout.fillWidth: true
         }
 
-        GridLayout {
-            Layout.alignment: Qt.AlignHCenter
+        Grid {
             columns: 3
             rowSpacing: 20
             columnSpacing: 20
+            verticalItemAlignment: Grid.AlignVCenter
+            horizontalItemAlignment: Grid.AlignLeft
 
             Text {
                 text: qsTr( "Port" )
@@ -90,6 +91,7 @@ ScrollView {
                 selectByMouse: true
                 mouseSelectionMode: TextInput.SelectCharacters
                 implicitHeight: appWindow.minimumCtrlHeight
+                implicitWidth: content.width - 40 - implicitHeight - pwdText.width
             }
 
             Button {
@@ -125,7 +127,6 @@ ScrollView {
 
             Button {
                 id: connectBtn
-                Layout.alignment: Qt.AlignHCenter
                 text: qsTr( "Connect" )
                 implicitHeight: appWindow.minimumCtrlHeight
                 implicitWidth: pwdField.width

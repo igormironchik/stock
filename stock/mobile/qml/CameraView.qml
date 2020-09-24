@@ -18,6 +18,7 @@ Item {
 	VideoOutput {
 		source: frames
 		anchors.fill: parent
+		anchors.centerIn: parent
 		focus : visible
 	}
  }

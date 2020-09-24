@@ -20,7 +20,7 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import QtQuick 2.7
+import QtQuick 2.15
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 
@@ -50,7 +50,7 @@ ScrollView {
 			unknownCode();
     }
 
-    ColumnLayout {
+    Column {
         id: content
         spacing: 20
         width: appWindow.width - 40
@@ -58,18 +58,21 @@ ScrollView {
         Label {
             height: appWindow.minimumCtrlHeight
             text: ( put ? qsTr( "Put Product" ) : qsTr( "Take Product" ) )
-            Layout.alignment: Qt.AlignHCenter
+            anchors.horizontalCenter: content.horizontalCenter
         }
 
-        GridLayout {
+        Grid {
             columnSpacing: 20
             rowSpacing: 20
             rows: 3
-            flow: GridLayout.TopToBottom
+            flow: Grid.TopToBottom
             width: parent.width
+            verticalItemAlignment: Grid.AlignVCenter
+            horizontalItemAlignment: Grid.AlignLeft
 
             Label {
                 text: qsTr( "Code" )
+                id: codeLabel
             }
 
             Label {
@@ -85,7 +88,7 @@ ScrollView {
                 model: codesModel
                 editable: false
                 implicitHeight: appWindow.minimumCtrlHeight
-                Layout.fillWidth: true
+                implicitWidth: content.width - codeLabel.width - scanBtn.implicitWidth - 40
                 currentIndex: -1
                 textRole: "display"
                 delegate: ItemDelegate {
@@ -107,7 +110,7 @@ ScrollView {
                 model: placesModel
                 editable: false
                 implicitHeight: appWindow.minimumCtrlHeight
-                Layout.fillWidth: true
+                implicitWidth: codeField.implicitWidth
                 currentIndex: -1
                 textRole: "display"
                 delegate: ItemDelegate {
@@ -130,7 +133,7 @@ ScrollView {
                 value: 0
                 editable: false
                 implicitHeight: appWindow.minimumCtrlHeight
-                Layout.fillWidth: true
+                implicitWidth: codeField.implicitWidth
                 up.indicator.implicitWidth: appWindow.minimumCtrlHeight
                 down.indicator.implicitWidth: appWindow.minimumCtrlHeight
 

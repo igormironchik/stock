@@ -32,14 +32,15 @@ ScrollView {
     //! 0 - by product search, 1 - by place.
     property int type: 0
 
-    ColumnLayout {
+    Column {
         width: appWindow.width
+        id: content
 
         Repeater {
             model: searchModel
 
             delegate: Item {
-                Layout.fillWidth: true
+                implicitWidth: content.width
                 implicitHeight: row.implicitHeight + 11
 
                 Rectangle {

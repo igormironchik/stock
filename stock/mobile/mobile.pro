@@ -49,6 +49,12 @@ SOURCES = main.cpp \
 RESOURCES = resources.qrc
 
 DISTFILES += qml/main.qml \
+    android/build.gradle \
+    android/gradle/wrapper/gradle-wrapper.jar \
+    android/gradle/wrapper/gradle-wrapper.properties \
+    android/gradlew \
+    android/gradlew.bat \
+    android/res/values/libs.xml \
     qml/Connect.qml \
     qml/Actions.qml \
     qml/Busy.qml \
@@ -82,3 +88,5 @@ generate_cfg.commands = $${CFGFILE_GENERATOR} \
 -i ${QMAKE_FILE_IN} -o $${OUT_PWD}/${QMAKE_FILE_BASE}.hpp
 
 PRE_TARGETDEPS += compiler_generate_cfg_make_all
+
+ANDROID_ABIS = armeabi-v7a x86_64

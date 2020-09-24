@@ -31,14 +31,15 @@ ScrollView {
     leftPadding: content.width < width ? ( width - content.width ) / 2 : 0
     topPadding: content.height < height ? ( height - content.height ) / 2 : 0
 
-    ColumnLayout {
+    Column {
         id: content
         spacing: 20
+        width: appWindow.width - 40
 
         Button {
             id: put
             implicitHeight: appWindow.minimumCtrlHeight
-            Layout.fillWidth: true
+            implicitWidth: parent.width
             text: qsTr( "Put Product" )
 
             onClicked: {
@@ -49,7 +50,7 @@ ScrollView {
         Button {
             id: take
             implicitHeight: appWindow.minimumCtrlHeight
-            Layout.fillWidth: true
+            implicitWidth: parent.width
             text: qsTr( "Take Product" )
 
             onClicked: {
@@ -60,7 +61,7 @@ ScrollView {
         Button {
             id: searchByCode
             implicitHeight: appWindow.minimumCtrlHeight
-            Layout.fillWidth: true
+            implicitWidth: parent.width
             text: qsTr( "Search By Code" )
 
             onClicked: {
@@ -71,7 +72,7 @@ ScrollView {
         Button {
             id: searchByPlace
             implicitHeight: appWindow.minimumCtrlHeight
-            Layout.fillWidth: true
+            implicitWidth: parent.width
             text: qsTr( "Search By Place" )
 
             onClicked: {

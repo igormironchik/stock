@@ -54,22 +54,21 @@ ScrollView {
 			unknownCode();
     }
 
-    ColumnLayout {
+    Column {
         id: content
         spacing: 20
         width: appWindow.width - 40
 
         Text {
             id: headerLabel
-            Layout.alignment: Qt.AlignHCenter
+            anchors.horizontalCenter: content.horizontalCenter
             wrapMode: Text.WordWrap
             width: parent.width
             horizontalAlignment: Text.AlignHCenter
             text: byCode ? qsTr( "Search by Code" ) : qsTr( "Search by Place" )
-            Layout.fillWidth: true
         }
 
-		RowLayout {
+		Row {
 			spacing: 20
 			id: comboRow
 
@@ -79,7 +78,7 @@ ScrollView {
 				implicitHeight: appWindow.minimumCtrlHeight
 				currentIndex: -1
 				textRole: "display"
-				Layout.fillWidth: true
+				implicitWidth: content.width - ( byCode ? scanBtn.implicitWidth + 20 : 0 )
 				delegate: ItemDelegate {
 					id: comboDelegateControl
 					height: appWindow.minimumCtrlHeight
