@@ -276,6 +276,8 @@ Frames::camSettingsChanged()
 	}
 	else
 		m_cam->setViewfinderSettings( CameraSettings::instance().camSettings() );
+
+	m_dirty = true;
 }
 
 void
