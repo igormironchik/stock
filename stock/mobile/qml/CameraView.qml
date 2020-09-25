@@ -39,8 +39,8 @@ Item {
 		height: appWindow.minimumCtrlHeight
 		implicitHeight: height
 		implicitWidth: height
-		x: parent.width - width - 20
-		y: parent.height - height - 20
+		x: parent.x + parent.width - width - 20
+		y:  parent.y + parent.height - height - 20
 
 		Image {
 			anchors.fill: parent

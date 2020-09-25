@@ -71,6 +71,8 @@ ScrollView {
                 }
                 implicitHeight: appWindow.minimumCtrlHeight
                 implicitWidth: pwdField.width
+                up.indicator.implicitWidth: appWindow.minimumCtrlHeight
+                down.indicator.implicitWidth: appWindow.minimumCtrlHeight
             }
 
             Rectangle {
