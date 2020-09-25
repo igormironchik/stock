@@ -22,12 +22,14 @@
 
 // SecurityCam include.
 #include "frames.hpp"
+#include "camera_settings.hpp"
 
 // Qt include.
 #include <QVideoSurfaceFormat>
 #include <QQmlEngine>
 #include <QRunnable>
 #include <QMetaObject>
+#include <QCameraFocus>
 
 // QZXing include.
 #include <QZXing.h>
@@ -44,22 +46,21 @@ static const int c_framesCount = 30;
 Frames::Frames( QObject * parent )
 	:	QAbstractVideoSurface( parent )
 	,	m_qml( nullptr )
-	,	m_cam( new QCamera( this ) )
+	,	m_cam( nullptr )
 	,	m_counter( 0 )
+	,	m_dirty( true )
 {
-	m_cam->setViewfinder( this );
-	m_cam->start();
+	connect( &CameraSettings::instance(), &CameraSettings::camSettingsChanged,
+		this, &Frames::camSettingsChanged );
+
+	initCam();
+
+	CameraSettings::instance().setCamName( CameraSettings::instance().camName(), false );
 }
 
 Frames::~Frames()
 {
-	m_cam->stop();
-	m_cam->unload();
-
-	disconnect( m_cam, 0, 0, 0 );
-	m_cam->setParent( nullptr );
-
-	delete m_cam;
+	stopCam();
 
 	if( m_qml )
 		m_qml->stop();
@@ -182,7 +183,7 @@ Frames::present( const QVideoFrame & frame )
 
 	if( m_qml )
 	{
-		if( !m_qml->isActive() )
+		if( m_dirty )
 		{
 			QVideoFrame::PixelFormat pixelFormat =
 				QVideoFrame::pixelFormatFromImageFormat( image.format() );
@@ -191,6 +192,8 @@ Frames::present( const QVideoFrame & frame )
 				pixelFormat );
 
 			m_qml->start( fmt );
+
+			m_dirty = false;
 		}
 
 		m_qml->present( QVideoFrame( image.copy() ) );
@@ -248,6 +251,62 @@ void
 Frames::emitCode( const QString & code )
 {
 	emit codeDetected( code );
+}
+
+void
+Frames::camStatusChanged( QCamera::Status st )
+{
+	if( st == QCamera::LoadedStatus )
+	{
+		const auto s = m_cam->viewfinderSettings();
+
+		CameraSettings::instance().setCamSettings( s, false );
+	}
+}
+
+void
+Frames::camSettingsChanged()
+{
+	const auto i = QCameraInfo( *m_cam );
+
+	if( CameraSettings::instance().camName() != i.deviceName() )
+	{
+		stopCam();
+		initCam();
+	}
+	else
+		m_cam->setViewfinderSettings( CameraSettings::instance().camSettings() );
+}
+
+void
+Frames::initCam()
+{
+	const auto camDev = CameraSettings::instance().camName();
+
+	if( !camDev.isEmpty() )
+		m_cam = new QCamera( CameraSettings::instance().camInfo( camDev ), this );
+	else
+		m_cam = new QCamera( this );
+
+	connect( m_cam, &QCamera::statusChanged, this, &Frames::camStatusChanged );
+
+	m_cam->setCaptureMode( QCamera::CaptureViewfinder );
+	m_cam->focus()->setFocusMode( QCameraFocus::AutoFocus );
+	m_cam->setViewfinderSettings( CameraSettings::instance().camSettings() );
+	m_cam->setViewfinder( this );
+	m_cam->start();
+}
+
+void
+Frames::stopCam()
+{
+	m_cam->stop();
+	m_cam->unload();
+
+	disconnect( m_cam, 0, 0, 0 );
+	m_cam->setParent( nullptr );
+
+	delete m_cam;
 }
 
 } /* namespace Stock */

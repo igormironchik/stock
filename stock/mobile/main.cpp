@@ -38,6 +38,7 @@
 #include "shared/constants.hpp"
 #include "frames.hpp"
 #include "image.hpp"
+#include "camera_settings.hpp"
 
 #include <QStringListModel>
 
@@ -92,8 +93,6 @@ int main( int argc, char ** argv )
     }
 
 	Stock::QmlCppBridge sigs( cfgFileName );
-	QStringListModel cameraModel;
-	QStringListModel resolutionModel;
 
 	QQmlApplicationEngine engine;
 	engine.rootContext()->setContextProperty( "passwordSet", passwordSet );
@@ -103,9 +102,13 @@ int main( int argc, char ** argv )
 	engine.rootContext()->setContextProperty( "codesModel", sigs.codesModel() );
 	engine.rootContext()->setContextProperty( "placesModel", sigs.placesModel() );
 	engine.rootContext()->setContextProperty( "searchModel", sigs.searchModel() );
+	engine.rootContext()->setContextProperty( "cameraSettings",
+		&Stock::CameraSettings::instance() );
 
-	engine.rootContext()->setContextProperty( "cameraModel", &cameraModel );
-	engine.rootContext()->setContextProperty( "resolutionModel", &resolutionModel );
+	engine.rootContext()->setContextProperty( "cameraModel",
+		Stock::CameraSettings::instance().camsList() );
+	engine.rootContext()->setContextProperty( "resolutionModel",
+		Stock::CameraSettings::instance().camResolutions() );
 
 	engine.load( QUrl( "qrc:/qml/main.qml" ) );
 

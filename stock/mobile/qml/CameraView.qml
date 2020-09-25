@@ -7,13 +7,14 @@ import QtQuick.Controls 2.2
 Item {
 	id: root
 	property string code: "";
-	property Component cameraSettings: cameraSettingsComponent
+	property Component cameraSettingsComponentAlias: cameraSettingsComponent
 
 	Component {
 		id: cameraSettingsComponent
 
 		CameraSettings {
 			image: frames.currentFrame
+			Component.onDestruction: cameraSettings.applySettings()
 		}
     }
 

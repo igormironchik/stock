@@ -38,7 +38,8 @@ HEADERS = qml_cpp_bridge.hpp \
 	cfg_file.hpp \
 	list_model.hpp \
 	frames.hpp \
-	image.hpp
+	image.hpp \
+	camera_settings.hpp
 
 SOURCES = main.cpp \
 	qml_cpp_bridge.cpp \
@@ -46,7 +47,8 @@ SOURCES = main.cpp \
 	cfg_file.cpp \
 	list_model.cpp \
 	frames.cpp \
-	image.cpp
+	image.cpp \
+	camera_settings.cpp
 
 RESOURCES = resources.qrc
 
@@ -76,7 +78,8 @@ include( ../shared/shared.pri )
 include( ../../3rdparty/cfgfile/cfgfile/cfgfile.pri )
 
 TO_GENERATE = ../shared/messages.cfgfile \
-	config.cfgfile
+	config.cfgfile \
+	camera.cfgfile
 
 QMAKE_EXTRA_COMPILERS += generate_cfg
 generate_cfg.name = CONF_GEN

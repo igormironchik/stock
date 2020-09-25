@@ -74,6 +74,16 @@ public slots:
 	//! Emit code.
 	void emitCode( const QString & code );
 
+private slots:
+	//! Camera status changed.
+	void camStatusChanged( QCamera::Status st );
+	//! Camera settings changed.
+	void camSettingsChanged();
+	//! Init camera.
+	void initCam();
+	//! Stop camera.
+	void stopCam();
+
 private:
 	Q_DISABLE_COPY( Frames )
 
@@ -87,6 +97,8 @@ private:
 	int m_counter;
 	//! Current frame.
 	QImage m_currentFrame;
+	//! Dirty?
+	bool m_dirty;
 }; // class Frames
 
 } /* namespace Stock */

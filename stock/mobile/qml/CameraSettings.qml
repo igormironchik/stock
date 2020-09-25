@@ -44,7 +44,7 @@ ScrollView {
 			editable: false
 			implicitHeight: appWindow.minimumCtrlHeight
 			implicitWidth: content.width
-			currentIndex: 0
+			currentIndex: -1
 			textRole: "display"
 			delegate: ItemDelegate {
 				id: cameraDelegateControl
@@ -56,6 +56,7 @@ ScrollView {
 			}
 
 			onActivated: {
+				cameraSettings.setCamName( currentText, false )
 			}
 		}
 
@@ -65,7 +66,7 @@ ScrollView {
 			editable: false
 			implicitHeight: appWindow.minimumCtrlHeight
 			implicitWidth: content.width
-			currentIndex: 0
+			currentIndex: -1
 			textRole: "display"
 			delegate: ItemDelegate {
 				id: resolutionDelegateControl
@@ -77,6 +78,7 @@ ScrollView {
 			}
 
 			onActivated: {
+				cameraSettings.setCamSettings( currentText, false )
 			}
 		}
 
@@ -123,5 +125,10 @@ ScrollView {
                 }
             }
 		}
+	}
+
+	Component.onCompleted: {
+		camera.currentIndex = camera.find( cameraSettings.currentCamName )
+		resolution.currentIndex = resolution.find( cameraSettings.currentResolution )
 	}
 }

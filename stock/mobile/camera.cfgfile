@@ -1,0 +1,54 @@
+
+{forGeneration STOCK_CAMERA_CONFIG_HPP
+
+	{namespace Stock
+
+		|#
+			Configuration.
+		#|
+		{class CameraCfg
+			{base tagNoValue}
+
+			{tagScalar
+				{valueType QString}
+				{name device}
+				{required}
+			}
+
+			{tagScalar
+				{valueType int}
+				{name width}
+				{required}
+				{defaultValue 0}
+			}
+
+			{tagScalar
+				{valueType int}
+				{name height}
+				{required}
+				{defaultValue 0}
+			}
+
+			{tagScalar
+				{valueType int}
+				{name frames}
+				{required}
+				{defaultValue 0}
+			}
+
+			{tagScalar
+				{valueType bool}
+				{name mirrored}
+				{required}
+			}
+
+			{tagScalar
+				{valueType int}
+				{name rotation}
+				{required}
+			}
+		} || class CameraCfg
+
+	} || namespace Stock
+
+} || forGeneration
