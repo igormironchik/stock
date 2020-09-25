@@ -106,6 +106,7 @@ ScrollView {
                 }
 
                 onClicked: {
+					cameraSettings.mirror()
                 }
             }
 
@@ -122,6 +123,7 @@ ScrollView {
                 }
 
                 onClicked: {
+					cameraSettings.rotate()
                 }
             }
 		}

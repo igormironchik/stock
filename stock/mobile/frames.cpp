@@ -53,6 +53,8 @@ Frames::Frames( QObject * parent )
 	connect( &CameraSettings::instance(), &CameraSettings::camSettingsChanged,
 		this, &Frames::camSettingsChanged );
 
+	m_transform = CameraSettings::instance().transform();
+
 	initCam();
 
 	CameraSettings::instance().setCamName( CameraSettings::instance().camName(), false );
@@ -169,6 +171,12 @@ Frames::present( const QVideoFrame & frame )
 
 	f.unmap();
 
+	QMutexLocker lock( &m_mutex );
+
+	m_currentFrame = image.copy();
+
+	image = image.transformed( m_transform );
+
 	if( m_counter == 0 )
 	{
 		auto * detect = new DetectCode( image.copy(), this );
@@ -179,8 +187,6 @@ Frames::present( const QVideoFrame & frame )
 
 	if( m_counter == c_framesCount )
 		m_counter = 0;
-
-	QMutexLocker lock( &m_mutex );
 
 	if( m_qml )
 	{
@@ -199,8 +205,6 @@ Frames::present( const QVideoFrame & frame )
 
 		m_qml->present( QVideoFrame( image.copy() ) );
 	}
-
-	m_currentFrame = image.copy();
 
 	return true;
 }
@@ -278,6 +282,10 @@ Frames::camSettingsChanged()
 	}
 	else
 		m_cam->setViewfinderSettings( CameraSettings::instance().camSettings() );
+
+	QMutexLocker lock( &m_mutex );
+
+	m_transform = CameraSettings::instance().transform();
 
 	m_dirty = true;
 }

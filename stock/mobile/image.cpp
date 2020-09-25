@@ -22,6 +22,7 @@
 
 // SecurityCam include.
 #include "image.hpp"
+#include "camera_settings.hpp"
 
 // Qt include.
 #include <QQmlEngine>
@@ -38,10 +39,14 @@ PreviewImage::PreviewImage( QQuickItem * parent )
 	:	QQuickPaintedItem( parent )
 	,	m_dirty( true )
 {
+	m_transform = CameraSettings::instance().transform();
+
 	connect( this, &PreviewImage::widthChanged,
 		this, &PreviewImage::markDirty );
 	connect( this, &PreviewImage::heightChanged,
 		this, &PreviewImage::markDirty );
+	connect( &CameraSettings::instance(), &CameraSettings::transformChanged,
+		this, &PreviewImage::transformChanged );
 }
 
 PreviewImage::~PreviewImage()
@@ -68,8 +73,8 @@ PreviewImage::paint( QPainter * painter )
 {
 	if( m_dirty )
 	{
-		m_thumbnail = m_image.scaled( width(), height(), Qt::KeepAspectRatio,
-			Qt::SmoothTransformation );
+		m_thumbnail = m_image.transformed( m_transform ).scaled( width(), height(),
+			Qt::KeepAspectRatio, Qt::SmoothTransformation );
 		m_dirty = false;
 	}
 
@@ -93,6 +98,15 @@ void
 PreviewImage::registerQmlType()
 {
 	qmlRegisterType< Stock::PreviewImage > ( "PreviewImage", 0, 1, "PreviewImage" );
+}
+
+void
+PreviewImage::transformChanged()
+{
+	m_transform = CameraSettings::instance().transform();
+	m_dirty = true;
+
+	update();
 }
 
 } /* namespace Stock */

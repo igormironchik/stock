@@ -99,6 +99,8 @@ private:
 	QImage m_currentFrame;
 	//! Dirty?
 	bool m_dirty;
+	//! Transform.
+	QTransform m_transform;
 }; // class Frames
 
 } /* namespace Stock */

@@ -347,4 +347,26 @@ CameraSettings::clearDirtyFlag()
 	m_dirty = false;
 }
 
+void
+CameraSettings::rotate()
+{
+	const auto r = m_cfg.rotation() + 90;
+	m_cfg.set_rotation( r < 360 ? r : 0 );
+
+	m_dirty = true;
+
+	emit transformChanged();
+}
+
+void
+CameraSettings::mirror()
+{
+	const auto m = !m_cfg.mirrored();
+	m_cfg.set_mirrored( m );
+
+	m_dirty = true;
+
+	emit transformChanged();
+}
+
 } /* namespace Stock */

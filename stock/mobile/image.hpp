@@ -62,6 +62,8 @@ public:
 private slots:
 	//! Width changed.
 	void markDirty();
+	//! Transform changed.
+	void transformChanged();
 
 private:
 	Q_DISABLE_COPY( PreviewImage )
@@ -72,6 +74,8 @@ private:
 	bool m_dirty;
 	//! Thumbnail.
 	QImage m_thumbnail;
+	//! Transform.
+	QTransform m_transform;
 }; // class PreviewImage
 
 } /* namespace Stock */

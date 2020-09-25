@@ -98,6 +98,10 @@ public slots:
 	void applySettings();
 	//! Clear dirty flag.
 	void clearDirtyFlag();
+	//! Rotate.
+	void rotate();
+	//! Mirror.
+	void mirror();
 
 private slots:
 	//! Camera status changed.
