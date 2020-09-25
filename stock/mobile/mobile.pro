@@ -95,4 +95,4 @@ generate_cfg.commands = $${CFGFILE_GENERATOR} \
 
 PRE_TARGETDEPS += compiler_generate_cfg_make_all
 
-ANDROID_ABIS = armeabi-v7a x86_64
+ANDROID_ABIS = armeabi-v7a

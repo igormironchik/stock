@@ -38,6 +38,7 @@
 namespace Stock {
 
 static const int c_framesCount = 30;
+static const int c_keyFrameMax = 60;
 
 //
 // Frames
@@ -48,6 +49,7 @@ Frames::Frames( QObject * parent )
 	,	m_qml( nullptr )
 	,	m_cam( nullptr )
 	,	m_counter( 0 )
+	,	m_keyFrameCounter( 0 )
 	,	m_dirty( true )
 {
 	connect( &CameraSettings::instance(), &CameraSettings::camSettingsChanged,
@@ -59,6 +61,8 @@ Frames::Frames( QObject * parent )
 
 	CameraSettings::instance().setCamName( CameraSettings::instance().camName(), false );
 	CameraSettings::instance().clearDirtyFlag();
+
+	connect( this, &Frames::imageChanged, this, &Frames::searchAndLock );
 }
 
 Frames::~Frames()
@@ -117,7 +121,55 @@ private:
 	QImage m_img;
 	//! Provider.
 	Frames * m_provider;
-}; // class ReadGIF
+}; // class DetectCode
+
+
+class DetectChange final
+	:	public QRunnable
+{
+public:
+	DetectChange( const QImage & img1, const QImage & img2, Frames * provider )
+		:	m_img1( img1 )
+		,	m_img2( img2 )
+		,	m_provider( provider )
+	{
+		setAutoDelete( true );
+	}
+
+	void run() override
+	{
+		bool changed = false;
+
+		if( m_img1.width() != m_img2.width() || m_img1.height() != m_img2.height() )
+			changed = true;
+		else
+		{
+			qreal diff = 0.0;
+
+			for( int i = 0; i < m_img1.width(); ++i )
+			{
+				for( int j = 0; j < m_img1.height(); ++j )
+					diff += qAbs( (qreal) m_img1.pixel( i, j ) - (qreal) m_img2.pixel( i, j ) );
+			}
+
+			diff /= ( (qreal) m_img1.width() * (qreal) m_img2.height() );
+
+			if( diff > 1000000.0 )
+				changed = true;
+		}
+
+		if( changed )
+			QMetaObject::invokeMethod( m_provider, "emitImageChanged", Qt::QueuedConnection );
+	}
+
+private:
+	//! Image 1.
+	QImage m_img1;
+	//! Image 2.
+	QImage m_img2;
+	//! Provider.
+	Frames * m_provider;
+}; // class DetectChange
 
 } /* namespace anonymous */
 
@@ -187,6 +239,20 @@ Frames::present( const QVideoFrame & frame )
 
 	if( m_counter == c_framesCount )
 		m_counter = 0;
+
+	if( m_keyFrameCounter == 0 )
+		m_keyFrame = m_currentFrame;
+
+
+	++m_keyFrameCounter;
+
+	if( m_keyFrameCounter == c_keyFrameMax )
+	{
+		auto * detect = new DetectChange( m_keyFrame.copy(), m_currentFrame.copy(), this );
+		QThreadPool::globalInstance()->start( detect );
+
+		m_keyFrameCounter = 0;
+	}
 
 	if( m_qml )
 	{
@@ -259,6 +325,12 @@ Frames::emitCode( const QString & code )
 }
 
 void
+Frames::emitImageChanged()
+{
+	emit imageChanged();
+}
+
+void
 Frames::camStatusChanged( QCamera::Status st )
 {
 	if( st == QCamera::LoadedStatus )
@@ -268,6 +340,15 @@ Frames::camStatusChanged( QCamera::Status st )
 		CameraSettings::instance().setCamSettings( s, false );
 		CameraSettings::instance().clearDirtyFlag();
 	}
+	else if( st == QCamera::ActiveStatus )
+		m_cam->searchAndLock();
+}
+
+void
+Frames::searchAndLock()
+{
+	if( m_cam && m_cam->status() == QCamera::ActiveStatus )
+		m_cam->searchAndLock();
 }
 
 void
@@ -308,8 +389,8 @@ Frames::initCam()
 
 	m_cam->setCaptureMode( QCamera::CaptureViewfinder );
 
-	if( m_cam->focus()->isFocusModeSupported( QCameraFocus::ContinuousFocus ) )
-		m_cam->focus()->setFocusMode( QCameraFocus::ContinuousFocus );
+	if( m_cam->focus()->isFocusModeSupported( QCameraFocus::MacroFocus  ) )
+		m_cam->focus()->setFocusMode( QCameraFocus::MacroFocus );
 
 	m_cam->setViewfinderSettings( CameraSettings::instance().camSettings() );
 	m_cam->setViewfinder( this );
@@ -326,6 +407,8 @@ Frames::stopCam()
 	m_cam->setParent( nullptr );
 
 	delete m_cam;
+
+	m_cam = nullptr;
 }
 
 } /* namespace Stock */

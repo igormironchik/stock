@@ -49,6 +49,8 @@ signals:
 	void codeDetected( const QString & code );
 	//! Current frame changed.
 	void currentFrameChanged();
+	//! Image changed.
+	void imageChanged();
 
 public:
 	static void registerQmlType();
@@ -73,6 +75,8 @@ public:
 public slots:
 	//! Emit code.
 	void emitCode( const QString & code );
+	//! Emit image changed.
+	void emitImageChanged();
 
 private slots:
 	//! Camera status changed.
@@ -83,6 +87,8 @@ private slots:
 	void initCam();
 	//! Stop camera.
 	void stopCam();
+	//! Search and lock.
+	void searchAndLock();
 
 private:
 	Q_DISABLE_COPY( Frames )
@@ -95,8 +101,12 @@ private:
 	QCamera * m_cam;
 	//! Counter.
 	int m_counter;
+	//! Key frame counter.
+	int m_keyFrameCounter;
 	//! Current frame.
 	QImage m_currentFrame;
+	//! Key frame.
+	QImage m_keyFrame;
 	//! Dirty?
 	bool m_dirty;
 	//! Transform.
