@@ -56,6 +56,7 @@ Frames::Frames( QObject * parent )
 	initCam();
 
 	CameraSettings::instance().setCamName( CameraSettings::instance().camName(), false );
+	CameraSettings::instance().clearDirtyFlag();
 }
 
 Frames::~Frames()
@@ -261,6 +262,7 @@ Frames::camStatusChanged( QCamera::Status st )
 		const auto s = m_cam->viewfinderSettings();
 
 		CameraSettings::instance().setCamSettings( s, false );
+		CameraSettings::instance().clearDirtyFlag();
 	}
 }
 

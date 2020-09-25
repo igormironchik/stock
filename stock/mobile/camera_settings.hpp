@@ -96,6 +96,8 @@ public slots:
 	void setCamSettings( const QString & resolution, bool notify = true );
 	//! Apply settings if changed.
 	void applySettings();
+	//! Clear dirty flag.
+	void clearDirtyFlag();
 
 private slots:
 	//! Camera status changed.

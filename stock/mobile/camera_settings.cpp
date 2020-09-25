@@ -294,7 +294,25 @@ CameraSettings::readCfg()
 void
 CameraSettings::writeCfg()
 {
+	QFile file( cfgFileName() );
 
+	if( file.open( QIODevice::WriteOnly ) )
+	{
+		QTextStream s( &file );
+		s.setCodec( QTextCodec::codecForName( "UTF-8" ) );
+
+		try {
+			tag_CameraCfg< cfgfile::qstring_trait_t> tag( m_cfg );
+
+			cfgfile::write_cfgfile( tag, s );
+
+			file.close();
+		}
+		catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
+		{
+			file.close();
+		}
+	}
 }
 
 QString
@@ -317,8 +335,16 @@ CameraSettings::applySettings()
 	{
 		m_dirty = false;
 
+		writeCfg();
+
 		emit camSettingsChanged();
 	}
+}
+
+void
+CameraSettings::clearDirtyFlag()
+{
+	m_dirty = false;
 }
 
 } /* namespace Stock */
