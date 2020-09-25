@@ -281,7 +281,11 @@ Frames::camSettingsChanged()
 		initCam();
 	}
 	else
+	{
+		m_cam->stop();
 		m_cam->setViewfinderSettings( CameraSettings::instance().camSettings() );
+		m_cam->start();
+	}
 
 	QMutexLocker lock( &m_mutex );
 
@@ -303,7 +307,10 @@ Frames::initCam()
 	connect( m_cam, &QCamera::statusChanged, this, &Frames::camStatusChanged );
 
 	m_cam->setCaptureMode( QCamera::CaptureViewfinder );
-	m_cam->focus()->setFocusMode( QCameraFocus::AutoFocus );
+
+	if( m_cam->focus()->isFocusModeSupported( QCameraFocus::ContinuousFocus ) )
+		m_cam->focus()->setFocusMode( QCameraFocus::ContinuousFocus );
+
 	m_cam->setViewfinderSettings( CameraSettings::instance().camSettings() );
 	m_cam->setViewfinder( this );
 	m_cam->start();
