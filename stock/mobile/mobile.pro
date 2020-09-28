@@ -67,7 +67,9 @@ DISTFILES += qml/main.qml \
     qml/Message.qml \
     qml/Search.qml \
     qml/SearchResult.qml \
-    qml/CameraView.qml
+    qml/CameraView.qml \
+    tr/stock_ru.qm \
+    tr/stock_ru.ts
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 

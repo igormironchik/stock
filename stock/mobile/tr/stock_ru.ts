@@ -4,22 +4,22 @@
 <context>
     <name>Actions</name>
     <message>
-        <location filename="../qml/Actions.qml" line="42"/>
+        <location filename="../qml/Actions.qml" line="43"/>
         <source>Put Product</source>
         <translation>Положить товар</translation>
     </message>
     <message>
-        <location filename="../qml/Actions.qml" line="53"/>
+        <location filename="../qml/Actions.qml" line="54"/>
         <source>Take Product</source>
         <translation>Забрать товар</translation>
     </message>
     <message>
-        <location filename="../qml/Actions.qml" line="64"/>
+        <location filename="../qml/Actions.qml" line="65"/>
         <source>Search By Code</source>
         <translation>Поиск по коду</translation>
     </message>
     <message>
-        <location filename="../qml/Actions.qml" line="75"/>
+        <location filename="../qml/Actions.qml" line="76"/>
         <source>Search By Place</source>
         <translation>Поиск по месту</translation>
     </message>
@@ -27,37 +27,37 @@
 <context>
     <name>Change</name>
     <message>
-        <location filename="../qml/Change.qml" line="45"/>
+        <location filename="../qml/Change.qml" line="60"/>
         <source>Put Product</source>
         <translation>Положить товар</translation>
     </message>
     <message>
-        <location filename="../qml/Change.qml" line="45"/>
+        <location filename="../qml/Change.qml" line="60"/>
         <source>Take Product</source>
         <translation>Забрать товар</translation>
     </message>
     <message>
-        <location filename="../qml/Change.qml" line="57"/>
+        <location filename="../qml/Change.qml" line="74"/>
         <source>Code</source>
         <translation>Код</translation>
     </message>
     <message>
-        <location filename="../qml/Change.qml" line="61"/>
+        <location filename="../qml/Change.qml" line="79"/>
         <source>Place</source>
         <translation>Место</translation>
     </message>
     <message>
-        <location filename="../qml/Change.qml" line="65"/>
+        <location filename="../qml/Change.qml" line="84"/>
         <source>Amount</source>
         <translation>Кол-во</translation>
     </message>
     <message>
-        <location filename="../qml/Change.qml" line="147"/>
+        <location filename="../qml/Change.qml" line="173"/>
         <source>OK</source>
         <translation>ОК</translation>
     </message>
     <message>
-        <location filename="../qml/Change.qml" line="164"/>
+        <location filename="../qml/Change.qml" line="190"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
@@ -65,12 +65,18 @@
 <context>
     <name>Connect</name>
     <message>
-        <location filename="../qml/Connect.qml" line="49"/>
+        <location filename="../qml/Connect.qml" line="60"/>
+        <source>Port</source>
+        <translation>Порт</translation>
+    </message>
+    <message>
+        <location filename="../qml/Connect.qml" line="84"/>
+        <location filename="../qml/Connect.qml" line="90"/>
         <source>Password</source>
         <translation>Пароль</translation>
     </message>
     <message>
-        <location filename="../qml/Connect.qml" line="87"/>
+        <location filename="../qml/Connect.qml" line="132"/>
         <source>Connect</source>
         <translation>Подключиться</translation>
     </message>
@@ -86,23 +92,25 @@
 <context>
     <name>QObject</name>
     <message>
+        <location filename="../../shared/datagrams.hpp" line="129"/>
         <source>Wrong protocol</source>
-        <translation type="vanished">Ошибка сетевого протокола</translation>
+        <translation>Ошибка сетевого протокола</translation>
     </message>
     <message>
+        <location filename="../../shared/datagrams.hpp" line="136"/>
         <source>readDatagram(): wrong datagram</source>
-        <translation type="vanished">readDatagram(): ошибка в пакете</translation>
+        <translation>readDatagram(): ошибка в пакете</translation>
     </message>
 </context>
 <context>
     <name>QmlCppBridge</name>
     <message>
-        <location filename="../qml_cpp_bridge.cpp" line="147"/>
+        <location filename="../qml_cpp_bridge.cpp" line="163"/>
         <source>Network error occured. Try to reconnect.</source>
         <translation>Возникла ошибка сетевого взаимодействия. Попробуйте подключиться снова.</translation>
     </message>
     <message>
-        <location filename="../qml_cpp_bridge.cpp" line="168"/>
+        <location filename="../qml_cpp_bridge.cpp" line="187"/>
         <source>Something went wrong on the server. Check your password and try to reconnect.</source>
         <translation>Что-то пошло не так. Проверьте Ваш пароль и попробуйте подключиться снова.</translation>
     </message>
@@ -110,22 +118,22 @@
 <context>
     <name>Search</name>
     <message>
-        <location filename="../qml/Search.qml" line="52"/>
+        <location filename="../qml/Search.qml" line="68"/>
         <source>Search by Code</source>
         <translation>Поиск по коду</translation>
     </message>
     <message>
-        <location filename="../qml/Search.qml" line="52"/>
+        <location filename="../qml/Search.qml" line="68"/>
         <source>Search by Place</source>
         <translation>Поиск по месту</translation>
     </message>
     <message>
-        <location filename="../qml/Search.qml" line="85"/>
+        <location filename="../qml/Search.qml" line="123"/>
         <source>OK</source>
         <translation>ОК</translation>
     </message>
     <message>
-        <location filename="../qml/Search.qml" line="97"/>
+        <location filename="../qml/Search.qml" line="135"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
@@ -133,17 +141,17 @@
 <context>
     <name>SearchResult</name>
     <message>
-        <location filename="../qml/SearchResult.qml" line="64"/>
+        <location filename="../qml/SearchResult.qml" line="67"/>
         <source>&lt;b&gt;Place: &lt;/b&gt;</source>
         <translation>&lt;b&gt;Место: &lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../qml/SearchResult.qml" line="65"/>
+        <location filename="../qml/SearchResult.qml" line="68"/>
         <source>&lt;b&gt;Code: &lt;/b&gt;</source>
         <translation>&lt;b&gt;Код: &lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../qml/SearchResult.qml" line="69"/>
+        <location filename="../qml/SearchResult.qml" line="73"/>
         <source>&lt;b&gt;Amount: &lt;/b&gt;</source>
         <translation>&lt;b&gt;Кол-во: &lt;/b&gt;</translation>
     </message>
@@ -151,9 +159,13 @@
 <context>
     <name>main</name>
     <message>
-        <location filename="../qml/main.qml" line="49"/>
         <source>Change Password</source>
-        <translation>Изменить пароль</translation>
+        <translation type="vanished">Изменить пароль</translation>
+    </message>
+    <message>
+        <location filename="../qml/main.qml" line="49"/>
+        <source>Reconnect</source>
+        <translation>Переподключиться</translation>
     </message>
     <message>
         <location filename="../qml/main.qml" line="82"/>
@@ -162,28 +174,33 @@
     </message>
     <message>
         <location filename="../qml/main.qml" line="109"/>
-        <location filename="../qml/main.qml" line="192"/>
-        <location filename="../qml/main.qml" line="204"/>
+        <location filename="../qml/main.qml" line="216"/>
+        <location filename="../qml/main.qml" line="228"/>
         <source>Disconnected</source>
         <translation>Отключено</translation>
     </message>
     <message>
-        <location filename="../qml/main.qml" line="217"/>
+        <location filename="../qml/main.qml" line="136"/>
+        <source>Unknown code. Please contact administrator to add new product to the database. And reconnect after.</source>
+        <translation>Неизвестный код. Сообщите администратору, чтобы добавить новый код продукта в базу данных. После этого переподключитесь.</translation>
+    </message>
+    <message>
+        <location filename="../qml/main.qml" line="241"/>
         <source>Connected</source>
         <translation>Подключено</translation>
     </message>
     <message>
-        <location filename="../qml/main.qml" line="283"/>
+        <location filename="../qml/main.qml" line="307"/>
         <source>Data saved. Now you can continue.</source>
         <translation>Данные сохранены. Теперь можно продолжить.</translation>
     </message>
     <message>
-        <location filename="../qml/main.qml" line="290"/>
+        <location filename="../qml/main.qml" line="314"/>
         <source>Something went wrong. Please try again later. Possibly password was changed.</source>
         <translation>Что-то пошло не так. Попробуйте снова позже. Возможно на сервере был изменен пароль.</translation>
     </message>
     <message>
-        <location filename="../qml/main.qml" line="311"/>
+        <location filename="../qml/main.qml" line="335"/>
         <source>Nothing found.</source>
         <translation>Ничего не найдено.</translation>
     </message>
