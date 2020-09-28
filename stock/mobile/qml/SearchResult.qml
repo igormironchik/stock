@@ -63,13 +63,13 @@ ScrollView {
                         spacing: 5
 
                         Text {
-                            font.pointSize: 12
+                            font.pixelSize: appWindow.minimumCtrlHeight / 2.5
                             text: type === 0 ? qsTr( "<b>Place: </b>" ) + model[ "PlaceRole" ] :
                                 qsTr( "<b>Code: </b>" ) + model[ "CodeRole" ]
                         }
 
                         Text {
-                            font.pointSize: 12
+                            font.pixelSize: appWindow.minimumCtrlHeight / 2.5
                             text: qsTr( "<b>Amount: </b>" ) + model[ "AmountRole" ]
                         }
                     }
@@ -79,6 +79,7 @@ ScrollView {
                         anchors.verticalCenter: parent.verticalCenter
 
                         Text {
+							font.pixelSize: appWindow.minimumCtrlHeight / 3
                             width: parent.width
                             text: model[ "DescRole" ]
                             wrapMode: Text.WordWrap
