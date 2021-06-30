@@ -58,4 +58,4 @@ To build mobile part use stock/mobile/mobile.pro
 
 # Donate
 
-[Donate with BTC](https://github.com/igormironchik)
+[![](bitcoin-btc-logo-full.png)](https://github.com/igormironchik)
