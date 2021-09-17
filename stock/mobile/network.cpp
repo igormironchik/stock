@@ -88,7 +88,7 @@ static const int c_timeout = 15;
 void
 NetworkPrivate::init()
 {
-	m_sock = new TcpSocket( q );
+	m_sock = new TcpSocket( m_pwd.toStdString(), q );
 	m_udp = new QUdpSocket(	q );
 	m_timer = new QTimer( q );
 	m_timer->setSingleShot( true );
@@ -134,6 +134,7 @@ void
 Network::setPassword( const QString & pwd )
 {
 	d->m_pwd = pwd;
+	d->m_sock->setPwd( pwd );
 }
 
 quint16
@@ -167,7 +168,7 @@ Network::establishConnection()
 
 	d->m_udp->bind();
 
-	writeTellIpDatargam( d->m_udp, d->m_pwd, d->m_udpPort );
+	writeTellIpDatargam( d->m_udp, d->m_udpPort );
 }
 
 void

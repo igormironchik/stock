@@ -33,6 +33,9 @@
 // cfgfile include.
 #include <cfgfile/all.hpp>
 
+// easy-encryption include.
+#include <easy-encryption/encrypt.h>
+
 
 namespace Stock {
 
@@ -108,8 +111,9 @@ static const int c_timeout = 15;
 
 class TcpSocketPrivate {
 public:
-	TcpSocketPrivate( TcpSocket * parent )
-		:	q( parent )
+	TcpSocketPrivate( const std::string & pwd, TcpSocket * parent )
+		:	m_pwd( pwd )
+		,	q( parent )
 	{
 	}
 
@@ -118,6 +122,8 @@ public:
 
 	//! Buffer.
 	Buffer m_buf;
+	//! Password.
+	std::string m_pwd;
 	//! Parent.
 	TcpSocket * q;
 }; // class TcpSocketPrivate
@@ -146,6 +152,12 @@ TcpSocketPrivate::parse()
 
 		if( s.readRawData( msgData.data(), length ) != length )
 			return true;
+
+		auto str = msgData.toStdString();
+		const auto data = decrypt( str, m_pwd );
+
+		msgData.clear();
+		msgData.append( data.c_str() );
 
 		QTextStream msgStream( msgData );
 		msgStream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
@@ -263,9 +275,9 @@ TcpSocketPrivate::parse()
 // TcpSocket
 //
 
-TcpSocket::TcpSocket( QObject * parent )
+TcpSocket::TcpSocket( const std::string & pwd, QObject * parent )
 	:	QTcpSocket( parent )
-	,	d( new TcpSocketPrivate( this ) )
+	,	d( new TcpSocketPrivate( pwd, this ) )
 {
 	connect( this, &QTcpSocket::readyRead,
 		this, &TcpSocket::dataReceived );
@@ -331,6 +343,11 @@ TcpSocket::sendMsg( const MSG & msg )
 		cfgfile::write_cfgfile( tag, stream );
 		stream.flush();
 
+		auto str = data.toStdString();
+		const auto encrypted = encrypt( str, d->m_pwd );
+		data.clear();
+		data.append( encrypted.c_str() );
+
 		QByteArray msgData;
 		QDataStream s( &msgData, QIODevice::WriteOnly );
 		s.setVersion( QDataStream::Qt_5_9 );
@@ -368,6 +385,12 @@ void
 TcpSocket::timeout()
 {
 	emit error( Stock::Messages::Error() );
+}
+
+void
+TcpSocket::setPwd( const QString & pwd )
+{
+	d->m_pwd = pwd.toStdString();
 }
 
 } /* namespace Stock */

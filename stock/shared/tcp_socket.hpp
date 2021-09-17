@@ -60,8 +60,11 @@ signals:
 	void ok( const Stock::Messages::Ok & );
 
 public:
-	explicit TcpSocket( QObject * parent );
+	explicit TcpSocket( const std::string & pwd, QObject * parent );
 	virtual ~TcpSocket();
+
+	//! Set password.
+	void setPwd( const QString & pwd );
 
 public slots:
 	//! Send hello.

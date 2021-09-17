@@ -423,12 +423,8 @@ MainWindow::readPendingDatagrams()
 					Messages::tag_TellMeYourIP< cfgfile::qstring_trait_t > > (
 						datagram, msg );
 
-				if( msg.secret() == d->m_cfg.secret() )
-				{
-					writeMyIpDatargam( d->m_udp, d->m_cfg.host(), d->m_cfg.port(),
-						datagram.senderAddress(), datagram.senderPort() );
-
-				}
+				writeMyIpDatargam( d->m_udp, d->m_cfg.host(), d->m_cfg.port(),
+					datagram.senderAddress(), datagram.senderPort() );
 			}
 			catch( const Exception & )
 			{

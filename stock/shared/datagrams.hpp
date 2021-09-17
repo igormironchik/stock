@@ -162,7 +162,7 @@ void readDatagram( const QNetworkDatagram & d, MSG & msg )
 
 //! Write TellIP datagram.
 void
-writeTellIpDatargam( QUdpSocket * s, const QString & password, quint16 port = c_udpPort );
+writeTellIpDatargam( QUdpSocket * s, quint16 port = c_udpPort );
 
 
 //

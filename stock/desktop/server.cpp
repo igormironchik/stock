@@ -110,6 +110,9 @@ void
 Server::setSecret( const QString & secret )
 {
 	d->m_secret = secret;
+
+	std::for_each( d->m_clients.begin(), d->m_clients.end(),
+		[&secret] ( TcpSocket * s ) { s->setPwd( secret ); } );
 }
 
 template< typename T >
@@ -121,7 +124,7 @@ std::vector< T > toStdVector( const QList< T > & list )
 void
 Server::incomingConnection( qintptr socketDescriptor )
 {
-	TcpSocket * socket = new TcpSocket( this );
+	TcpSocket * socket = new TcpSocket( d->m_secret.toStdString(), this );
 
 	if( socket->setSocketDescriptor( socketDescriptor ) )
 	{

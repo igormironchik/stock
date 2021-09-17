@@ -35,7 +35,7 @@ namespace Stock {
 
 //! Write TellIP datagram.
 void
-writeTellIpDatargam( QUdpSocket * s, const QString & password, quint16 port )
+writeTellIpDatargam( QUdpSocket * s, quint16 port )
 {
 	QByteArray array;
 	QDataStream stream( &array, QIODevice::WriteOnly );
@@ -51,7 +51,6 @@ writeTellIpDatargam( QUdpSocket * s, const QString & password, quint16 port )
 		text.setCodec( QTextCodec::codecForName( "UTF-8" ) );
 
 		Messages::TellMeYourIP msg;
-		msg.set_secret( password );
 		Messages::tag_TellMeYourIP< cfgfile::qstring_trait_t > tag( msg );
 
 		cfgfile::write_cfgfile( tag, text );

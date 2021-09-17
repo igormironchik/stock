@@ -13,3 +13,5 @@ SOURCES += $$PWD/tcp_socket.cpp \
 OTHER_FILES += $$PWD/messages.cfgfile
 
 INCLUDEPATH += $$PWD/..
+
+include( $$PWD/../../3rdparty/easy-encryption/easy-encryption.pri )
