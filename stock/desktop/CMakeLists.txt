@@ -88,6 +88,11 @@ add_custom_command( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/messages.hpp
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+set( CFGFILE_GENERATOR_EXECUTABLE
+	${CMAKE_CURRENT_BINARY_DIR}/../../3rdparty/cfgfile/generator/cfgfile.generator${CMAKE_EXECUTABLE_SUFFIX} )
+
+configure_file( cfgfile_generator_path.in ${CMAKE_CURRENT_SOURCE_DIR}/cfgfile_generator_path )
+
 if( WIN32 )
 	list( APPEND SRC app.rc )
 endif()

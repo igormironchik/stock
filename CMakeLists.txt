@@ -15,3 +15,6 @@ project( Stock )
 
 add_subdirectory( 3rdparty/cfgfile/generator )
 add_subdirectory( stock )
+
+set( CFGFILE_GENERATOR_EXECUTABLE
+	${CMAKE_CURRENT_BINARY_DIR}/3rdparty/cfgfile/generator/cfgfile.generator${CMAKE_EXECUTABLE_SUFFIX} )
