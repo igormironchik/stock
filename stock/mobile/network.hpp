@@ -25,7 +25,9 @@
 
 // Qt include.
 #include <QObject>
-#include <QScopedPointer>
+
+// C++ include.
+#include <memory>
 
 // Stock include.
 #include "messages.hpp"
@@ -102,7 +104,7 @@ private:
 
 	Q_DISABLE_COPY( Network )
 
-	QScopedPointer< NetworkPrivate > d;
+	std::unique_ptr< NetworkPrivate > d;
 }; // class Network
 
 } /* namespace Stock */

@@ -25,7 +25,9 @@
 
 // Qt include.
 #include <QAbstractListModel>
-#include <QScopedPointer>
+
+// C++ include.
+#include <memory>
 
 // Stock include.
 #include "messages.hpp"
@@ -68,7 +70,7 @@ public:
 private:
 	Q_DISABLE_COPY( ListModel )
 
-	QScopedPointer< ListModelPrivate > d;
+	std::unique_ptr< ListModelPrivate > d;
 }; // class ListModel
 
 } /* namespace Stock */

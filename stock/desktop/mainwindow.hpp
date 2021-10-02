@@ -25,7 +25,9 @@
 
 // Qt include.
 #include <QMainWindow>
-#include <QScopedPointer>
+
+// C++ include.
+#include <memory>
 
 
 namespace Stock {
@@ -88,7 +90,7 @@ private:
 
 	Q_DISABLE_COPY( MainWindow )
 
-	QScopedPointer< MainWindowPrivate > d;
+	std::unique_ptr< MainWindowPrivate > d;
 }; // class MainWindow
 
 } /* namespace Stock */

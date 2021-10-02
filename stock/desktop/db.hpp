@@ -24,10 +24,12 @@
 #define STOCK_DB_HPP_INCLUDED
 
 // Qt include.
-#include <QScopedPointer>
 #include <QVector>
 #include <QString>
 #include <QObject>
+
+// C++ include.
+#include <memory>
 
 
 namespace Stock {
@@ -88,7 +90,7 @@ public:
 private:
 	Q_DISABLE_COPY( Db )
 
-	QScopedPointer< DbPrivate > d;
+	std::unique_ptr< DbPrivate > d;
 }; // class Db
 
 } /* namespace Stock */

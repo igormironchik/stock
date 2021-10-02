@@ -25,7 +25,9 @@
 
 // Qt include.
 #include <QObject>
-#include <QScopedPointer>
+
+// C++ include.
+#include <memory>
 
 // Stock include.
 #include "messages.hpp"
@@ -126,7 +128,7 @@ private:
 
 	Q_DISABLE_COPY( QmlCppBridge )
 
-	QScopedPointer< QmlCppBridgePrivate > d;
+	std::unique_ptr< QmlCppBridgePrivate > d;
 }; // class QmlCppBridge
 
 } /* namespace Stock */

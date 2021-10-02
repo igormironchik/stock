@@ -25,7 +25,9 @@
 
 // Qt include.
 #include <QDialog>
-#include <QScopedPointer>
+
+// C++ include.
+#include <memory>
 
 
 namespace Stock {
@@ -75,7 +77,7 @@ private slots:
 private:
 	Q_DISABLE_COPY( ProductDlg )
 
-	QScopedPointer< ProductDlgPrivate > d;
+	std::unique_ptr< ProductDlgPrivate > d;
 }; // class ProductDlg
 
 } /* namespace Stock */

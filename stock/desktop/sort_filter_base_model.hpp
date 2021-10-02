@@ -25,7 +25,9 @@
 
 // Qt include.
 #include <QSortFilterProxyModel>
-#include <QScopedPointer>
+
+// C++ include.
+#include <memory>
 
 
 namespace Stock {
@@ -73,7 +75,7 @@ public:
 protected:
 	SortFilterModel( SortFilterModelPrivate * dd, QObject * parent );
 
-	QScopedPointer< SortFilterModelPrivate > d;
+	std::unique_ptr< SortFilterModelPrivate > d;
 
 private:
 	Q_DISABLE_COPY( SortFilterModel )
