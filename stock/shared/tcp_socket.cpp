@@ -28,7 +28,6 @@
 // Qt include.
 #include <QDataStream>
 #include <QTextStream>
-#include <QTextCodec>
 
 // cfgfile include.
 #include <cfgfile/all.hpp>
@@ -160,7 +159,6 @@ TcpSocketPrivate::parse()
 		msgData.append( data.c_str() );
 
 		QTextStream msgStream( msgData );
-		msgStream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
 
 		switch( static_cast< MsgType > ( type ) )
 		{
@@ -336,7 +334,6 @@ TcpSocket::sendMsg( const MSG & msg )
 	try {
 		QByteArray data;
 		QTextStream stream( &data, QIODevice::WriteOnly );
-		stream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
 
 		TAG tag( msg );
 

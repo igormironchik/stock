@@ -293,8 +293,8 @@ ByProductView::deleteProduct()
 		const auto res = QMessageBox::question( this, tr( "Deletion of Product..." ),
 			tr( "You are about to completely remove product from the database.\n\n"
 				"Are you sure that you want to delete product \"%1\"?" )
-					.arg( code ), QMessageBox::Yes,
-				QMessageBox::No | QMessageBox::Default | QMessageBox::Escape );
+					.arg( code ), QMessageBox::Yes | QMessageBox::No,
+				QMessageBox::No );
 
 		if( res == QMessageBox::Yes )
 		{

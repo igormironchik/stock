@@ -27,7 +27,6 @@
 #include <QNetworkDatagram>
 #include <QDataStream>
 #include <QTextStream>
-#include <QTextCodec>
 #include <QByteArray>
 
 // cfgfile include.
@@ -140,7 +139,6 @@ void readDatagram( const QNetworkDatagram & d, MSG & msg )
 	s >> txt;
 
 	QTextStream stream( &txt, QIODevice::ReadOnly );
-	stream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
 
 	try {
 		TAG tag;
