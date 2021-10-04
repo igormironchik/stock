@@ -70,6 +70,23 @@ Frames::~Frames()
 	stopCam();
 }
 
+QVideoSink *
+Frames::videoSink() const
+{
+	return m_videoSink.get();
+}
+
+void
+Frames::setVideoSink( QVideoSink * newVideoSink )
+{
+	if( m_videoSink == newVideoSink )
+		return;
+
+	m_videoSink = newVideoSink;
+
+	emit videoSinkChanged();
+}
+
 namespace /* anonymous */ {
 
 class DetectCode final
@@ -173,6 +190,7 @@ private:
 void
 Frames::newFrame( const QVideoFrame & frame )
 {
+	qDebug() << "new frame";
 	QVideoFrame f = frame;
 	f.map( QVideoFrame::ReadOnly );
 
@@ -246,6 +264,9 @@ Frames::newFrame( const QVideoFrame & frame )
 
 		m_keyFrameCounter = 0;
 	}
+
+	if( m_videoSink )
+		m_videoSink->setVideoFrame( frame );
 }
 
 QImage

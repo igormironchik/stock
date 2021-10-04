@@ -27,6 +27,7 @@
 #include <QVideoSink>
 #include <QCamera>
 #include <QMediaCaptureSession>
+#include <QPointer>
 
 
 namespace Stock {
@@ -42,6 +43,7 @@ class Frames
 	Q_OBJECT
 
 	Q_PROPERTY( QImage currentFrame READ currentFrame NOTIFY currentFrameChanged )
+	Q_PROPERTY( QVideoSink* videoSink READ videoSink WRITE setVideoSink NOTIFY videoSinkChanged )
 
 signals:
 	//! Code detected.
@@ -50,6 +52,8 @@ signals:
 	void currentFrameChanged();
 	//! Image changed.
 	void imageChanged();
+	//! Vide sink changed.
+	void videoSinkChanged();
 
 public:
 	static void registerQmlType();
@@ -61,6 +65,11 @@ public:
 
 	//! \return Current frame.
 	QImage currentFrame() const;
+
+	//! \return Sink of video output.
+	QVideoSink * videoSink() const;
+	//! Set sink of video output.
+	void setVideoSink( QVideoSink * newVideoSink );
 
 public slots:
 	//! Emit code.
@@ -97,6 +106,8 @@ private:
 	QTransform m_transform;
 	//! Capture.
 	QMediaCaptureSession m_capture;
+	//! Video sink of video output.
+	QPointer< QVideoSink > m_videoSink;
 }; // class Frames
 
 } /* namespace Stock */

@@ -20,6 +20,7 @@ Item {
 
 	Frames {
         id: frames
+        videoSink: view.videoSink
 
 		onCodeDetected: {
 			root.code = code
@@ -27,6 +28,7 @@ Item {
 	}
 
     VideoOutput {
+        id: view
         anchors.fill: parent
         anchors.centerIn: parent
         focus : visible

@@ -192,7 +192,7 @@ ApplicationWindow {
         property bool keyBackEnabled: false
         focus: true
 
-        Keys.onReleased: {
+        Keys.onReleased: (event) => {
             if( event.key === Qt.Key_Back && stackView.depth > 2 &&
                  keyBackEnabled ) {
                      stackView.pop();

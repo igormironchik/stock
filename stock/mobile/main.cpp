@@ -71,12 +71,11 @@ int main( int argc, char ** argv )
 	QTranslator appTranslator;
 
 #ifdef Q_OS_ANDROID
-    appTranslator.load( "stock_" + QLocale::system().name(), "assets:/" );
+	if( appTranslator.load( "stock_" + QLocale::system().name(), "assets:/" ) )
 #else
-	appTranslator.load( "./tr/stock_" + QLocale::system().name() );
+	if( appTranslator.load( "./tr/stock_" + QLocale::system().name() ) )
 #endif
-
-    app.installTranslator( &appTranslator );
+		app.installTranslator( &appTranslator );
 
     const auto cfgFileName = Stock::CfgFile::fileName();
 
