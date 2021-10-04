@@ -54,11 +54,25 @@ CameraSettings::CameraSettings()
 
 	m_camsModel.setStringList( camerasNames );
 
-	m_camsInfoIt = m_camsInfo.cbegin();
+	for( auto it = m_camsInfo.cbegin(), last = m_camsInfo.cend(); it != last; ++it )
+	{
+		const auto settings = it.value().videoFormats();
+
+		for( const auto & s : settings )
+		{
+			if( s.pixelFormat() == QVideoFrameFormat::Format_Jpeg ||
+				QVideoFrameFormat::imageFormatFromPixelFormat( s.pixelFormat() ) !=
+					QImage::Format_Invalid )
+			{
+				const auto resolutionStr = resolution( s.resolution().width(),
+					s.resolution().height(), s.maxFrameRate() );
+
+				m_resolutions[ it.key() ].insert( resolutionStr, s );
+			}
+		}
+	}
 
 	readCfg();
-
-	checkCameraFormats();
 }
 
 CameraSettings::~CameraSettings()
@@ -128,8 +142,10 @@ CameraSettings::camSettings() const
 {
 	if( !m_cfg.device().isEmpty() && m_cfg.width() != 0 )
 	{
-		return m_resolutions[ m_cfg.device() ]
-			[ resolution( m_cfg.width(), m_cfg.height(), m_cfg.frames() ) ];
+		const auto it = m_resolutions.find( m_cfg.device() );
+
+		if( it != m_resolutions.cend() )
+			return it->value( resolution( m_cfg.width(), m_cfg.height(), m_cfg.frames() ) );
 	}
 
 	return QCameraFormat();
@@ -223,26 +239,6 @@ CameraSettings::resolution( int width, int height, qreal fps ) const
 		.arg( QString::number( width ),
 			QString::number( height ),
 			QString::number( qRound( fps ) ) );
-}
-
-void
-CameraSettings::checkCameraFormats()
-{
-	if( m_camsInfoIt != m_camsInfo.cend() )
-	{
-		const auto settings = m_camsInfoIt.value().videoFormats();
-
-		for( const auto & s : settings )
-		{
-			if( s.pixelFormat() == QVideoFrameFormat::Format_Jpeg )
-			{
-				const auto resolutionStr = resolution( s.resolution().width(),
-					s.resolution().height(), s.maxFrameRate() );
-
-				m_resolutions[ m_camsInfoIt.key() ].insert( resolutionStr, s );
-			}
-		}
-	}
 }
 
 void

@@ -103,8 +103,6 @@ public slots:
 	void mirror();
 
 private:
-	//! Check camera formats.
-	void checkCameraFormats();
 	//! Read configuration.
 	void readCfg();
 	//! Write configuration.
@@ -121,8 +119,6 @@ private:
 	QStringListModel m_camResolutions;
 	//! Cameras.
 	QMap< QString, QCameraDevice > m_camsInfo;
-	//! Cameras iterator.
-	QMap< QString, QCameraDevice >::ConstIterator m_camsInfoIt;
 	//! Resolutions.
 	QMap< QString, QMap< QString, QCameraFormat > > m_resolutions;
 	//! Configuration.

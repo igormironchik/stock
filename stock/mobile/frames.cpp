@@ -190,7 +190,6 @@ private:
 void
 Frames::newFrame( const QVideoFrame & frame )
 {
-	qDebug() << "new frame";
 	QVideoFrame f = frame;
 	f.map( QVideoFrame::ReadOnly );
 
@@ -199,36 +198,9 @@ Frames::newFrame( const QVideoFrame & frame )
 	QImage image;
 
 	if( fmt != QImage::Format_Invalid )
-		image = QImage( f.bits( f.planeCount() - 1 ), f.width(), f.height(),
-			f.bytesPerLine( f.planeCount() - 1 ), fmt );
-//	else if( f.pixelFormat() == QVideoFrameFormat::Format_ARGB8888 )
-//	{
-//		const auto max = f.width() * f.height() * 4;
-//		std::vector< uchar > buf;
-//		buf.reserve( max );
-//		uchar * bits = f.bits( f.planeCount() - 1 );
-
-//		static const size_t i1 = ( Q_BYTE_ORDER == Q_LITTLE_ENDIAN ? 2 : 0 );
-//		static const size_t i2 = ( Q_BYTE_ORDER == Q_LITTLE_ENDIAN ? 1 : 3 );
-//		static const size_t i3 = ( Q_BYTE_ORDER == Q_LITTLE_ENDIAN ? 0 : 2 );
-//		static const size_t i4 = ( Q_BYTE_ORDER == Q_LITTLE_ENDIAN ? 3 : 1 );
-
-//		for( auto i = 0; i < max; )
-//		{
-//			buf.push_back( bits[ i1 ] );
-//			buf.push_back( bits[ i2 ] );
-//			buf.push_back( bits[ i3 ] );
-//			buf.push_back( bits[ i4 ] );
-
-//			bits += 4;
-//			i += 4;
-//		}
-
-//		image = QImage( &buf[ 0 ], f.width(), f.height(), f.bytesPerLine( f.planeCount() - 1 ),
-//			QImage::Format_ARGB32 ).copy();
-//	}
+		image = QImage( f.bits( 0 ), f.width(), f.height(), f.bytesPerLine( 0 ), fmt );
 	else
-		image.loadFromData( f.bits( f.planeCount() - 1 ), f.mappedBytes( f.planeCount() - 1 ) );
+		image.loadFromData( f.bits( 0 ), f.mappedBytes( 0 ) );
 
 	f.unmap();
 
