@@ -24,7 +24,6 @@
 #define STOCK_CAMERA_SETTINGS_HPP_INCLUDED
 
 // Qt include.
-#include <QCamera>
 #include <QObject>
 #include <QStringListModel>
 #include <QMap>
@@ -104,8 +103,8 @@ public slots:
 	void mirror();
 
 private:
-	//! Check next camera.
-	void checkNextCamera();
+	//! Check camera formats.
+	void checkCameraFormats();
 	//! Read configuration.
 	void readCfg();
 	//! Write configuration.
@@ -120,8 +119,6 @@ private:
 	QStringListModel m_camsModel;
 	//! List of resolutions.
 	QStringListModel m_camResolutions;
-	//! Camera.
-	QCamera * m_cam;
 	//! Cameras.
 	QMap< QString, QCameraDevice > m_camsInfo;
 	//! Cameras iterator.

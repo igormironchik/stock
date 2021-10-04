@@ -201,12 +201,12 @@ Frames::newFrame( const QVideoFrame & frame )
 	if( fmt != QImage::Format_Invalid )
 		image = QImage( f.bits( f.planeCount() - 1 ), f.width(), f.height(),
 			f.bytesPerLine( f.planeCount() - 1 ), fmt );
-//	else if( f.pixelFormat() == QVideoFrameFormat::Format_ABGR32 )
+//	else if( f.pixelFormat() == QVideoFrameFormat::Format_ARGB8888 )
 //	{
 //		const auto max = f.width() * f.height() * 4;
 //		std::vector< uchar > buf;
 //		buf.reserve( max );
-//		uchar * bits = f.bits();
+//		uchar * bits = f.bits( f.planeCount() - 1 );
 
 //		static const size_t i1 = ( Q_BYTE_ORDER == Q_LITTLE_ENDIAN ? 2 : 0 );
 //		static const size_t i2 = ( Q_BYTE_ORDER == Q_LITTLE_ENDIAN ? 1 : 3 );
@@ -224,15 +224,11 @@ Frames::newFrame( const QVideoFrame & frame )
 //			i += 4;
 //		}
 
-//		image = QImage( &buf[ 0 ], f.width(), f.height(), f.bytesPerLine(),
+//		image = QImage( &buf[ 0 ], f.width(), f.height(), f.bytesPerLine( f.planeCount() - 1 ),
 //			QImage::Format_ARGB32 ).copy();
 //	}
 	else
-	{
-		f.unmap();
-
-		return;
-	}
+		image.loadFromData( f.bits( f.planeCount() - 1 ), f.mappedBytes( f.planeCount() - 1 ) );
 
 	f.unmap();
 
@@ -325,11 +321,13 @@ Frames::initCam()
 	else
 		m_cam = new QCamera( this );
 
+	const auto s = m_cam->cameraDevice().videoFormats();
+
 	m_cam->setFocusMode( QCamera::FocusModeAuto );
-	m_cam->setCameraFormat( CameraSettings::instance().camSettings() );
-	CameraSettings::instance().clearDirtyFlag();
+	//m_cam->setCameraFormat( CameraSettings::instance().camSettings() );
+	m_cam->setCameraFormat( s.at( 13 ) );
 	m_capture.setCamera( m_cam );
-	m_capture.setVideoOutput( this );
+	m_capture.setVideoSink( this );
 
 	m_cam->start();
 }

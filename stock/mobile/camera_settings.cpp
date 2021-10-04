@@ -40,8 +40,7 @@ namespace Stock {
 //
 
 CameraSettings::CameraSettings()
-	:	m_cam( nullptr )
-	,	m_dirty( false )
+	:	m_dirty( false )
 {
 	const auto cameras = QMediaDevices::videoInputs();
 
@@ -59,7 +58,7 @@ CameraSettings::CameraSettings()
 
 	readCfg();
 
-	checkNextCamera();
+	checkCameraFormats();
 }
 
 CameraSettings::~CameraSettings()
@@ -227,22 +226,21 @@ CameraSettings::resolution( int width, int height, qreal fps ) const
 }
 
 void
-CameraSettings::checkNextCamera()
+CameraSettings::checkCameraFormats()
 {
 	if( m_camsInfoIt != m_camsInfo.cend() )
 	{
-		m_cam = new QCamera( m_camsInfoIt.value(), this );
-
-		m_cam->start();
-
 		const auto settings = m_camsInfoIt.value().videoFormats();
 
 		for( const auto & s : settings )
 		{
-			const auto resolutionStr = resolution( s.resolution().width(),
-				s.resolution().height(), s.maxFrameRate() );
+			if( s.pixelFormat() == QVideoFrameFormat::Format_Jpeg )
+			{
+				const auto resolutionStr = resolution( s.resolution().width(),
+					s.resolution().height(), s.maxFrameRate() );
 
-			m_resolutions[ m_camsInfoIt.key() ].insert( resolutionStr, s );
+				m_resolutions[ m_camsInfoIt.key() ].insert( resolutionStr, s );
+			}
 		}
 	}
 }
