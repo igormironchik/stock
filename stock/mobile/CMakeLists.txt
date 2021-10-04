@@ -22,6 +22,7 @@ find_package( Qt6Network REQUIRED )
 find_package( Qt6Qml REQUIRED )
 find_package( Qt6Multimedia REQUIRED )
 find_package( Qt6Gui REQUIRED )
+find_package( Qt6Quick REQUIRED )
 
 add_definitions( -DCFGFILE_QT_SUPPORT -DCFGFILE_DISABLE_STL )
 
@@ -93,12 +94,15 @@ add_custom_command( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/messages.hpp
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+add_subdirectory(  3rdparty/qzxing )
+
 
 include_directories( ${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/cfgfile
 	${CMAKE_CURRENT_SOURCE_DIR}/..
-	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty )
+	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty
+	${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/qzxing )
 
 add_executable( Stock.Mobile ${SRC} )
 
-target_link_libraries( Stock.Mobile Qt6::Qml Qt6::Multimedia Qt6::Gui Qt6::Network Qt6::Core )
+target_link_libraries( Stock.Mobile qzxing Qt6::Qml Qt6::Quick Qt6::Multimedia Qt6::Gui Qt6::Network Qt6::Core )

@@ -1,5 +1,5 @@
 
-import QtMultimedia 5.15
+import QtMultimedia
 import QtQuick 2.7
 import Frames 0.1
 import QtQuick.Controls 2.2
@@ -19,19 +19,18 @@ Item {
     }
 
 	Frames {
-		id: frames
+        id: frames
 
 		onCodeDetected: {
 			root.code = code
 		}
 	}
 
-	VideoOutput {
-		source: frames
-		anchors.fill: parent
-		anchors.centerIn: parent
-		focus : visible
-	}
+    VideoOutput {
+        anchors.fill: parent
+        anchors.centerIn: parent
+        focus : visible
+    }
 
 	Button {
 		id: settings

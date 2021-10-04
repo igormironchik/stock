@@ -103,11 +103,4 @@ private:
 
 } /* namespace Stock */
 
-Q_DECLARE_METATYPE( Stock::Messages::AddProduct )
-Q_DECLARE_METATYPE( Stock::Messages::GiveListOfProducts )
-Q_DECLARE_METATYPE( Stock::Messages::ListOfProducts )
-Q_DECLARE_METATYPE( Stock::Messages::Error )
-Q_DECLARE_METATYPE( Stock::Messages::Hello )
-Q_DECLARE_METATYPE( Stock::Messages::Ok )
-
 #endif // STOCK_TCP_COCKET_HPP_INCLUDED

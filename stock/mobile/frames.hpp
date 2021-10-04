@@ -24,9 +24,9 @@
 #define STOCK_FRAMES_HPP_INCLUDED
 
 // Qt include.
-#include <QAbstractVideoSurface>
-#include <QMutex>
+#include <QVideoSink>
 #include <QCamera>
+#include <QMediaCaptureSession>
 
 
 namespace Stock {
@@ -37,11 +37,10 @@ namespace Stock {
 
 //! Frames listener.
 class Frames
-	:	public QAbstractVideoSurface
+	:	public QVideoSink
 {
 	Q_OBJECT
 
-	Q_PROPERTY( QAbstractVideoSurface * videoSurface READ videoSurface WRITE setVideoSurface )
 	Q_PROPERTY( QImage currentFrame READ currentFrame NOTIFY currentFrameChanged )
 
 signals:
@@ -58,16 +57,7 @@ public:
 	explicit Frames( QObject * parent = nullptr );
 	~Frames() override;
 
-	bool present( const QVideoFrame & frame ) override;
-
-	QList< QVideoFrame::PixelFormat > supportedPixelFormats(
-		QAbstractVideoBuffer::HandleType type =
-			QAbstractVideoBuffer::NoHandle ) const override;
-
-	//! \return Video surface.
-	QAbstractVideoSurface * videoSurface() const;
-	//! Set video surface.
-	void setVideoSurface( QAbstractVideoSurface * s );
+	bool present( const QVideoFrame & frame );
 
 	//! \return Current frame.
 	QImage currentFrame() const;
@@ -79,24 +69,18 @@ public slots:
 	void emitImageChanged();
 
 private slots:
-	//! Camera status changed.
-	void camStatusChanged( QCamera::Status st );
 	//! Camera settings changed.
 	void camSettingsChanged();
 	//! Init camera.
 	void initCam();
 	//! Stop camera.
 	void stopCam();
-	//! Search and lock.
-	void searchAndLock();
+	//! Video frame changed.
+	void newFrame( const QVideoFrame & frame );
 
 private:
 	Q_DISABLE_COPY( Frames )
 
-	//! Mutex.
-	mutable QMutex m_mutex;
-	//! QML surface.
-	QAbstractVideoSurface * m_qml;
 	//! Camera.
 	QCamera * m_cam;
 	//! Counter.
@@ -111,6 +95,8 @@ private:
 	bool m_dirty;
 	//! Transform.
 	QTransform m_transform;
+	//! Capture.
+	QMediaCaptureSession m_capture;
 }; // class Frames
 
 } /* namespace Stock */

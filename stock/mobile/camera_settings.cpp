@@ -26,8 +26,8 @@
 // Qt include.
 #include <QCoreApplication>
 #include <QDir>
-#include <QTextCodec>
-#include <QRegExp>
+#include <QRegularExpression>
+#include <QMediaDevices>
 
 // cfgfile include.
 #include <cfgfile/all.hpp>
@@ -43,14 +43,14 @@ CameraSettings::CameraSettings()
 	:	m_cam( nullptr )
 	,	m_dirty( false )
 {
-	const auto cameras = QCameraInfo::availableCameras();
+	const auto cameras = QMediaDevices::videoInputs();
 
 	QStringList camerasNames;
 
 	for( const auto & cameraInfo : cameras )
 	{
-		m_camsInfo.insert( cameraInfo.deviceName(), cameraInfo );
-		camerasNames << cameraInfo.deviceName();
+		m_camsInfo.insert( cameraInfo.description(), cameraInfo );
+		camerasNames << cameraInfo.description();
 	}
 
 	m_camsModel.setStringList( camerasNames );
@@ -124,7 +124,7 @@ CameraSettings::setTransform( int rot, bool mirrored )
 	emit transformChanged();
 }
 
-QCameraViewfinderSettings
+QCameraFormat
 CameraSettings::camSettings() const
 {
 	if( !m_cfg.device().isEmpty() && m_cfg.width() != 0 )
@@ -133,7 +133,7 @@ CameraSettings::camSettings() const
 			[ resolution( m_cfg.width(), m_cfg.height(), m_cfg.frames() ) ];
 	}
 
-	return QCameraViewfinderSettings();
+	return QCameraFormat();
 }
 
 QString
@@ -141,21 +141,21 @@ CameraSettings::camSettingsStr() const
 {
 	const auto s = camSettings();
 
-	return resolution( s.resolution().width(), s.resolution().height(), s.maximumFrameRate() );
+	return resolution( s.resolution().width(), s.resolution().height(), s.maxFrameRate() );
 }
 
 void
 CameraSettings::setCamSettings( const QString & resolution, bool notify )
 {
-	static const QRegExp parser( QStringLiteral( "^(\\d+)x(\\d+)@(\\d+)$" ) );
+	static const QRegularExpression parser( QStringLiteral( "^(\\d+)x(\\d+)@(\\d+)$" ) );
 
-	if( parser.exactMatch( resolution ) )
+	const auto match = parser.match( resolution );
+
+	if( match.hasMatch() )
 	{
-		parser.indexIn( resolution );
-
-		m_cfg.set_width( parser.cap( 1 ).toInt() );
-		m_cfg.set_height( parser.cap( 2 ).toInt() );
-		m_cfg.set_frames( parser.cap( 3 ).toInt() );
+		m_cfg.set_width( match.captured( 1 ).toInt() );
+		m_cfg.set_height( match.captured( 2 ).toInt() );
+		m_cfg.set_frames( match.captured( 3 ).toInt() );
 
 		m_dirty = true;
 
@@ -165,11 +165,11 @@ CameraSettings::setCamSettings( const QString & resolution, bool notify )
 }
 
 void
-CameraSettings::setCamSettings( const QCameraViewfinderSettings & s, bool notify )
+CameraSettings::setCamSettings( const QCameraFormat & s, bool notify )
 {
 	m_cfg.set_width( s.resolution().width() );
 	m_cfg.set_height( s.resolution().height() );
-	m_cfg.set_frames( qRound( s.maximumFrameRate() ) );
+	m_cfg.set_frames( qRound( s.maxFrameRate() ) );
 
 	if( notify )
 		emit camSettingsChanged();
@@ -186,13 +186,13 @@ CameraSettings::camName() const
 		return QString();
 }
 
-QCameraInfo
+QCameraDevice
 CameraSettings::camInfo( const QString & name ) const
 {
 	if( m_camsInfo.contains( name ) )
 		return m_camsInfo[ name ];
 	else
-		return QCameraInfo();
+		return QCameraDevice();
 }
 
 void
@@ -206,7 +206,7 @@ CameraSettings::setCamName( const QString & name, bool notify )
 
 		for( const auto & s : qAsConst( m_resolutions[ name ] ) )
 			resolutions.append( resolution( s.resolution().width(),
-				s.resolution().height(), s.maximumFrameRate() ) );
+				s.resolution().height(), s.maxFrameRate() ) );
 
 		m_camResolutions.setStringList( resolutions );
 
@@ -227,41 +227,23 @@ CameraSettings::resolution( int width, int height, qreal fps ) const
 }
 
 void
-CameraSettings::camStatusChanged( QCamera::Status st )
-{
-	if( st == QCamera::LoadedStatus )
-	{
-		const auto settings = m_cam->supportedViewfinderSettings();
-
-		for( const auto & s : settings )
-		{
-			const auto resolutionStr = resolution( s.resolution().width(),
-				s.resolution().height(), s.maximumFrameRate() );
-
-			m_resolutions[ m_camsInfoIt.key() ].insert( resolutionStr, s );
-		}
-
-		disconnect( m_cam, 0, 0, 0 );
-		m_cam->stop();
-		m_cam->deleteLater();
-
-		++m_camsInfoIt;
-
-		checkNextCamera();
-	}
-}
-
-void
 CameraSettings::checkNextCamera()
 {
 	if( m_camsInfoIt != m_camsInfo.cend() )
 	{
 		m_cam = new QCamera( m_camsInfoIt.value(), this );
 
-		connect( m_cam, &QCamera::statusChanged,
-			this, &CameraSettings::camStatusChanged );
-
 		m_cam->start();
+
+		const auto settings = m_camsInfoIt.value().videoFormats();
+
+		for( const auto & s : settings )
+		{
+			const auto resolutionStr = resolution( s.resolution().width(),
+				s.resolution().height(), s.maxFrameRate() );
+
+			m_resolutions[ m_camsInfoIt.key() ].insert( resolutionStr, s );
+		}
 	}
 }
 
@@ -273,7 +255,6 @@ CameraSettings::readCfg()
 	if( file.open( QIODevice::ReadOnly ) )
 	{
 		QTextStream s( &file );
-		s.setCodec( QTextCodec::codecForName( "UTF-8" ) );
 
 		try {
 			tag_CameraCfg< cfgfile::qstring_trait_t> tag;
@@ -299,7 +280,6 @@ CameraSettings::writeCfg()
 	if( file.open( QIODevice::WriteOnly ) )
 	{
 		QTextStream s( &file );
-		s.setCodec( QTextCodec::codecForName( "UTF-8" ) );
 
 		try {
 			tag_CameraCfg< cfgfile::qstring_trait_t> tag( m_cfg );
