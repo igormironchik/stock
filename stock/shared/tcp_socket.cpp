@@ -157,7 +157,8 @@ TcpSocketPrivate::parse()
 		const auto data = decrypt( str, m_pwd );
 
 		msgData.clear();
-		msgData.append( data.c_str() );
+		QByteArray b64( data.c_str(), data.size() );
+		msgData.append( QByteArray::fromBase64( b64 ) );
 
 		QTextStream msgStream( msgData );
 		msgStream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
@@ -343,7 +344,8 @@ TcpSocket::sendMsg( const MSG & msg )
 		cfgfile::write_cfgfile( tag, stream );
 		stream.flush();
 
-		auto str = data.toStdString();
+		const auto b64 = data.toBase64();
+		auto str = b64.toStdString();
 		const auto encrypted = encrypt( str, d->m_pwd );
 		data.clear();
 		data.append( encrypted.c_str() );
