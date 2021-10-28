@@ -193,8 +193,6 @@ Frames::newFrame( const QVideoFrame & frame )
 	QVideoFrame f = frame;
 	f.map( QVideoFrame::ReadOnly );
 
-	qDebug() << f.pixelFormat();
-
 	const auto fmt = QVideoFrameFormat::imageFormatFromPixelFormat( f.pixelFormat() );
 
 	QImage image;
