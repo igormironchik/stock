@@ -103,6 +103,13 @@ include_directories( ${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty
 	${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/qzxing )
 
-add_executable( Stock.Mobile ${SRC} )
+qt_add_executable( Stock.Mobile
+	MANUAL_FINALIZATION
+	${SRC} )
 
-target_link_libraries( Stock.Mobile qzxing Qt6::Qml Qt6::Quick Qt6::Multimedia Qt6::Gui Qt6::Network Qt6::Core )
+set_property( TARGET Stock.Mobile APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
+	${CMAKE_CURRENT_SOURCE_DIR}/android )
+
+target_link_libraries( Stock.Mobile PUBLIC qzxing Qt::Qml Qt::Quick Qt::Multimedia Qt::Gui Qt::Network Qt::Core )
+
+qt_finalize_executable( Stock.Mobile )

@@ -193,6 +193,8 @@ Frames::newFrame( const QVideoFrame & frame )
 	QVideoFrame f = frame;
 	f.map( QVideoFrame::ReadOnly );
 
+	qDebug() << f.pixelFormat();
+
 	const auto fmt = QVideoFrameFormat::imageFormatFromPixelFormat( f.pixelFormat() );
 
 	QImage image;
@@ -293,11 +295,8 @@ Frames::initCam()
 	else
 		m_cam = new QCamera( this );
 
-	const auto s = m_cam->cameraDevice().videoFormats();
-
 	m_cam->setFocusMode( QCamera::FocusModeAuto );
-	//m_cam->setCameraFormat( CameraSettings::instance().camSettings() );
-	m_cam->setCameraFormat( s.at( 13 ) );
+	m_cam->setCameraFormat( CameraSettings::instance().camSettings() );
 	m_capture.setCamera( m_cam );
 	m_capture.setVideoSink( this );
 
