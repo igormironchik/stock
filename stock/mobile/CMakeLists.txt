@@ -61,7 +61,8 @@ set( SRC qml_cpp_bridge.hpp
     qml/Message.qml
     qml/Search.qml
     qml/SearchResult.qml
-    qml/CameraView.qml )
+	qml/CameraView.qml
+	qml/main.qml )
 
 set( CMAKE_CXX_STANDARD 14 )
 
