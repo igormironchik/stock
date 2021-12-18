@@ -55,7 +55,3 @@ To build mobile part use stock/mobile/mobile.pro
 ![](doc/desktop.png)
 ![](doc/connect.png)
 ![](doc/actions.png)
-
-# Donate
-
-[![](bitcoin-btc-logo-full.png)](https://github.com/igormironchik)
