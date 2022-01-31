@@ -95,14 +95,16 @@ add_custom_command( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/messages.hpp
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_subdirectory(  3rdparty/qzxing )
+add_subdirectory( 3rdparty/qzxing )
+add_subdirectory( 3rdparty/libyuv )
 
 
 include_directories( ${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/cfgfile
 	${CMAKE_CURRENT_SOURCE_DIR}/..
 	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty
-	${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/qzxing )
+	${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/qzxing
+	${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libyuv/include )
 
 qt_add_executable( Stock.Mobile
 	MANUAL_FINALIZATION
@@ -111,6 +113,8 @@ qt_add_executable( Stock.Mobile
 set_property( TARGET Stock.Mobile APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
 	${CMAKE_CURRENT_SOURCE_DIR}/android )
 
-target_link_libraries( Stock.Mobile PUBLIC qzxing Qt::Qml Qt::Quick Qt::Multimedia Qt::Gui Qt::Network Qt::Core )
+target_link_libraries( Stock.Mobile PUBLIC qzxing yuv ${STOCK_JPEG} Qt::Qml Qt::Quick Qt::Multimedia Qt::Gui Qt::Network Qt::Core )
+
+message( WARN ${JPEG_LIBRARY} )
 
 qt_finalize_executable( Stock.Mobile )

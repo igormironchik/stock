@@ -60,7 +60,7 @@ CameraSettings::CameraSettings()
 
 		for( const auto & s : settings )
 		{
-			if( s.pixelFormat() == QVideoFrameFormat::Format_Jpeg ||
+			if( s.pixelFormat() != QVideoFrameFormat::Format_Jpeg ||
 				QVideoFrameFormat::imageFormatFromPixelFormat( s.pixelFormat() ) !=
 					QImage::Format_Invalid )
 			{

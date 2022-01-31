@@ -22,7 +22,7 @@ Item {
         id: frames
         videoSink: view.videoSink
 
-		onCodeDetected: {
+        onCodeDetected: (code) => {
 			root.code = code
 		}
 	}

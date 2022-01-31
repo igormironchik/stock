@@ -34,6 +34,12 @@
 // QZXing include.
 #include <QZXing.h>
 
+// libyuv include.
+#include <libyuv.h>
+
+// C++ include.
+#include <vector>
+
 
 namespace Stock {
 
@@ -126,8 +132,10 @@ public:
 		const auto code = decoder.decodeImage( m_img );
 
 		if( !code.isEmpty() )
+		{
 			QMetaObject::invokeMethod( m_provider, "emitCode", Qt::QueuedConnection,
 				Q_ARG( QString, code ) );
+		}
 	}
 
 private:
@@ -185,6 +193,23 @@ private:
 	Frames * m_provider;
 }; // class DetectChange
 
+
+//
+// libyuvFormat
+//
+
+libyuv::FourCC libyuvFormat( QVideoFrameFormat::PixelFormat f )
+{
+	switch( f )
+	{
+		case QVideoFrameFormat::Format_YUYV :
+			return libyuv::FOURCC_YUYV;
+
+		default :
+			return libyuv::FOURCC_ANY;
+	}
+}
+
 } /* namespace anonymous */
 
 void
@@ -199,8 +224,27 @@ Frames::newFrame( const QVideoFrame & frame )
 
 	if( fmt != QImage::Format_Invalid )
 		image = QImage( f.bits( 0 ), f.width(), f.height(), f.bytesPerLine( 0 ), fmt );
-	else
+	else if( f.pixelFormat() == QVideoFrameFormat::Format_Jpeg )
 		image.loadFromData( f.bits( 0 ), f.mappedBytes( 0 ) );
+	else
+	{
+		std::vector< uint8_t > data( f.width() * f.height() * 4, 0 );
+
+		libyuv::ConvertToARGB( static_cast< uint8_t* > ( f.bits( 0 ) ),
+			f.bytesPerLine( 0 ) * f.height(),
+			&data[ 0 ],
+			f.width() * 4,
+			0, 0,
+			f.width(),
+			f.height(),
+			f.width(),
+			f.height(),
+			libyuv::kRotate0,
+			libyuvFormat( f.pixelFormat() ) );
+
+		image = QImage( static_cast< uchar* > ( &data[ 0 ] ), f.width(), f.height(),
+			f.width() * 4, QImage::Format_ARGB32 ).copy();
+	}
 
 	f.unmap();
 
