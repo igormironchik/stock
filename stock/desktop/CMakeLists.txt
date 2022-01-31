@@ -102,7 +102,7 @@ include_directories( ${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/..
 	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty )
 
-add_executable( Stock.Desktop.App ${SRC} )
+add_executable( Stock.Desktop.App WIN32 ${SRC} )
 
 target_link_libraries( Stock.Desktop.App Qt6::Widgets Qt6::Gui Qt6::Network Qt6::Sql Qt6::Core )
 
