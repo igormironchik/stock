@@ -20,9 +20,8 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// SecurityCam include.
+// Stock include.
 #include "frames.hpp"
-#include "camera_settings.hpp"
 
 // Qt include.
 #include <QQmlEngine>
@@ -55,7 +54,6 @@ Frames::Frames( QObject * parent )
 	,	m_cam( nullptr )
 	,	m_counter( 0 )
 	,	m_keyFrameCounter( 0 )
-	,	m_dirty( true )
 {
 	connect( &CameraSettings::instance(), &CameraSettings::camSettingsChanged,
 		this, &Frames::camSettingsChanged );
@@ -91,6 +89,24 @@ Frames::setVideoSink( QVideoSink * newVideoSink )
 	m_videoSink = newVideoSink;
 
 	emit videoSinkChanged();
+}
+
+qreal
+Frames::angle() const
+{
+	return m_transform.m_rot;
+}
+
+qreal
+Frames::xScale() const
+{
+	return m_transform.m_xScale;
+}
+
+qreal
+Frames::yScale() const
+{
+	return m_transform.m_yScale;
 }
 
 namespace /* anonymous */ {
@@ -205,6 +221,21 @@ libyuv::FourCC libyuvFormat( QVideoFrameFormat::PixelFormat f )
 		case QVideoFrameFormat::Format_YUYV :
 			return libyuv::FOURCC_YUYV;
 
+		case QVideoFrameFormat::Format_UYVY :
+			return libyuv::FOURCC_UYVY;
+
+		case QVideoFrameFormat::Format_YUV420P :
+			return libyuv::FOURCC_I420;
+
+		case QVideoFrameFormat::Format_YUV422P :
+			return libyuv::FOURCC_I422;
+
+		case QVideoFrameFormat::Format_NV12 :
+			return libyuv::FOURCC_NV12;
+
+		case QVideoFrameFormat::Format_NV21 :
+			return libyuv::FOURCC_NV21;
+
 		default :
 			return libyuv::FOURCC_ANY;
 	}
@@ -218,67 +249,77 @@ Frames::newFrame( const QVideoFrame & frame )
 	QVideoFrame f = frame;
 	f.map( QVideoFrame::ReadOnly );
 
-	const auto fmt = QVideoFrameFormat::imageFormatFromPixelFormat( f.pixelFormat() );
-
-	QImage image;
-
-	if( fmt != QImage::Format_Invalid )
-		image = QImage( f.bits( 0 ), f.width(), f.height(), f.bytesPerLine( 0 ), fmt );
-	else if( f.pixelFormat() == QVideoFrameFormat::Format_Jpeg )
-		image.loadFromData( f.bits( 0 ), f.mappedBytes( 0 ) );
-	else
+	if( f.isValid() )
 	{
-		std::vector< uint8_t > data( f.width() * f.height() * 4, 0 );
+		const auto fmt = QVideoFrameFormat::imageFormatFromPixelFormat( f.pixelFormat() );
 
-		libyuv::ConvertToARGB( static_cast< uint8_t* > ( f.bits( 0 ) ),
-			f.bytesPerLine( 0 ) * f.height(),
-			&data[ 0 ],
-			f.width() * 4,
-			0, 0,
-			f.width(),
-			f.height(),
-			f.width(),
-			f.height(),
-			libyuv::kRotate0,
-			libyuvFormat( f.pixelFormat() ) );
+		QImage image;
 
-		image = QImage( static_cast< uchar* > ( &data[ 0 ] ), f.width(), f.height(),
-			f.width() * 4, QImage::Format_ARGB32 ).copy();
+		if( fmt != QImage::Format_Invalid )
+			image = QImage( f.bits( 0 ), f.width(), f.height(), f.bytesPerLine( 0 ), fmt );
+		else if( f.pixelFormat() == QVideoFrameFormat::Format_Jpeg )
+			image.loadFromData( f.bits( 0 ), f.mappedBytes( 0 ) );
+		else
+		{
+			const auto format = libyuvFormat( f.pixelFormat() );
+
+			if( format != libyuv::FOURCC_ANY )
+			{
+				std::vector< uint8_t > data( f.width() * f.height() * 4, 0 );
+
+				libyuv::ConvertToARGB( static_cast< uint8_t* > ( f.bits( 0 ) ),
+					f.bytesPerLine( 0 ) * f.height(),
+					&data[ 0 ],
+					f.width() * 4,
+					0, 0,
+					f.width(),
+					f.height(),
+					f.width(),
+					f.height(),
+					libyuv::kRotate0,
+					format );
+
+				image = QImage( static_cast< uchar* > ( &data[ 0 ] ), f.width(), f.height(),
+					f.width() * 4, QImage::Format_ARGB32 ).copy();
+			}
+			else
+				qWarning() << "Unsupported video frame format:" << format;
+		}
+
+		f.unmap();
+
+		m_currentFrame = image.copy();
+
+		image = image.transformed( CameraSettings::instance().qTransform() );
+
+		if( m_counter == 0 )
+		{
+			auto * detect = new DetectCode( image.copy(), this );
+			QThreadPool::globalInstance()->start( detect );
+		}
+
+		++m_counter;
+
+		if( m_counter == c_framesCount )
+			m_counter = 0;
+
+		if( m_keyFrameCounter == 0 )
+			m_keyFrame = m_currentFrame;
+
+
+		++m_keyFrameCounter;
+
+		if( m_keyFrameCounter == c_keyFrameMax )
+		{
+			auto * detect = new DetectChange( m_keyFrame.copy(), m_currentFrame.copy(), this );
+			QThreadPool::globalInstance()->start( detect );
+
+			m_keyFrameCounter = 0;
+		}
+
+		if( m_videoSink )
+			m_videoSink->setVideoFrame( frame );
 	}
-
-	f.unmap();
-
-	m_currentFrame = image.copy();
-
-	image = image.transformed( m_transform );
-
-	if( m_counter == 0 )
-	{
-		auto * detect = new DetectCode( image.copy(), this );
-		QThreadPool::globalInstance()->start( detect );
-	}
-
-	++m_counter;
-
-	if( m_counter == c_framesCount )
-		m_counter = 0;
-
-	if( m_keyFrameCounter == 0 )
-		m_keyFrame = m_currentFrame;
-
-
-	++m_keyFrameCounter;
-
-	if( m_keyFrameCounter == c_keyFrameMax )
-	{
-		auto * detect = new DetectChange( m_keyFrame.copy(), m_currentFrame.copy(), this );
-		QThreadPool::globalInstance()->start( detect );
-
-		m_keyFrameCounter = 0;
-	}
-
-	if( m_videoSink )
-		m_videoSink->setVideoFrame( frame );
 }
 
 QImage
@@ -324,7 +365,9 @@ Frames::camSettingsChanged()
 
 	m_transform = CameraSettings::instance().transform();
 
-	m_dirty = true;
+	emit xScaleChanged();
+	emit yScaleChanged();
+	emit angleChanged();
 }
 
 void

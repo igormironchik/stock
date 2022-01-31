@@ -62,15 +62,27 @@ signals:
 public:
 	static CameraSettings & instance();
 
+	//! Transform.
+	struct Transform {
+		//! X scale.
+		qreal m_xScale;
+		//! Y scale.
+		qreal m_yScale;
+		//! Rotation.
+		qreal m_rot;
+	}; // struct Transform
+
 	//! \return List of cameras.
 	QStringListModel * camsList();
 	//! \return List of resolutions.
 	QStringListModel * camResolutions();
 
 	//! \return Transform.
-	QTransform transform() const;
+	Transform transform() const;
 	//! Set transform.
 	void setTransform( int rot, bool mirrored );
+	//! \return Transform.
+	const QTransform & qTransform() const;
 
 	//! \return Camera settings.
 	QCameraFormat camSettings() const;
@@ -109,6 +121,8 @@ private:
 	void writeCfg();
 	//! \return Configuration file name.
 	QString cfgFileName() const;
+	//! Update transform.
+	void updateTransform();
 
 private:
 	Q_DISABLE_COPY( CameraSettings )
@@ -125,6 +139,8 @@ private:
 	CameraCfg m_cfg;
 	//! Dirty?
 	bool m_dirty;
+	//! Transform.
+	QTransform m_transform;
 }; // class CameraSettings
 
 } /* namespace Stock */

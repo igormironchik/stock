@@ -32,6 +32,10 @@ Item {
         anchors.fill: parent
         anchors.centerIn: parent
         focus : visible
+        transform: [ Scale { origin.x: root.width / 2; origin.y: root.height / 2;
+                xScale: frames.xScale; yScale: frames.yScale },
+            Rotation { origin.x: root.width / 2; origin.y: root.height / 2;
+                angle: frames.angle } ]
     }
 
 	Button {

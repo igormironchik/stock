@@ -29,6 +29,9 @@
 #include <QMediaCaptureSession>
 #include <QPointer>
 
+// Stock include.
+#include "camera_settings.hpp"
+
 
 namespace Stock {
 
@@ -44,6 +47,9 @@ class Frames
 
 	Q_PROPERTY( QImage currentFrame READ currentFrame NOTIFY currentFrameChanged )
 	Q_PROPERTY( QVideoSink* videoSink READ videoSink WRITE setVideoSink NOTIFY videoSinkChanged )
+	Q_PROPERTY( qreal angle READ angle NOTIFY angleChanged )
+	Q_PROPERTY( qreal xScale READ xScale NOTIFY xScaleChanged )
+	Q_PROPERTY( qreal yScale READ yScale NOTIFY yScaleChanged )
 
 signals:
 	//! Code detected.
@@ -54,6 +60,10 @@ signals:
 	void imageChanged();
 	//! Vide sink changed.
 	void videoSinkChanged();
+
+	void angleChanged();
+	void xScaleChanged();
+	void yScaleChanged();
 
 public:
 	static void registerQmlType();
@@ -70,6 +80,13 @@ public:
 	QVideoSink * videoSink() const;
 	//! Set sink of video output.
 	void setVideoSink( QVideoSink * newVideoSink );
+
+	//!	\return Rotation angle.
+	qreal angle() const;
+	//! \return X scale.
+	qreal xScale() const;
+	//! \return Y scale.
+	qreal yScale() const;
 
 public slots:
 	//! Emit code.
@@ -100,10 +117,8 @@ private:
 	QImage m_currentFrame;
 	//! Key frame.
 	QImage m_keyFrame;
-	//! Dirty?
-	bool m_dirty;
 	//! Transform.
-	QTransform m_transform;
+	CameraSettings::Transform m_transform;
 	//! Capture.
 	QMediaCaptureSession m_capture;
 	//! Video sink of video output.

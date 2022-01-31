@@ -73,6 +73,8 @@ CameraSettings::CameraSettings()
 	}
 
 	readCfg();
+
+	updateTransform();
 }
 
 CameraSettings::~CameraSettings()
@@ -114,16 +116,16 @@ CameraSettings::camResolutions()
 	return &m_camResolutions;
 }
 
-QTransform
+CameraSettings::Transform
 CameraSettings::transform() const
 {
-	QTransform t;
+	Transform t { 1.0, 1.0, 0.0 };
 
 	if( m_cfg.mirrored() )
-		t.scale( -1.0, 1.0 );
+		t.m_xScale = -1.0;
 
 	if( m_cfg.rotation() != 0 )
-		t.rotate( m_cfg.rotation() );
+		t.m_rot = m_cfg.rotation();
 
 	return t;
 }
@@ -134,7 +136,15 @@ CameraSettings::setTransform( int rot, bool mirrored )
 	m_cfg.set_rotation( rot );
 	m_cfg.set_mirrored( mirrored );
 
+	updateTransform();
+
 	emit transformChanged();
+}
+
+const QTransform &
+CameraSettings::qTransform() const
+{
+	return m_transform;
 }
 
 QCameraFormat
@@ -311,8 +321,23 @@ CameraSettings::applySettings()
 
 		writeCfg();
 
+		updateTransform();
+
 		emit camSettingsChanged();
 	}
+}
+
+void
+CameraSettings::updateTransform()
+{
+	m_transform = QTransform();
+
+	if( m_cfg.mirrored() )
+		m_transform.scale( -1.0, 1.0 );
+	else
+		m_transform.scale( 1.0, 1.0 );
+
+	m_transform.rotate( m_cfg.rotation() );
 }
 
 void
@@ -325,7 +350,9 @@ void
 CameraSettings::rotate()
 {
 	const auto r = m_cfg.rotation() + 90;
-	m_cfg.set_rotation( r < 360 ? r : 0 );
+	m_cfg.set_rotation( r < 360 ? r : r - 360 );
+
+	updateTransform();
 
 	m_dirty = true;
 
@@ -337,6 +364,8 @@ CameraSettings::mirror()
 {
 	const auto m = !m_cfg.mirrored();
 	m_cfg.set_mirrored( m );
+
+	updateTransform();
 
 	m_dirty = true;
 
