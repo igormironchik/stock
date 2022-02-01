@@ -60,9 +60,7 @@ CameraSettings::CameraSettings()
 
 		for( const auto & s : settings )
 		{
-			if( s.pixelFormat() != QVideoFrameFormat::Format_Jpeg ||
-				QVideoFrameFormat::imageFormatFromPixelFormat( s.pixelFormat() ) !=
-					QImage::Format_Invalid )
+			if( s.pixelFormat() != QVideoFrameFormat::Format_Jpeg )
 			{
 				const auto resolutionStr = resolution( s.resolution().width(),
 					s.resolution().height(), s.maxFrameRate() );
