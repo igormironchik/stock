@@ -71,8 +71,8 @@ ScrollView {
                 }
                 implicitHeight: appWindow.minimumCtrlHeight
                 implicitWidth: pwdField.width
-                up.indicator.implicitWidth: appWindow.minimumCtrlHeight
-                down.indicator.implicitWidth: appWindow.minimumCtrlHeight
+                //up.indicator.implicitWidth: appWindow.minimumCtrlHeight
+                //down.indicator.implicitWidth: appWindow.minimumCtrlHeight
             }
 
             Rectangle {
@@ -88,12 +88,14 @@ ScrollView {
             TextField {
                 id: pwdField
                 placeholderText: qsTr( "Password" )
+                leftPadding: appWindow.minimumCtrlHeight / 3
                 echoMode: TextInput.Password
                 text: connectScreen.pwd
                 selectByMouse: true
                 mouseSelectionMode: TextInput.SelectCharacters
                 implicitHeight: appWindow.minimumCtrlHeight
                 implicitWidth: content.width - 40 - implicitHeight - pwdText.width
+                verticalAlignment: Qt.AlignCenter
             }
 
             Button {
