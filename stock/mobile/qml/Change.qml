@@ -138,8 +138,8 @@ ScrollView {
                 editable: false
                 implicitHeight: appWindow.minimumCtrlHeight
                 implicitWidth: codeField.implicitWidth
-                up.indicator.implicitWidth: appWindow.minimumCtrlHeight
-                down.indicator.implicitWidth: appWindow.minimumCtrlHeight
+                //up.indicator.implicitWidth: appWindow.minimumCtrlHeight
+                //down.indicator.implicitWidth: appWindow.minimumCtrlHeight
 
                 onValueChanged: {
                     check()

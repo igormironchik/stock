@@ -48,7 +48,6 @@ writeTellIpDatargam( QUdpSocket * s, quint16 port )
 	try {
 		QString str;
 		QTextStream text( &str, QIODevice::WriteOnly );
-		text.setCodec( QTextCodec::codecForName( "UTF-8" ) );
 
 		Messages::TellMeYourIP msg;
 		Messages::tag_TellMeYourIP< cfgfile::qstring_trait_t > tag( msg );
@@ -89,7 +88,6 @@ writeMyIpDatargam( QUdpSocket * s, const QString & host, quint16 port,
 	try {
 		QString str;
 		QTextStream text( &str, QIODevice::WriteOnly );
-		text.setCodec( QTextCodec::codecForName( "UTF-8" ) );
 
 		Messages::MyIP msg;
 		msg.set_ip( host );

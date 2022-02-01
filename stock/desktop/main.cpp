@@ -60,8 +60,8 @@ int main( int argc, char ** argv )
 	app.setWindowIcon( appIcon );
 
 	QTranslator appTranslator;
-	appTranslator.load( "./tr/stock_" + QLocale::system().name() );
-	app.installTranslator( &appTranslator );
+	if( appTranslator.load( "./tr/stock_" + QLocale::system().name() ) )
+		app.installTranslator( &appTranslator );
 
 	Stock::MainWindow w;
 	w.setMinimumSize( 650, 550 );

@@ -25,7 +25,9 @@
 
 // Qt include.
 #include <QTcpServer>
-#include <QScopedPointer>
+
+// C++ include.
+#include <memory>
 
 
 namespace Stock {
@@ -85,7 +87,7 @@ private slots:
 private:
 	Q_DISABLE_COPY( Server )
 
-	QScopedPointer< ServerPrivate > d;
+	std::unique_ptr< ServerPrivate > d;
 }; // class Server
 
 } /* namespace Stock */

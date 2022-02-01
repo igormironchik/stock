@@ -25,7 +25,9 @@
 
 // Qt include.
 #include <QWidget>
-#include <QScopedPointer>
+
+// C++ include.
+#include <memory>
 
 QT_BEGIN_NAMESPACE
 class QTreeView;
@@ -88,7 +90,7 @@ private:
 
 	Q_DISABLE_COPY( View )
 
-	QScopedPointer< ViewPrivate > d;
+	std::unique_ptr< ViewPrivate > d;
 }; // class View
 
 } /* namespace Stock */

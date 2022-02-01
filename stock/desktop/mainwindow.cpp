@@ -49,9 +49,9 @@
 #include <QTextStream>
 #include <QFile>
 #include <QMessageBox>
-#include <QTextCodec>
 #include <QHostAddress>
 #include <QUdpSocket>
+#include <QActionGroup>
 
 // cfgfile include.
 #include <cfgfile/all.hpp>
@@ -276,7 +276,6 @@ MainWindow::appStarted()
 				tag_Cfg< cfgfile::qstring_trait_t > tag;
 
 				QTextStream stream( &file );
-				stream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
 
 				cfgfile::read_cfgfile( tag, stream, c_appCfgFileName );
 
@@ -455,7 +454,6 @@ MainWindow::options()
 				tag_Cfg< cfgfile::qstring_trait_t > tag( d->m_cfg );
 
 				QTextStream stream( &file );
-				stream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
 
 				cfgfile::write_cfgfile( tag, stream );
 

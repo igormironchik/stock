@@ -24,11 +24,10 @@
 #define STOCK_CAMERA_SETTINGS_HPP_INCLUDED
 
 // Qt include.
-#include <QCamera>
 #include <QObject>
 #include <QStringListModel>
 #include <QMap>
-#include <QCameraInfo>
+#include <QCameraDevice>
 
 // Stock include.
 #include "camera.hpp"
@@ -63,28 +62,40 @@ signals:
 public:
 	static CameraSettings & instance();
 
+	//! Transform.
+	struct Transform {
+		//! X scale.
+		qreal m_xScale;
+		//! Y scale.
+		qreal m_yScale;
+		//! Rotation.
+		qreal m_rot;
+	}; // struct Transform
+
 	//! \return List of cameras.
 	QStringListModel * camsList();
 	//! \return List of resolutions.
 	QStringListModel * camResolutions();
 
 	//! \return Transform.
-	QTransform transform() const;
+	Transform transform() const;
 	//! Set transform.
 	void setTransform( int rot, bool mirrored );
+	//! \return Transform.
+	const QTransform & qTransform() const;
 
 	//! \return Camera settings.
-	QCameraViewfinderSettings camSettings() const;
+	QCameraFormat camSettings() const;
 	//! \return Camera settings string.
 	QString camSettingsStr() const;
 	//! Set camera settings.
-	void setCamSettings( const QCameraViewfinderSettings & s, bool notify = true );
+	void setCamSettings( const QCameraFormat & s, bool notify = true );
 
 	//! \return Camera name.
 	QString camName() const;
 
 	//! \return Camera info.
-	QCameraInfo camInfo( const QString & name ) const;
+	QCameraDevice camInfo( const QString & name ) const;
 
 	//! \return Resolution string.
 	QString resolution( int width, int height, qreal fps ) const;
@@ -103,19 +114,15 @@ public slots:
 	//! Mirror.
 	void mirror();
 
-private slots:
-	//! Camera status changed.
-	void camStatusChanged( QCamera::Status st );
-
 private:
-	//! Check next camera.
-	void checkNextCamera();
 	//! Read configuration.
 	void readCfg();
 	//! Write configuration.
 	void writeCfg();
 	//! \return Configuration file name.
 	QString cfgFileName() const;
+	//! Update transform.
+	void updateTransform();
 
 private:
 	Q_DISABLE_COPY( CameraSettings )
@@ -124,18 +131,16 @@ private:
 	QStringListModel m_camsModel;
 	//! List of resolutions.
 	QStringListModel m_camResolutions;
-	//! Camera.
-	QCamera * m_cam;
 	//! Cameras.
-	QMap< QString, QCameraInfo > m_camsInfo;
-	//! Cameras iterator.
-	QMap< QString, QCameraInfo >::ConstIterator m_camsInfoIt;
+	QMap< QString, QCameraDevice > m_camsInfo;
 	//! Resolutions.
-	QMap< QString, QMap< QString, QCameraViewfinderSettings > > m_resolutions;
+	QMap< QString, QMap< QString, QCameraFormat > > m_resolutions;
 	//! Configuration.
 	CameraCfg m_cfg;
 	//! Dirty?
 	bool m_dirty;
+	//! Transform.
+	QTransform m_transform;
 }; // class CameraSettings
 
 } /* namespace Stock */

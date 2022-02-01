@@ -29,7 +29,6 @@
 
 // Qt include.
 #include <QTextStream>
-#include <QTextCodec>
 #include <QFile>
 #include <QDir>
 
@@ -48,7 +47,6 @@ CfgFile::read( const QString & fileName, QString & pwd, quint16 & port )
 	if( file.open( QIODevice::ReadOnly ) )
 	{
 		QTextStream s( &file );
-		s.setCodec( QTextCodec::codecForName( "UTF-8" ) );
 
 		try {
 			tag_Cfg< cfgfile::qstring_trait_t> tag;
@@ -81,7 +79,6 @@ CfgFile::write( const QString & fileName, const QString & pwd, quint16 port )
 	if( file.open( QIODevice::WriteOnly ) )
 	{
 		QTextStream s( &file );
-		s.setCodec( QTextCodec::codecForName( "UTF-8" ) );
 
 		try {
 			Cfg cfg;

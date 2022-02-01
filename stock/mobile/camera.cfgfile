@@ -40,12 +40,14 @@
 				{valueType bool}
 				{name mirrored}
 				{required}
+				{defaultValue false}
 			}
 
 			{tagScalar
 				{valueType int}
 				{name rotation}
 				{required}
+				{defaultValue 0}
 			}
 		} || class CameraCfg
 

@@ -25,7 +25,9 @@
 
 // Qt include.
 #include <QAbstractItemModel>
-#include <QScopedPointer>
+
+// C++ include.
+#include <memory>
 
 // Stock include.
 #include "db.hpp"
@@ -112,7 +114,7 @@ private:
 
 	Q_DISABLE_COPY( ByProductModel )
 
-	QScopedPointer< ByProductModelPrivate > d;
+	std::unique_ptr< ByProductModelPrivate > d;
 }; // class ByProductModel
 
 } /* namespace Stock */

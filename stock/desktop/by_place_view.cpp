@@ -288,8 +288,8 @@ ByPlaceView::deletePlace()
 		const auto res = QMessageBox::question( this, tr( "Deletion of Place..." ),
 			tr( "You are about to completely remove place from the database.\n\n"
 				"Are you sure that you want to delete place \"%1\"?" )
-					.arg( place ), QMessageBox::Yes,
-				QMessageBox::No | QMessageBox::Default | QMessageBox::Escape );
+					.arg( place ), QMessageBox::Yes | QMessageBox::No,
+				QMessageBox::No );
 
 		if( res == QMessageBox::Yes )
 		{

@@ -20,19 +20,24 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// SecurityCam include.
+// Stock include.
 #include "frames.hpp"
-#include "camera_settings.hpp"
 
 // Qt include.
-#include <QVideoSurfaceFormat>
 #include <QQmlEngine>
 #include <QRunnable>
 #include <QMetaObject>
-#include <QCameraFocus>
+#include <QCameraDevice>
+#include <QThreadPool>
 
 // QZXing include.
 #include <QZXing.h>
+
+// libyuv include.
+#include <libyuv.h>
+
+// C++ include.
+#include <vector>
 
 
 namespace Stock {
@@ -45,15 +50,16 @@ static const int c_keyFrameMax = 60;
 //
 
 Frames::Frames( QObject * parent )
-	:	QAbstractVideoSurface( parent )
-	,	m_qml( nullptr )
+	:	QVideoSink( parent )
 	,	m_cam( nullptr )
 	,	m_counter( 0 )
 	,	m_keyFrameCounter( 0 )
-	,	m_dirty( true )
 {
 	connect( &CameraSettings::instance(), &CameraSettings::camSettingsChanged,
 		this, &Frames::camSettingsChanged );
+
+	connect( this, &QVideoSink::videoFrameChanged,
+			this, &Frames::newFrame );
 
 	m_transform = CameraSettings::instance().transform();
 
@@ -61,16 +67,46 @@ Frames::Frames( QObject * parent )
 
 	CameraSettings::instance().setCamName( CameraSettings::instance().camName(), false );
 	CameraSettings::instance().clearDirtyFlag();
-
-	connect( this, &Frames::imageChanged, this, &Frames::searchAndLock );
 }
 
 Frames::~Frames()
 {
 	stopCam();
+}
 
-	if( m_qml )
-		m_qml->stop();
+QVideoSink *
+Frames::videoSink() const
+{
+	return m_videoSink.get();
+}
+
+void
+Frames::setVideoSink( QVideoSink * newVideoSink )
+{
+	if( m_videoSink == newVideoSink )
+		return;
+
+	m_videoSink = newVideoSink;
+
+	emit videoSinkChanged();
+}
+
+qreal
+Frames::angle() const
+{
+	return m_transform.m_rot;
+}
+
+qreal
+Frames::xScale() const
+{
+	return m_transform.m_xScale;
+}
+
+qreal
+Frames::yScale() const
+{
+	return m_transform.m_yScale;
 }
 
 namespace /* anonymous */ {
@@ -112,8 +148,10 @@ public:
 		const auto code = decoder.decodeImage( m_img );
 
 		if( !code.isEmpty() )
+		{
 			QMetaObject::invokeMethod( m_provider, "emitCode", Qt::QueuedConnection,
 				Q_ARG( QString, code ) );
+		}
 	}
 
 private:
@@ -171,144 +209,122 @@ private:
 	Frames * m_provider;
 }; // class DetectChange
 
+
+//
+// libyuvFormat
+//
+
+libyuv::FourCC libyuvFormat( QVideoFrameFormat::PixelFormat f )
+{
+	switch( f )
+	{
+		case QVideoFrameFormat::Format_YUYV :
+			return libyuv::FOURCC_YUYV;
+
+		case QVideoFrameFormat::Format_UYVY :
+			return libyuv::FOURCC_UYVY;
+
+		case QVideoFrameFormat::Format_YUV420P :
+			return libyuv::FOURCC_I420;
+
+		case QVideoFrameFormat::Format_YUV422P :
+			return libyuv::FOURCC_I422;
+
+		case QVideoFrameFormat::Format_NV12 :
+			return libyuv::FOURCC_NV12;
+
+		case QVideoFrameFormat::Format_NV21 :
+			return libyuv::FOURCC_NV21;
+
+		default :
+			return libyuv::FOURCC_ANY;
+	}
+}
+
 } /* namespace anonymous */
 
-bool
-Frames::present( const QVideoFrame & frame )
+void
+Frames::newFrame( const QVideoFrame & frame )
 {
-	if( !isActive() )
-		return false;
-
 	QVideoFrame f = frame;
-	f.map( QAbstractVideoBuffer::ReadOnly );
+	f.map( QVideoFrame::ReadOnly );
 
-	const auto fmt = QVideoFrame::imageFormatFromPixelFormat( f.pixelFormat() );
-
-	QImage image;
-
-	if( fmt != QImage::Format_Invalid )
-		image = QImage( f.bits(), f.width(), f.height(), f.bytesPerLine(), fmt );
-	else if( f.pixelFormat() == QVideoFrame::Format_ABGR32 )
+	if( f.isValid() )
 	{
-		const auto max = f.width() * f.height() * 4;
-		std::vector< uchar > buf;
-		buf.reserve( max );
-		uchar * bits = f.bits();
+		const auto fmt = QVideoFrameFormat::imageFormatFromPixelFormat( f.pixelFormat() );
 
-		static const size_t i1 = ( Q_BYTE_ORDER == Q_LITTLE_ENDIAN ? 2 : 0 );
-		static const size_t i2 = ( Q_BYTE_ORDER == Q_LITTLE_ENDIAN ? 1 : 3 );
-		static const size_t i3 = ( Q_BYTE_ORDER == Q_LITTLE_ENDIAN ? 0 : 2 );
-		static const size_t i4 = ( Q_BYTE_ORDER == Q_LITTLE_ENDIAN ? 3 : 1 );
+		QImage image;
 
-		for( auto i = 0; i < max; )
+		if( fmt != QImage::Format_Invalid )
+			image = QImage( f.bits( 0 ), f.width(), f.height(), f.bytesPerLine( 0 ), fmt );
+		else if( f.pixelFormat() == QVideoFrameFormat::Format_Jpeg )
+			image.loadFromData( f.bits( 0 ), f.mappedBytes( 0 ) );
+		else
 		{
-			buf.push_back( bits[ i1 ] );
-			buf.push_back( bits[ i2 ] );
-			buf.push_back( bits[ i3 ] );
-			buf.push_back( bits[ i4 ] );
+			const auto format = libyuvFormat( f.pixelFormat() );
 
-			bits += 4;
-			i += 4;
+			if( format != libyuv::FOURCC_ANY )
+			{
+				std::vector< uint8_t > data( f.width() * f.height() * 4, 0 );
+
+				libyuv::ConvertToARGB( static_cast< uint8_t* > ( f.bits( 0 ) ),
+					f.bytesPerLine( 0 ) * f.height(),
+					&data[ 0 ],
+					f.width() * 4,
+					0, 0,
+					f.width(),
+					f.height(),
+					f.width(),
+					f.height(),
+					libyuv::kRotate0,
+					format );
+
+				image = QImage( static_cast< uchar* > ( &data[ 0 ] ), f.width(), f.height(),
+					f.width() * 4, QImage::Format_ARGB32 ).copy();
+			}
+			else
+				qWarning() << "Unsupported video frame format:" << format;
 		}
 
-		image = QImage( &buf[ 0 ], f.width(), f.height(), f.bytesPerLine(),
-			QImage::Format_ARGB32 ).copy();
-	}
-	else
-	{
 		f.unmap();
 
-		return true;
-	}
+		m_currentFrame = image.copy();
 
-	f.unmap();
+		image = image.transformed( CameraSettings::instance().qTransform() );
 
-	QMutexLocker lock( &m_mutex );
-
-	m_currentFrame = image.copy();
-
-	image = image.transformed( m_transform );
-
-	if( m_counter == 0 )
-	{
-		auto * detect = new DetectCode( image.copy(), this );
-		QThreadPool::globalInstance()->start( detect );
-	}
-
-	++m_counter;
-
-	if( m_counter == c_framesCount )
-		m_counter = 0;
-
-	if( m_keyFrameCounter == 0 )
-		m_keyFrame = m_currentFrame;
-
-
-	++m_keyFrameCounter;
-
-	if( m_keyFrameCounter == c_keyFrameMax )
-	{
-		auto * detect = new DetectChange( m_keyFrame.copy(), m_currentFrame.copy(), this );
-		QThreadPool::globalInstance()->start( detect );
-
-		m_keyFrameCounter = 0;
-	}
-
-	if( m_qml )
-	{
-		if( m_dirty )
+		if( m_counter == 0 )
 		{
-			QVideoFrame::PixelFormat pixelFormat =
-				QVideoFrame::pixelFormatFromImageFormat( image.format() );
-
-			const auto fmt = QVideoSurfaceFormat( image.size(),
-				pixelFormat );
-
-			m_qml->start( fmt );
-
-			m_dirty = false;
+			auto * detect = new DetectCode( image.copy(), this );
+			QThreadPool::globalInstance()->start( detect );
 		}
 
-		m_qml->present( QVideoFrame( image.copy() ) );
+		++m_counter;
+
+		if( m_counter == c_framesCount )
+			m_counter = 0;
+
+		if( m_keyFrameCounter == 0 )
+			m_keyFrame = m_currentFrame;
+
+
+		++m_keyFrameCounter;
+
+		if( m_keyFrameCounter == c_keyFrameMax )
+		{
+			auto * detect = new DetectChange( m_keyFrame.copy(), m_currentFrame.copy(), this );
+			QThreadPool::globalInstance()->start( detect );
+
+			m_keyFrameCounter = 0;
+		}
+
+		if( m_videoSink )
+			m_videoSink->setVideoFrame( frame );
 	}
-
-	return true;
-}
-
-QList< QVideoFrame::PixelFormat >
-Frames::supportedPixelFormats( QAbstractVideoBuffer::HandleType type ) const
-{
-	Q_UNUSED( type )
-
-	return QList< QVideoFrame::PixelFormat > ()
-		<< QVideoFrame::Format_ARGB32
-		<< QVideoFrame::Format_ARGB32_Premultiplied
-		<< QVideoFrame::Format_RGB32
-		<< QVideoFrame::Format_RGB24;
-}
-
-QAbstractVideoSurface *
-Frames::videoSurface() const
-{
-	return m_qml;
-}
-
-void
-Frames::setVideoSurface( QAbstractVideoSurface * s )
-{
-	QMutexLocker lock( &m_mutex );
-
-	if( m_qml && m_qml->isActive() )
-		m_qml->stop();
-
-	m_qml = s;
 }
 
 QImage
 Frames::currentFrame() const
 {
-	QMutexLocker lock( &m_mutex );
-
 	return m_currentFrame;
 }
 
@@ -331,32 +347,11 @@ Frames::emitImageChanged()
 }
 
 void
-Frames::camStatusChanged( QCamera::Status st )
-{
-	if( st == QCamera::LoadedStatus )
-	{
-		const auto s = m_cam->viewfinderSettings();
-
-		CameraSettings::instance().setCamSettings( s, false );
-		CameraSettings::instance().clearDirtyFlag();
-	}
-	else if( st == QCamera::ActiveStatus )
-		m_cam->searchAndLock();
-}
-
-void
-Frames::searchAndLock()
-{
-	if( m_cam && m_cam->status() == QCamera::ActiveStatus )
-		m_cam->searchAndLock();
-}
-
-void
 Frames::camSettingsChanged()
 {
-	const auto i = QCameraInfo( *m_cam );
+	const auto i = m_cam->cameraDevice();
 
-	if( CameraSettings::instance().camName() != i.deviceName() )
+	if( CameraSettings::instance().camName() != i.description() )
 	{
 		stopCam();
 		initCam();
@@ -364,15 +359,15 @@ Frames::camSettingsChanged()
 	else
 	{
 		m_cam->stop();
-		m_cam->setViewfinderSettings( CameraSettings::instance().camSettings() );
+		m_cam->setCameraFormat( CameraSettings::instance().camSettings() );
 		m_cam->start();
 	}
 
-	QMutexLocker lock( &m_mutex );
-
 	m_transform = CameraSettings::instance().transform();
 
-	m_dirty = true;
+	emit xScaleChanged();
+	emit yScaleChanged();
+	emit angleChanged();
 }
 
 void
@@ -385,15 +380,11 @@ Frames::initCam()
 	else
 		m_cam = new QCamera( this );
 
-	connect( m_cam, &QCamera::statusChanged, this, &Frames::camStatusChanged );
+	m_cam->setFocusMode( QCamera::FocusModeAuto );
+	m_cam->setCameraFormat( CameraSettings::instance().camSettings() );
+	m_capture.setCamera( m_cam );
+	m_capture.setVideoSink( this );
 
-	m_cam->setCaptureMode( QCamera::CaptureViewfinder );
-
-	if( m_cam->focus()->isFocusModeSupported( QCameraFocus::MacroFocus  ) )
-		m_cam->focus()->setFocusMode( QCameraFocus::MacroFocus );
-
-	m_cam->setViewfinderSettings( CameraSettings::instance().camSettings() );
-	m_cam->setViewfinder( this );
 	m_cam->start();
 }
 
@@ -401,7 +392,6 @@ void
 Frames::stopCam()
 {
 	m_cam->stop();
-	m_cam->unload();
 
 	disconnect( m_cam, 0, 0, 0 );
 	m_cam->setParent( nullptr );

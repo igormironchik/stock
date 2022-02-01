@@ -54,7 +54,7 @@ private:
 
 	inline ByPlaceSortModelPrivate * d_func() const
 	{
-		return reinterpret_cast< ByPlaceSortModelPrivate* > ( d.data() );
+		return reinterpret_cast< ByPlaceSortModelPrivate* > ( d.get() );
 	}
 }; // class ByPlaceSortModel
 

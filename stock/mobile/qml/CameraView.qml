@@ -1,5 +1,5 @@
 
-import QtMultimedia 5.15
+import QtMultimedia
 import QtQuick 2.7
 import Frames 0.1
 import QtQuick.Controls 2.2
@@ -19,19 +19,24 @@ Item {
     }
 
 	Frames {
-		id: frames
+        id: frames
+        videoSink: view.videoSink
 
-		onCodeDetected: {
+        onCodeDetected: (code) => {
 			root.code = code
 		}
 	}
 
-	VideoOutput {
-		source: frames
-		anchors.fill: parent
-		anchors.centerIn: parent
-		focus : visible
-	}
+    VideoOutput {
+        id: view
+        anchors.fill: parent
+        anchors.centerIn: parent
+        focus : visible
+        transform: [ Scale { origin.x: root.width / 2; origin.y: root.height / 2;
+                xScale: frames.xScale; yScale: frames.yScale },
+            Rotation { origin.x: root.width / 2; origin.y: root.height / 2;
+                angle: frames.angle } ]
+    }
 
 	Button {
 		id: settings

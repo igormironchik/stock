@@ -24,9 +24,13 @@
 #define STOCK_FRAMES_HPP_INCLUDED
 
 // Qt include.
-#include <QAbstractVideoSurface>
-#include <QMutex>
+#include <QVideoSink>
 #include <QCamera>
+#include <QMediaCaptureSession>
+#include <QPointer>
+
+// Stock include.
+#include "camera_settings.hpp"
 
 
 namespace Stock {
@@ -37,12 +41,15 @@ namespace Stock {
 
 //! Frames listener.
 class Frames
-	:	public QAbstractVideoSurface
+	:	public QVideoSink
 {
 	Q_OBJECT
 
-	Q_PROPERTY( QAbstractVideoSurface * videoSurface READ videoSurface WRITE setVideoSurface )
 	Q_PROPERTY( QImage currentFrame READ currentFrame NOTIFY currentFrameChanged )
+	Q_PROPERTY( QVideoSink* videoSink READ videoSink WRITE setVideoSink NOTIFY videoSinkChanged )
+	Q_PROPERTY( qreal angle READ angle NOTIFY angleChanged )
+	Q_PROPERTY( qreal xScale READ xScale NOTIFY xScaleChanged )
+	Q_PROPERTY( qreal yScale READ yScale NOTIFY yScaleChanged )
 
 signals:
 	//! Code detected.
@@ -51,6 +58,12 @@ signals:
 	void currentFrameChanged();
 	//! Image changed.
 	void imageChanged();
+	//! Vide sink changed.
+	void videoSinkChanged();
+
+	void angleChanged();
+	void xScaleChanged();
+	void yScaleChanged();
 
 public:
 	static void registerQmlType();
@@ -58,19 +71,22 @@ public:
 	explicit Frames( QObject * parent = nullptr );
 	~Frames() override;
 
-	bool present( const QVideoFrame & frame ) override;
-
-	QList< QVideoFrame::PixelFormat > supportedPixelFormats(
-		QAbstractVideoBuffer::HandleType type =
-			QAbstractVideoBuffer::NoHandle ) const override;
-
-	//! \return Video surface.
-	QAbstractVideoSurface * videoSurface() const;
-	//! Set video surface.
-	void setVideoSurface( QAbstractVideoSurface * s );
+	bool present( const QVideoFrame & frame );
 
 	//! \return Current frame.
 	QImage currentFrame() const;
+
+	//! \return Sink of video output.
+	QVideoSink * videoSink() const;
+	//! Set sink of video output.
+	void setVideoSink( QVideoSink * newVideoSink );
+
+	//!	\return Rotation angle.
+	qreal angle() const;
+	//! \return X scale.
+	qreal xScale() const;
+	//! \return Y scale.
+	qreal yScale() const;
 
 public slots:
 	//! Emit code.
@@ -79,24 +95,18 @@ public slots:
 	void emitImageChanged();
 
 private slots:
-	//! Camera status changed.
-	void camStatusChanged( QCamera::Status st );
 	//! Camera settings changed.
 	void camSettingsChanged();
 	//! Init camera.
 	void initCam();
 	//! Stop camera.
 	void stopCam();
-	//! Search and lock.
-	void searchAndLock();
+	//! Video frame changed.
+	void newFrame( const QVideoFrame & frame );
 
 private:
 	Q_DISABLE_COPY( Frames )
 
-	//! Mutex.
-	mutable QMutex m_mutex;
-	//! QML surface.
-	QAbstractVideoSurface * m_qml;
 	//! Camera.
 	QCamera * m_cam;
 	//! Counter.
@@ -107,10 +117,12 @@ private:
 	QImage m_currentFrame;
 	//! Key frame.
 	QImage m_keyFrame;
-	//! Dirty?
-	bool m_dirty;
 	//! Transform.
-	QTransform m_transform;
+	CameraSettings::Transform m_transform;
+	//! Capture.
+	QMediaCaptureSession m_capture;
+	//! Video sink of video output.
+	QPointer< QVideoSink > m_videoSink;
 }; // class Frames
 
 } /* namespace Stock */

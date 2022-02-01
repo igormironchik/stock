@@ -25,7 +25,9 @@
 
 // Qt include.
 #include <QDialog>
-#include <QScopedPointer>
+
+// C++ include.
+#include <memory>
 
 
 namespace Stock {
@@ -59,7 +61,7 @@ private:
 
 	Q_DISABLE_COPY( RenameDlg )
 
-	QScopedPointer< RenameDlgPrivate > d;
+	std::unique_ptr< RenameDlgPrivate > d;
 }; // class RenameDlg
 
 } /* namespace Stock */

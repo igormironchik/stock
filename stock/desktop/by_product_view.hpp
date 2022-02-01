@@ -25,7 +25,9 @@
 
 // Qt include.
 #include <QTreeView>
-#include <QScopedPointer>
+
+// C++ include.
+#include <memory>
 
 
 namespace Stock {
@@ -89,7 +91,7 @@ private:
 
 	Q_DISABLE_COPY( ByProductView )
 
-	QScopedPointer< ByProductViewPrivate > d;
+	std::unique_ptr< ByProductViewPrivate > d;
 }; // class ByProductView
 
 } /* namespace Stock */

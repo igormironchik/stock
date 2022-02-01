@@ -28,7 +28,6 @@
 // Qt include.
 #include <QDataStream>
 #include <QTextStream>
-#include <QTextCodec>
 
 // cfgfile include.
 #include <cfgfile/all.hpp>
@@ -153,7 +152,7 @@ TcpSocketPrivate::parse()
 		if( s.readRawData( msgData.data(), length ) != length )
 			return true;
 
-		auto str = msgData.toStdString();
+		auto str = std::string( msgData.constData(), msgData.length() );
 		const auto data = decrypt( str, m_pwd );
 
 		msgData.clear();
@@ -161,7 +160,6 @@ TcpSocketPrivate::parse()
 		msgData.append( QByteArray::fromBase64( b64 ) );
 
 		QTextStream msgStream( msgData );
-		msgStream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
 
 		switch( static_cast< MsgType > ( type ) )
 		{
@@ -337,7 +335,6 @@ TcpSocket::sendMsg( const MSG & msg )
 	try {
 		QByteArray data;
 		QTextStream stream( &data, QIODevice::WriteOnly );
-		stream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
 
 		TAG tag( msg );
 
@@ -345,10 +342,11 @@ TcpSocket::sendMsg( const MSG & msg )
 		stream.flush();
 
 		const auto b64 = data.toBase64();
-		auto str = b64.toStdString();
-		const auto encrypted = encrypt( str, d->m_pwd );
+		auto str = std::string( b64.constData(), b64.length() );
+		auto encrypted = encrypt( str, d->m_pwd );
+
 		data.clear();
-		data.append( encrypted.c_str() );
+		data.append( encrypted.c_str(), encrypted.size() );
 
 		QByteArray msgData;
 		QDataStream s( &msgData, QIODevice::WriteOnly );

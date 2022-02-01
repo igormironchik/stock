@@ -39,7 +39,7 @@ PreviewImage::PreviewImage( QQuickItem * parent )
 	:	QQuickPaintedItem( parent )
 	,	m_dirty( true )
 {
-	m_transform = CameraSettings::instance().transform();
+	m_transform = CameraSettings::instance().qTransform();
 
 	connect( this, &PreviewImage::widthChanged,
 		this, &PreviewImage::markDirty );
@@ -103,7 +103,7 @@ PreviewImage::registerQmlType()
 void
 PreviewImage::transformChanged()
 {
-	m_transform = CameraSettings::instance().transform();
+	m_transform = CameraSettings::instance().qTransform();
 	m_dirty = true;
 
 	update();

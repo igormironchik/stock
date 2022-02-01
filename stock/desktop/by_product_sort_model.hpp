@@ -54,7 +54,7 @@ private:
 
 	inline ByProductSortModelPrivate * d_func() const
 	{
-		return reinterpret_cast< ByProductSortModelPrivate* > ( d.data() );
+		return reinterpret_cast< ByProductSortModelPrivate* > ( d.get() );
 	}
 }; // class ByProductSortModel
 
