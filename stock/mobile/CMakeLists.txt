@@ -115,6 +115,4 @@ set_property( TARGET Stock.Mobile APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
 
 target_link_libraries( Stock.Mobile PUBLIC qzxing yuv ${STOCK_JPEG} Qt::Qml Qt::Quick Qt::Multimedia Qt::Gui Qt::Network Qt::Core )
 
-message( WARN ${JPEG_LIBRARY} )
-
 qt_finalize_executable( Stock.Mobile )
