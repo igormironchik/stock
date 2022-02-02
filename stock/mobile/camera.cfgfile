@@ -37,6 +37,12 @@
 			}
 
 			{tagScalar
+				{valueType QString}
+				{name format}
+				{required}
+			}
+
+			{tagScalar
 				{valueType bool}
 				{name mirrored}
 				{required}

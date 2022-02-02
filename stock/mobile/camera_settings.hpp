@@ -36,6 +36,24 @@
 namespace Stock {
 
 //
+// pixelFormatToString
+//
+
+//! \return String representation of pixel format.
+QString
+pixelFormatToString( QVideoFrameFormat::PixelFormat f );
+
+
+//
+// stringToPixelFormat
+//
+
+//! \return String representation of pixel format.
+QVideoFrameFormat::PixelFormat
+stringToPixelFormat( const QString & s );
+
+
+//
 // CameraSettings
 //
 
@@ -98,7 +116,7 @@ public:
 	QCameraDevice camInfo( const QString & name ) const;
 
 	//! \return Resolution string.
-	QString resolution( int width, int height, qreal fps ) const;
+	QString resolution( const QCameraFormat & fmt ) const;
 
 public slots:
 	//! Set camera name.
@@ -134,7 +152,7 @@ private:
 	//! Cameras.
 	QMap< QString, QCameraDevice > m_camsInfo;
 	//! Resolutions.
-	QMap< QString, QMap< QString, QCameraFormat > > m_resolutions;
+	QMap< QString, QVector< QCameraFormat > > m_resolutions;
 	//! Configuration.
 	CameraCfg m_cfg;
 	//! Dirty?

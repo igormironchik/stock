@@ -36,6 +36,186 @@
 namespace Stock {
 
 //
+// pixelFormatToString
+//
+
+QString
+pixelFormatToString( QVideoFrameFormat::PixelFormat f )
+{
+	switch( f )
+	{
+		case QVideoFrameFormat::Format_ARGB8888 :
+			return QStringLiteral( "ARGB8888" );
+
+		case QVideoFrameFormat::Format_ARGB8888_Premultiplied :
+			return QStringLiteral( "ARGB8888P" );
+
+		case QVideoFrameFormat::Format_XRGB8888 :
+			return QStringLiteral( "XRGB8888" );
+
+		case QVideoFrameFormat::Format_BGRA8888 :
+			return QStringLiteral( "BGRA8888" );
+
+		case QVideoFrameFormat::Format_BGRA8888_Premultiplied :
+			return QStringLiteral( "BGRA8888P" );
+
+		case QVideoFrameFormat::Format_BGRX8888 :
+			return QStringLiteral( "BGRX8888" );
+
+		case QVideoFrameFormat::Format_ABGR8888 :
+			return QStringLiteral( "ARGB8888" );
+
+		case QVideoFrameFormat::Format_XBGR8888 :
+			return QStringLiteral( "XBGR8888" );
+
+		case QVideoFrameFormat::Format_RGBA8888 :
+			return QStringLiteral( "RGBA8888" );
+
+		case QVideoFrameFormat::Format_RGBX8888 :
+			return QStringLiteral( "RGBX8888" );
+
+		case QVideoFrameFormat::Format_AYUV :
+			return QStringLiteral( "AYUV" );
+
+		case QVideoFrameFormat::Format_AYUV_Premultiplied :
+			return QStringLiteral( "AYUVP" );
+
+		case QVideoFrameFormat::Format_YUV420P :
+			return QStringLiteral( "YUV420P" );
+
+		case QVideoFrameFormat::Format_YUV422P :
+			return QStringLiteral( "YUV422P" );
+
+		case QVideoFrameFormat::Format_YV12 :
+			return QStringLiteral( "YV12" );
+
+		case QVideoFrameFormat::Format_UYVY :
+			return QStringLiteral( "UYVY" );
+
+		case QVideoFrameFormat::Format_YUYV :
+			return QStringLiteral( "YUYV" );
+
+		case QVideoFrameFormat::Format_NV12 :
+			return QStringLiteral( "NV12" );
+
+		case QVideoFrameFormat::Format_NV21 :
+			return QStringLiteral( "NV21" );
+
+		case QVideoFrameFormat::Format_IMC1 :
+			return QStringLiteral( "IMC1" );
+
+		case QVideoFrameFormat::Format_IMC2 :
+			return QStringLiteral( "IMC2" );
+
+		case QVideoFrameFormat::Format_IMC3 :
+			return QStringLiteral( "IMC3" );
+
+		case QVideoFrameFormat::Format_IMC4 :
+			return QStringLiteral( "IMC4" );
+
+		case QVideoFrameFormat::Format_Y8 :
+			return QStringLiteral( "Y8" );
+
+		case QVideoFrameFormat::Format_Y16 :
+			return QStringLiteral( "Y16" );
+
+		case QVideoFrameFormat::Format_P010 :
+			return QStringLiteral( "P010" );
+
+		case QVideoFrameFormat::Format_P016 :
+			return QStringLiteral( "P016" );
+
+		case QVideoFrameFormat::Format_Jpeg :
+			return QStringLiteral( "JPEG" );
+
+		case QVideoFrameFormat::Format_SamplerExternalOES :
+			return QStringLiteral( "SEOES" );
+
+		case QVideoFrameFormat::Format_SamplerRect :
+			return QStringLiteral( "SR" );
+
+		case QVideoFrameFormat::Format_Invalid :
+			return QStringLiteral( "Invalid" );
+
+		default :
+			return QStringLiteral( "Unknown" );
+	}
+}
+
+//
+// stringToPixelFormat
+//
+
+//! \return String representation of pixel format.
+QVideoFrameFormat::PixelFormat
+stringToPixelFormat( const QString & s )
+{
+	if( s == QStringLiteral( "ARGB8888" ) )
+		return QVideoFrameFormat::Format_ARGB8888;
+	else if( s == QStringLiteral( "ARGB8888P" ) )
+		return QVideoFrameFormat::Format_ARGB8888_Premultiplied;
+	else if( s == QStringLiteral( "XRGB8888" ) )
+		return QVideoFrameFormat::Format_XRGB8888;
+	else if( s == QStringLiteral( "BGRA8888" ) )
+		return QVideoFrameFormat::Format_BGRA8888;
+	else if( s == QStringLiteral( "BGRA8888P" ) )
+		return QVideoFrameFormat::Format_BGRA8888_Premultiplied;
+	else if( s == QStringLiteral( "BGRX8888" ) )
+		return QVideoFrameFormat::Format_BGRX8888;
+	else if( s == QStringLiteral( "ARGB8888" ) )
+		return QVideoFrameFormat::Format_ABGR8888;
+	else if( s == QStringLiteral( "XBGR8888" ) )
+		return QVideoFrameFormat::Format_XBGR8888;
+	else if( s == QStringLiteral( "RGBA8888" ) )
+		return QVideoFrameFormat::Format_RGBA8888;
+	else if( s == QStringLiteral( "RGBX8888" ) )
+		return QVideoFrameFormat::Format_RGBX8888;
+	else if( s == QStringLiteral( "AYUV" ) )
+		return QVideoFrameFormat::Format_AYUV;
+	else if( s == QStringLiteral( "AYUVP" ) )
+		return QVideoFrameFormat::Format_AYUV_Premultiplied;
+	else if( s == QStringLiteral( "YUV420P" ) )
+		return QVideoFrameFormat::Format_YUV420P;
+	else if( s == QStringLiteral( "YUV422P" ) )
+		return QVideoFrameFormat::Format_YUV422P;
+	else if( s == QStringLiteral( "YV12" ) )
+		return QVideoFrameFormat::Format_YV12;
+	else if( s == QStringLiteral( "UYVY" ) )
+		return QVideoFrameFormat::Format_UYVY;
+	else if( s == QStringLiteral( "YUYV" ) )
+		return QVideoFrameFormat::Format_YUYV;
+	else if( s == QStringLiteral( "NV12" ) )
+		return QVideoFrameFormat::Format_NV12;
+	else if( s == QStringLiteral( "NV21" ) )
+		return QVideoFrameFormat::Format_NV21;
+	else if( s == QStringLiteral( "IMC1" ) )
+		return QVideoFrameFormat::Format_IMC1;
+	else if( s == QStringLiteral( "IMC2" ) )
+		return QVideoFrameFormat::Format_IMC2;
+	else if( s == QStringLiteral( "IMC3" ) )
+		return QVideoFrameFormat::Format_IMC3;
+	else if( s == QStringLiteral( "IMC4" ) )
+		return QVideoFrameFormat::Format_IMC4;
+	else if( s == QStringLiteral( "Y8" ) )
+		return QVideoFrameFormat::Format_Y8;
+	else if( s == QStringLiteral( "Y16" ) )
+		return QVideoFrameFormat::Format_Y16;
+	else if( s == QStringLiteral( "P010" ) )
+		return QVideoFrameFormat::Format_P010;
+	else if( s == QStringLiteral( "P016" ) )
+		return QVideoFrameFormat::Format_P016;
+	else if( s == QStringLiteral( "JPEG" ) )
+		return QVideoFrameFormat::Format_Jpeg;
+	else if( s == QStringLiteral( "SEOES" ) )
+		return QVideoFrameFormat::Format_SamplerExternalOES;
+	else if( s == QStringLiteral( "SR" ) )
+		return QVideoFrameFormat::Format_SamplerRect;
+	else
+		return QVideoFrameFormat::Format_Invalid;
+}
+
+
+//
 // CameraSettings
 //
 
@@ -59,15 +239,7 @@ CameraSettings::CameraSettings()
 		const auto settings = it.value().videoFormats();
 
 		for( const auto & s : settings )
-		{
-			if( s.pixelFormat() != QVideoFrameFormat::Format_Jpeg )
-			{
-				const auto resolutionStr = resolution( s.resolution().width(),
-					s.resolution().height(), s.maxFrameRate() );
-
-				m_resolutions[ it.key() ].insert( resolutionStr, s );
-			}
-		}
+			m_resolutions[ it.key() ].push_back( s );
 	}
 
 	readCfg();
@@ -153,7 +325,18 @@ CameraSettings::camSettings() const
 		const auto it = m_resolutions.find( m_cfg.device() );
 
 		if( it != m_resolutions.cend() )
-			return it->value( resolution( m_cfg.width(), m_cfg.height(), m_cfg.frames() ) );
+		{
+			for( const auto & s : qAsConst( it.value() ) )
+			{
+				if( s.resolution().width() == m_cfg.width() &&
+					s.resolution().height() == m_cfg.height() &&
+					qAbs( s.maxFrameRate() - m_cfg.frames() ) < 0.1 &&
+					s.pixelFormat() == stringToPixelFormat( m_cfg.format() ) )
+				{
+					return s;
+				}
+			}
+		}
 	}
 
 	return QCameraFormat();
@@ -162,15 +345,13 @@ CameraSettings::camSettings() const
 QString
 CameraSettings::camSettingsStr() const
 {
-	const auto s = camSettings();
-
-	return resolution( s.resolution().width(), s.resolution().height(), s.maxFrameRate() );
+	return resolution( camSettings() );
 }
 
 void
 CameraSettings::setCamSettings( const QString & resolution, bool notify )
 {
-	static const QRegularExpression parser( QStringLiteral( "^(\\d+)x(\\d+)@(\\d+)$" ) );
+	static const QRegularExpression parser( QStringLiteral( "^(\\d+)x(\\d+)@(\\d+),(\\w+)$" ) );
 
 	const auto match = parser.match( resolution );
 
@@ -179,6 +360,7 @@ CameraSettings::setCamSettings( const QString & resolution, bool notify )
 		m_cfg.set_width( match.captured( 1 ).toInt() );
 		m_cfg.set_height( match.captured( 2 ).toInt() );
 		m_cfg.set_frames( match.captured( 3 ).toInt() );
+		m_cfg.set_format( match.captured( 4 ) );
 
 		m_dirty = true;
 
@@ -193,6 +375,7 @@ CameraSettings::setCamSettings( const QCameraFormat & s, bool notify )
 	m_cfg.set_width( s.resolution().width() );
 	m_cfg.set_height( s.resolution().height() );
 	m_cfg.set_frames( qRound( s.maxFrameRate() ) );
+	m_cfg.set_format( pixelFormatToString( s.pixelFormat() ) );
 
 	if( notify )
 		emit camSettingsChanged();
@@ -228,8 +411,7 @@ CameraSettings::setCamName( const QString & name, bool notify )
 		QStringList resolutions;
 
 		for( const auto & s : qAsConst( m_resolutions[ name ] ) )
-			resolutions.append( resolution( s.resolution().width(),
-				s.resolution().height(), s.maxFrameRate() ) );
+			resolutions.append( resolution( s ) );
 
 		m_camResolutions.setStringList( resolutions );
 
@@ -241,12 +423,13 @@ CameraSettings::setCamName( const QString & name, bool notify )
 }
 
 QString
-CameraSettings::resolution( int width, int height, qreal fps ) const
+CameraSettings::resolution( const QCameraFormat & fmt ) const
 {
-	return QStringLiteral( "%1x%2@%3" )
-		.arg( QString::number( width ),
-			QString::number( height ),
-			QString::number( qRound( fps ) ) );
+	return QStringLiteral( "%1x%2@%3,%4" )
+		.arg( QString::number( fmt.resolution().width() ),
+			QString::number( fmt.resolution().height() ),
+			QString::number( qRound( fmt.maxFrameRate() ) ),
+			pixelFormatToString( fmt.pixelFormat() ) );
 }
 
 void
