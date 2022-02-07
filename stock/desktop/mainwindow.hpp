@@ -71,6 +71,8 @@ private slots:
 	void about();
 	//! About Qt.
 	void aboutQt();
+	//! Licenses.
+	void licenses();
 	//! Add product.
 	void addProduct();
 

@@ -50,11 +50,14 @@ set( SRC mainwindow.hpp
 	edit_desc.cpp
 	amount.cpp
 	word_wrap_delegate.cpp
+	license_dialog.hpp
+	license_dialog.cpp
 	options.ui
     product.ui
     rename.ui
     edit_desc.ui
     amount.ui
+	license_dialog.ui
     ${CMAKE_CURRENT_SOURCE_DIR}/../shared/tcp_socket.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/../shared/datagrams.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/../shared/constants.hpp
