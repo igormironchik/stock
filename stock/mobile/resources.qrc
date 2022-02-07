@@ -23,5 +23,6 @@
         <file>img/settings_48x48.png</file>
         <file>img/mirror_48x48.png</file>
         <file>qml/CameraSettings.qml</file>
+        <file>qml/Licenses.qml</file>
     </qresource>
 </RCC>

@@ -33,6 +33,7 @@ ApplicationWindow {
 
     property bool connected: false
     property int minimumCtrlHeight: Screen.pixelDensity * 8
+    property bool licensesShown: false
 
     // This is internal property. On true change screen will put product,
     // on false it will take product.
@@ -48,8 +49,22 @@ ApplicationWindow {
             id: changePwdMenu
             text: qsTr( "Reconnect" )
             implicitHeight: minimumCtrlHeight
+            enabled: false
             onTriggered: {
                 qmlCppSignals.disconnectRequest()
+            }
+        }
+
+        MenuSeparator {}
+
+        MenuItem {
+            id: licenses
+            text: qsTr( "Licenses" )
+            implicitHeight: minimumCtrlHeight
+            onTriggered: {
+                stackView.push( licensesView )
+                stackView.keyBackEnabled = true
+                licensesShown = true
             }
         }
     }
@@ -88,7 +103,7 @@ ApplicationWindow {
             ToolButton {
                 id: menuButton
                 onClicked: menu.open()
-                enabled: false
+                enabled: true
                 implicitHeight: parent.height
                 implicitWidth: implicitHeight
 
@@ -186,6 +201,13 @@ ApplicationWindow {
 		}
     }
 
+    Component {
+        id: licensesView
+
+        Licenses {
+        }
+    }
+
     StackView {
         id: stackView
         anchors.fill: parent
@@ -224,7 +246,7 @@ ApplicationWindow {
         stackView.keyBackEnabled = false
 
         connected = false
-        menuButton.enabled = false
+        changePwdMenu.enabled = false
         connectionState.text = qsTr( "Disconnected" )
     }
 
@@ -239,7 +261,7 @@ ApplicationWindow {
             stackView.push( actionsComponent )
             stackView.keyBackEnabled = false
             connectionState.text = qsTr( "Connected" )
-            menuButton.enabled = true
+            changePwdMenu.enabled = true
             connected = true
         }
 
@@ -282,10 +304,13 @@ ApplicationWindow {
         }
 
         function onReturnBack() {
-            if( stackView.depth > 2 && stackView.keyBackEnabled )
+            if( ( stackView.depth > 2 && stackView.keyBackEnabled ) || licensesShown )
                 stackView.pop()
 
-            if( stackView.depth === 2 )
+            if( licensesShown )
+                licensesShown = false
+
+            if( stackView.depth <= 2 )
                 stackView.keyBackEnabled = false
         }
 
