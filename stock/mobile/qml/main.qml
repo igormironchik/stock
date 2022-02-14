@@ -87,7 +87,7 @@ ApplicationWindow {
                     id: backBtnImg
                     source: backBtn.enabled ? "qrc:/img/back-enabled_48x48.png" :
                         "qrc:/img/back-disabled_48x48.png"
-                    width: parent.width - 20
+                    width: parent.width
                     height: width
                     anchors.centerIn: parent
                 }
@@ -110,7 +110,7 @@ ApplicationWindow {
                 Image {
                     id: menuBtnImg
                     anchors.centerIn: parent
-                    width: parent.width - 20
+                    width: parent.width
                     height: width
                     source: enabled ? "qrc:/img/menu-enabled_48x48.png" :
                         "qrc:/img/menu-disabled_48x48.png"
