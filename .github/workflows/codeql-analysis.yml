@@ -64,10 +64,10 @@ jobs:
     #    uses a compiled language
 
     - run: |
-       qmake
+       cmake .
        make
        cd stock/mobile
-       qmake
+       cmake .
        make
 
     - name: Perform CodeQL Analysis
