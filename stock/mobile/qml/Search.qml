@@ -40,9 +40,7 @@ ScrollView {
     property alias model: combo.model
     property alias currentIndex: combo.currentIndex
 
-    property string code: ""
-
-    onCodeChanged: {
+    function checkCode( code ) {
 		var i = combo.find( code );
 
 		if( i !== -1 ) {

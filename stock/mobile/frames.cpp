@@ -53,7 +53,6 @@ Frames::Frames( QObject * parent )
 	:	QVideoSink( parent )
 	,	m_cam( nullptr )
 	,	m_counter( 0 )
-	,	m_keyFrameCounter( 0 )
 {
 	connect( &CameraSettings::instance(), &CameraSettings::camSettingsChanged,
 		this, &Frames::camSettingsChanged );
@@ -162,54 +161,6 @@ private:
 }; // class DetectCode
 
 
-class DetectChange final
-	:	public QRunnable
-{
-public:
-	DetectChange( const QImage & img1, const QImage & img2, Frames * provider )
-		:	m_img1( img1 )
-		,	m_img2( img2 )
-		,	m_provider( provider )
-	{
-		setAutoDelete( true );
-	}
-
-	void run() override
-	{
-		bool changed = false;
-
-		if( m_img1.width() != m_img2.width() || m_img1.height() != m_img2.height() )
-			changed = true;
-		else
-		{
-			qreal diff = 0.0;
-
-			for( int i = 0; i < m_img1.width(); ++i )
-			{
-				for( int j = 0; j < m_img1.height(); ++j )
-					diff += qAbs( (qreal) m_img1.pixel( i, j ) - (qreal) m_img2.pixel( i, j ) );
-			}
-
-			diff /= ( (qreal) m_img1.width() * (qreal) m_img2.height() );
-
-			if( diff > 1000000.0 )
-				changed = true;
-		}
-
-		if( changed )
-			QMetaObject::invokeMethod( m_provider, "emitImageChanged", Qt::QueuedConnection );
-	}
-
-private:
-	//! Image 1.
-	QImage m_img1;
-	//! Image 2.
-	QImage m_img2;
-	//! Provider.
-	Frames * m_provider;
-}; // class DetectChange
-
-
 //
 // libyuvFormat
 //
@@ -303,20 +254,6 @@ Frames::newFrame( const QVideoFrame & frame )
 		if( m_counter == c_framesCount )
 			m_counter = 0;
 
-		if( m_keyFrameCounter == 0 )
-			m_keyFrame = m_currentFrame;
-
-
-		++m_keyFrameCounter;
-
-		if( m_keyFrameCounter == c_keyFrameMax )
-		{
-			auto * detect = new DetectChange( m_keyFrame.copy(), m_currentFrame.copy(), this );
-			QThreadPool::globalInstance()->start( detect );
-
-			m_keyFrameCounter = 0;
-		}
-
 		if( m_videoSink )
 			m_videoSink->setVideoFrame( frame );
 	}
@@ -338,12 +275,6 @@ void
 Frames::emitCode( const QString & code )
 {
 	emit codeDetected( code );
-}
-
-void
-Frames::emitImageChanged()
-{
-	emit imageChanged();
 }
 
 void
@@ -380,7 +311,7 @@ Frames::initCam()
 	else
 		m_cam = new QCamera( this );
 
-	m_cam->setFocusMode( QCamera::FocusModeAuto );
+	m_cam->setFocusMode( QCamera::FocusModeAutoNear );
 	m_cam->setCameraFormat( CameraSettings::instance().camSettings() );
 	m_capture.setCamera( m_cam );
 	m_capture.setVideoSink( this );

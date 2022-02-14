@@ -196,7 +196,7 @@ ApplicationWindow {
 		CameraView {
 			onCodeChanged: {
 				stackView.pop();
-				stackView.currentItem.code = code
+				stackView.currentItem.checkCode( code )
 			}
 		}
     }

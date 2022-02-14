@@ -37,9 +37,7 @@ ScrollView {
     // otherwise product will be taken.
     property bool put: true
 
-    property string code: ""
-
-    onCodeChanged: {
+    function checkCode( code ) {
 		var i = codeField.find( code );
 
 		if( i !== -1 ) {

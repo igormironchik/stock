@@ -91,8 +91,6 @@ public:
 public slots:
 	//! Emit code.
 	void emitCode( const QString & code );
-	//! Emit image changed.
-	void emitImageChanged();
 
 private slots:
 	//! Camera settings changed.
@@ -111,12 +109,8 @@ private:
 	QCamera * m_cam;
 	//! Counter.
 	int m_counter;
-	//! Key frame counter.
-	int m_keyFrameCounter;
 	//! Current frame.
 	QImage m_currentFrame;
-	//! Key frame.
-	QImage m_keyFrame;
 	//! Transform.
 	CameraSettings::Transform m_transform;
 	//! Capture.
