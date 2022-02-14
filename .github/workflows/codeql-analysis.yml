@@ -45,24 +45,33 @@ jobs:
         # By default, queries listed here will override any specified in a config file. 
         # Prefix the list here with "+" to use these queries and those in the config file.
         # queries: ./path/to/local/query, your-org/your-repo/queries@main
-          
+    
+    - name: Checkout install-qt-action
+      uses: actions/checkout@v2
+      with:
+      repository: 'jurplel/install-qt-action'
+      ref: '7933445fc5670b1ef4eeedb981cf8f14647f2e1a'
+      path: './iqta'
+     
+    - name: Setup Node
+    - uses: actions/setup-node@v1
+      with:
+      node-version: 10.x
+      
+    - run: npm ci
+      working-directory: './iqta'
+      
+    - run: npm run build-setup-python
+      working-directory: './iqta'
+      
+    - run: npm run build
+      working-directory: './iqta'
+      
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+    - uses: ./iqta
       with:
         version: '6.2.3'
         modules: qtmultimedia
-
-    # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
-    # If this step fails, then you should remove it and run the build manually (see below)
-    #- name: Autobuild
-    #  uses: github/codeql-action/autobuild@v1
-
-    # ℹ️ Command-line programs to run using the OS shell.
-    # 📚 https://git.io/JvXDl
-
-    # ✏️ If the Autobuild fails above, remove it and uncomment the following three lines
-    #    and modify them (or add more) to build your code if your project
-    #    uses a compiled language
 
     - run: |
        cmake .
