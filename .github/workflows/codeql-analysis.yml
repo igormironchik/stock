@@ -54,7 +54,7 @@ jobs:
       path: './iqta'
      
     - name: Setup Node
-    - uses: actions/setup-node@v1
+      uses: actions/setup-node@v1
       with:
       node-version: 10.x
       
@@ -68,7 +68,7 @@ jobs:
       working-directory: './iqta'
       
     - name: Install Qt
-    - uses: ./iqta
+      uses: ./iqta
       with:
         version: '6.2.3'
         modules: qtmultimedia
