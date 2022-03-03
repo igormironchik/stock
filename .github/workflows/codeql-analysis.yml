@@ -45,30 +45,9 @@ jobs:
     - run: sudo apt update
 
     - run: sudo apt install libgstreamer-plugins-base1.0-0 libgstreamer-gl1.0-0
-    
-    - name: Checkout install-qt-action
-      uses: actions/checkout@v2
-      with:
-        repository: 'jurplel/install-qt-action'
-        ref: '7933445fc5670b1ef4eeedb981cf8f14647f2e1a'
-        path: './iqta'
-     
-    - name: Setup Node
-      uses: actions/setup-node@v1
-      with:
-        node-version: 10.x
-      
-    - run: npm ci
-      working-directory: './iqta'
-      
-    - run: npm run build-setup-python
-      working-directory: './iqta'
-      
-    - run: npm run build
-      working-directory: './iqta'
       
     - name: Install Qt
-      uses: ./iqta
+      uses: jurplel/install-qt-action@v3
       with:
         version: '6.2.3'
         modules: qtmultimedia
