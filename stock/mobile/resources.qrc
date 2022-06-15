@@ -24,5 +24,7 @@
         <file>img/mirror_48x48.png</file>
         <file>qml/CameraSettings.qml</file>
         <file>qml/Licenses.qml</file>
+        <file>qml/Bookmark.qml</file>
+        <file>img/bookmark_48x48.png</file>
     </qresource>
 </RCC>

@@ -5,16 +5,53 @@ import QtQuick.Controls 2.2
 Item {
 	id: root
 
+    Row {
+        anchors.fill: parent
+
+    Item {
+        id: bookmarks
+        width: minimumCtrlHeight
+        height: parent.height
+
+        Column {
+            anchors.fill: parent
+
+            Bookmark {
+                onClicked: scroll.vScrollBar.setPosition( l1.y / licenses.height );
+            }
+
+            Bookmark {
+                onClicked: scroll.vScrollBar.setPosition( l2.y / licenses.height );
+            }
+
+            Bookmark {
+                onClicked: scroll.vScrollBar.setPosition( l3.y / licenses.height );
+            }
+
+            Bookmark {
+                onClicked: scroll.vScrollBar.setPosition( l4.y / licenses.height );
+            }
+
+            Bookmark {
+                onClicked: scroll.vScrollBar.setPosition( l5.y / licenses.height );
+            }
+        }
+    }
+
     ScrollView {
         id: scroll
-        anchors.fill: parent
+        width: parent.width - bookmarks.width
+        height: parent.height
         padding: minimumCtrlHeight / 4
+        property ScrollBar vScrollBar: ScrollBar.vertical
 
 
         Column{
-            width: root.width - scroll.padding * 2
+            id: licenses
+            width: scroll.width - scroll.padding * 2
 
             Label {
+                id: l1
                 width: parent.width
                 wrapMode: Text.WordWrap
                 horizontalAlignment: Text.AlignLeft
@@ -196,6 +233,7 @@ Library.\n</p>"
             }
 
             Label {
+                id: l2
                 width: parent.width
                 wrapMode: Text.WordWrap
                 horizontalAlignment: Text.AlignLeft
@@ -238,6 +276,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n</p>"
             }
 
             Label {
+                id: l3
                 width: parent.width
                 wrapMode: Text.WordWrap
                 horizontalAlignment: Text.AlignLeft
@@ -455,6 +494,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n</p>"
             }
 
             Label {
+                id: l4
                 width: parent.width
                 wrapMode: Text.WordWrap
                 horizontalAlignment: Text.AlignLeft
@@ -686,6 +726,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n</p>"
             }
 
             Label {
+                id: l5
                 width: parent.width
                 wrapMode: Text.WordWrap
                 horizontalAlignment: Text.AlignLeft
@@ -713,5 +754,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE \
 SOFTWARE.</p>"
             }
         }
+    }
     }
  }

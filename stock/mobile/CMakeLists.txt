@@ -63,7 +63,8 @@ set( SRC qml_cpp_bridge.hpp
     qml/SearchResult.qml
 	qml/CameraView.qml
 	qml/main.qml
-	qml/Licenses.qml )
+	qml/Licenses.qml
+	qml/Bookmark.qml )
 
 set( CMAKE_CXX_STANDARD 14 )
 
