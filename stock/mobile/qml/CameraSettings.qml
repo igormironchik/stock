@@ -101,7 +101,9 @@ ScrollView {
                 implicitWidth: height
 
                 Image {
-                    anchors.fill: parent
+                    width: parent.width - minimumCtrlHeight / 4
+                    height: parent.height - minimumCtrlHeight / 4
+                    anchors.centerIn: parent
                     source: "qrc:/img/mirror_48x48.png"
                 }
 
@@ -118,7 +120,9 @@ ScrollView {
                 implicitWidth: height
 
                 Image {
-                    anchors.fill: parent
+                    width: parent.width - minimumCtrlHeight / 4
+                    height: parent.height - minimumCtrlHeight / 4
+                    anchors.centerIn: parent
                     source: "qrc:/img/rotate_48x48.png"
                 }
 

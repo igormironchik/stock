@@ -109,7 +109,9 @@ ScrollView {
 
                 Image {
                     id: img
-                    anchors.fill: parent
+                    width: parent.width - minimumCtrlHeight / 4
+                    height: parent.height - minimumCtrlHeight / 4
+                    anchors.centerIn: parent
                     source: "qrc:/img/layer-visible-on_48x48.png"
                 }
 

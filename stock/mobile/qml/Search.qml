@@ -102,7 +102,9 @@ ScrollView {
                 visible: byCode ? true : false
 
                 Image {
-                    anchors.fill: parent
+                    width: parent.width - minimumCtrlHeight / 4
+                    height: parent.height - minimumCtrlHeight / 4
+                    anchors.centerIn: parent
                     source: "qrc:/img/view-barcode_48x48.png"
                 }
 
