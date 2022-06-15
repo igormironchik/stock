@@ -1,3 +1,6 @@
 [submodule "3rdparty/cfgfile"]
 	path = 3rdparty/cfgfile
 	url = https://github.com/igormironchik/cfgfile.git
+[submodule "3rdparty/widgets"]
+	path = 3rdparty/widgets
+	url = https://github.com/igormironchik/widgets.git
