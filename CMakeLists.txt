@@ -14,7 +14,10 @@ SET( CMAKE_CXX_STANDARD_REQUIRED ON )
 project( Stock )
 
 add_subdirectory( 3rdparty/cfgfile/generator )
+
+set( BUILD_EXAMPLES OFF CACHE INTERNAL "" FORCE )
 add_subdirectory( 3rdparty/widgets )
+
 add_subdirectory( stock )
 
 set( CFGFILE_GENERATOR_EXECUTABLE
