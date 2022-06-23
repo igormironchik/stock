@@ -95,7 +95,7 @@ ScrollView {
                 mouseSelectionMode: TextInput.SelectCharacters
                 implicitHeight: appWindow.minimumCtrlHeight
                 implicitWidth: content.width - 40 - implicitHeight - pwdText.width
-                verticalAlignment: Qt.AlignCenter
+                verticalAlignment: TextInput.AlignVCenter
             }
 
             Button {
