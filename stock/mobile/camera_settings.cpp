@@ -234,15 +234,31 @@ CameraSettings::CameraSettings()
 
 	m_camsModel.setStringList( camerasNames );
 
+	bool first = true;
+
+	QCameraFormat defaultFormat;
+
 	for( auto it = m_camsInfo.cbegin(), last = m_camsInfo.cend(); it != last; ++it )
 	{
 		const auto settings = it.value().videoFormats();
 
+		auto min = settings.first();
+
 		for( const auto & s : settings )
+		{
 			m_resolutions[ it.key() ].push_back( s );
+
+			if( first && s.resolution().width() < min.resolution().width() )
+				min = s;
+		}
+
+		if( first )
+			defaultFormat = min;
+
+		first = false;
 	}
 
-	readCfg();
+	readCfg( defaultFormat );
 
 	updateTransform();
 }
@@ -432,8 +448,14 @@ CameraSettings::resolution( const QCameraFormat & fmt ) const
 			pixelFormatToString( fmt.pixelFormat() ) );
 }
 
+QString
+CameraSettings::resolution() const
+{
+	return resolution( camSettings() );
+}
+
 void
-CameraSettings::readCfg()
+CameraSettings::readCfg( const QCameraFormat & defaultFormat )
 {
 	QFile file( cfgFileName() );
 
@@ -449,12 +471,19 @@ CameraSettings::readCfg()
 			m_cfg = tag.get_cfg();
 
 			file.close();
+
+			return;
 		}
 		catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
 		{
 			file.close();
 		}
 	}
+
+	setCamSettings( defaultFormat, false );
+	setCamName( camName() );
+
+	applySettings();
 }
 
 void

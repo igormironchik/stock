@@ -29,6 +29,7 @@
 #include <QMetaObject>
 #include <QCameraDevice>
 #include <QThreadPool>
+#include <QTimer>
 
 // QZXing include.
 #include <QZXing.h>
@@ -50,12 +51,20 @@ Frames::Frames( QObject * parent )
 	:	QVideoSink( parent )
 	,	m_cam( nullptr )
 	,	m_counter( 0 )
+	,	m_fps( 0 )
+	,	m_timer( new QTimer( this ) )
 {
 	connect( &CameraSettings::instance(), &CameraSettings::camSettingsChanged,
 		this, &Frames::camSettingsChanged );
 
 	connect( this, &QVideoSink::videoFrameChanged,
 			this, &Frames::newFrame );
+
+	m_timer->setInterval( 1000 );
+
+	connect( m_timer, &QTimer::timeout, this, &Frames::oneSecondTimer );
+
+	m_timer->start();
 
 	m_transform = CameraSettings::instance().transform();
 
@@ -188,6 +197,8 @@ Frames::newFrame( const QVideoFrame & frame )
 
 		if( m_videoSink )
 			m_videoSink->setVideoFrame( frame );
+
+		++m_fps;
 	}
 }
 
@@ -262,6 +273,20 @@ Frames::stopCam()
 	delete m_cam;
 
 	m_cam = nullptr;
+}
+
+void
+Frames::oneSecondTimer()
+{
+	m_fpsString = QString::number( m_fps );
+	m_fps = 0;
+	emit fpsStringChanged();
+}
+
+QString
+Frames::fpsString() const
+{
+	return m_fpsString;
 }
 
 } /* namespace Stock */

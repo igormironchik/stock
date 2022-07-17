@@ -117,6 +117,8 @@ public:
 
 	//! \return Resolution string.
 	QString resolution( const QCameraFormat & fmt ) const;
+	//! \return Resolution string.
+	QString resolution() const;
 
 public slots:
 	//! Set camera name.
@@ -134,7 +136,7 @@ public slots:
 
 private:
 	//! Read configuration.
-	void readCfg();
+	void readCfg( const QCameraFormat & defaultFormat );
 	//! Write configuration.
 	void writeCfg();
 	//! \return Configuration file name.

@@ -50,6 +50,7 @@ class Frames
 	Q_PROPERTY( qreal angle READ angle NOTIFY angleChanged )
 	Q_PROPERTY( qreal xScale READ xScale NOTIFY xScaleChanged )
 	Q_PROPERTY( qreal yScale READ yScale NOTIFY yScaleChanged )
+	Q_PROPERTY( QString fpsString READ fpsString NOTIFY fpsStringChanged )
 
 signals:
 	//! Code detected.
@@ -64,6 +65,7 @@ signals:
 	void angleChanged();
 	void xScaleChanged();
 	void yScaleChanged();
+	void fpsStringChanged();
 
 public:
 	static void registerQmlType();
@@ -88,6 +90,9 @@ public:
 	//! \return Y scale.
 	qreal yScale() const;
 
+	//! \return FPS string.
+	QString fpsString() const;
+
 public slots:
 	//! Emit code.
 	void emitCode( const QString & code );
@@ -101,6 +106,8 @@ private slots:
 	void stopCam();
 	//! Video frame changed.
 	void newFrame( const QVideoFrame & frame );
+	//! 1s timer.
+	void oneSecondTimer();
 
 private:
 	Q_DISABLE_COPY( Frames )
@@ -109,6 +116,10 @@ private:
 	QCamera * m_cam;
 	//! Counter.
 	int m_counter;
+	//! FPS.
+	int m_fps;
+	//! FPS string.
+	QString m_fpsString;
 	//! Current frame.
 	QImage m_currentFrame;
 	//! Transform.
@@ -117,6 +128,8 @@ private:
 	QMediaCaptureSession m_capture;
 	//! Video sink of video output.
 	QPointer< QVideoSink > m_videoSink;
+	//! 1 second timer.
+	QTimer * m_timer;
 }; // class Frames
 
 } /* namespace Stock */
