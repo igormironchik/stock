@@ -40,6 +40,8 @@ ScrollView {
             id: put
             implicitHeight: appWindow.minimumCtrlHeight
             implicitWidth: parent.width
+            topInset: 0
+            bottomInset: 0
             text: qsTr( "Put Product" )
 
             onClicked: {
@@ -51,6 +53,8 @@ ScrollView {
             id: take
             implicitHeight: appWindow.minimumCtrlHeight
             implicitWidth: parent.width
+            topInset: 0
+            bottomInset: 0
             text: qsTr( "Take Product" )
 
             onClicked: {
@@ -62,6 +66,8 @@ ScrollView {
             id: searchByCode
             implicitHeight: appWindow.minimumCtrlHeight
             implicitWidth: parent.width
+            topInset: 0
+            bottomInset: 0
             text: qsTr( "Search By Code" )
 
             onClicked: {
@@ -73,6 +79,8 @@ ScrollView {
             id: searchByPlace
             implicitHeight: appWindow.minimumCtrlHeight
             implicitWidth: parent.width
+            topInset: 0
+            bottomInset: 0
             text: qsTr( "Search By Place" )
 
             onClicked: {

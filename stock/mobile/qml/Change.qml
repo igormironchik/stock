@@ -91,6 +91,8 @@ ScrollView {
                 implicitWidth: content.width -
 					Math.max( codeLabel.width, placeLabel.width, amountLabel.width ) -
 					scanBtn.implicitWidth - 40
+                topInset: 0
+                bottomInset: 0
                 currentIndex: -1
                 textRole: "display"
                 delegate: ItemDelegate {
@@ -113,6 +115,8 @@ ScrollView {
                 editable: false
                 implicitHeight: appWindow.minimumCtrlHeight
                 implicitWidth: codeField.implicitWidth
+                topInset: 0
+                bottomInset: 0
                 currentIndex: -1
                 textRole: "display"
                 delegate: ItemDelegate {
@@ -150,6 +154,8 @@ ScrollView {
                 height: appWindow.minimumCtrlHeight
                 implicitHeight: height
                 implicitWidth: height
+                topInset: 0
+                bottomInset: 0
 
                 Image {
                     width: parent.width - minimumCtrlHeight / 4
@@ -174,6 +180,8 @@ ScrollView {
                 enabled: false
                 implicitHeight: appWindow.minimumCtrlHeight
                 implicitWidth: ( placeField.width - 20 ) / 2
+                topInset: 0
+                bottomInset: 0
 
                 onClicked: {
                     if( put )
@@ -191,6 +199,8 @@ ScrollView {
                 enabled: true
                 implicitHeight: appWindow.minimumCtrlHeight
                 implicitWidth: ( placeField.width - 20 ) / 2
+                topInset: 0
+                bottomInset: 0
 
                 onClicked: {
                     qmlCppSignals.returnBack()

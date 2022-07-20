@@ -103,9 +103,11 @@ ScrollView {
                 checkable: true
                 checked: false
                 width: height
-                height: appWindow.minimumCtrlHeight
-                implicitHeight: height
-                implicitWidth: height
+                height: implicitHeight
+                implicitHeight: appWindow.minimumCtrlHeight
+                implicitWidth: implicitHeight
+                topInset: 0
+                bottomInset: 0
 
                 Image {
                     id: img
@@ -136,6 +138,8 @@ ScrollView {
                 text: qsTr( "Connect" )
                 implicitHeight: appWindow.minimumCtrlHeight
                 implicitWidth: pwdField.width
+                topInset: 0
+                bottomInset: 0
 
                 onClicked: {
                     showHide.checked = false

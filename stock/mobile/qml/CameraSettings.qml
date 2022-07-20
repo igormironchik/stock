@@ -44,6 +44,8 @@ ScrollView {
 			editable: false
 			implicitHeight: appWindow.minimumCtrlHeight
 			implicitWidth: content.width
+            topInset: 0
+            bottomInset: 0
 			currentIndex: -1
 			textRole: "display"
 			delegate: ItemDelegate {
@@ -66,6 +68,8 @@ ScrollView {
 			editable: false
 			implicitHeight: appWindow.minimumCtrlHeight
 			implicitWidth: content.width
+            topInset: 0
+            bottomInset: 0
 			currentIndex: -1
 			textRole: "display"
 			delegate: ItemDelegate {
@@ -99,6 +103,8 @@ ScrollView {
                 height: appWindow.minimumCtrlHeight
                 implicitHeight: height
                 implicitWidth: height
+                topInset: 0
+                bottomInset: 0
 
                 Image {
                     width: parent.width - minimumCtrlHeight / 4
@@ -118,6 +124,8 @@ ScrollView {
                 height: appWindow.minimumCtrlHeight
                 implicitHeight: height
                 implicitWidth: height
+                topInset: 0
+                bottomInset: 0
 
                 Image {
                     width: parent.width - minimumCtrlHeight / 4

@@ -44,6 +44,8 @@ Item {
 		height: appWindow.minimumCtrlHeight
 		implicitHeight: height
 		implicitWidth: height
+        topInset: 0
+        bottomInset: 0
 		x: parent.x + parent.width - width - 20
 		y:  parent.y + parent.height - height - 20
 

@@ -51,6 +51,8 @@ ScrollView {
             text: qsTr( "OK" )
             implicitHeight: appWindow.minimumCtrlHeight
             implicitWidth: appWindow.minimumCtrlHeight * 3
+            topInset: 0
+            bottomInset: 0
             anchors.horizontalCenter: parent.horizontalCenter
 
             onClicked: {

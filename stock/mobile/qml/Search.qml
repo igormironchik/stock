@@ -74,6 +74,8 @@ ScrollView {
 				id: combo
 				editable: false
 				implicitHeight: appWindow.minimumCtrlHeight
+                topInset: 0
+                bottomInset: 0
 				currentIndex: -1
 				textRole: "display"
 				implicitWidth: content.width - ( byCode ? scanBtn.implicitWidth + 20 : 0 )
@@ -99,6 +101,8 @@ ScrollView {
                 height: appWindow.minimumCtrlHeight
                 implicitHeight: height
                 implicitWidth: height
+                topInset: 0
+                bottomInset: 0
                 visible: byCode ? true : false
 
                 Image {
@@ -124,6 +128,8 @@ ScrollView {
                 enabled: false
                 implicitHeight: appWindow.minimumCtrlHeight
                 implicitWidth: ( comboRow.width - 20 ) / 2
+                topInset: 0
+                bottomInset: 0
 
                 onClicked: {
                     qmlCppSignals.internalSearch( combo.currentText )
@@ -136,6 +142,8 @@ ScrollView {
                 enabled: true
                 implicitHeight: appWindow.minimumCtrlHeight
                 implicitWidth: ( comboRow.width - 20 ) / 2
+                topInset: 0
+                bottomInset: 0
 
                 onClicked: {
                     qmlCppSignals.returnBack()
