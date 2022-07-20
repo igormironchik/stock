@@ -71,8 +71,6 @@ ScrollView {
                 }
                 implicitHeight: appWindow.minimumCtrlHeight
                 implicitWidth: pwdField.width
-                //up.indicator.implicitWidth: appWindow.minimumCtrlHeight
-                //down.indicator.implicitWidth: appWindow.minimumCtrlHeight
             }
 
             Rectangle {
@@ -93,8 +91,10 @@ ScrollView {
                 text: connectScreen.pwd
                 selectByMouse: true
                 mouseSelectionMode: TextInput.SelectCharacters
-                implicitHeight: appWindow.minimumCtrlHeight
-                implicitWidth: content.width - 40 - implicitHeight - pwdText.width
+                implicitHeight: appWindow.minimumCtrlHeight +
+                    ( Qt.platform.os === "android" || Qt.platform.os === "ios" ?
+                        appWindow.minimumCtrlHeight / 4 : 0 )
+                implicitWidth: content.width - 40 - appWindow.minimumCtrlHeight - pwdText.width
                 verticalAlignment: TextInput.AlignVCenter
             }
 
