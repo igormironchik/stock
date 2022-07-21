@@ -91,10 +91,8 @@ ScrollView {
                 text: connectScreen.pwd
                 selectByMouse: true
                 mouseSelectionMode: TextInput.SelectCharacters
-                implicitHeight: appWindow.minimumCtrlHeight +
-                    ( Qt.platform.os === "android" || Qt.platform.os === "ios" ?
-                        appWindow.minimumCtrlHeight / 4 : 0 )
-                implicitWidth: content.width - 40 - appWindow.minimumCtrlHeight - pwdText.width
+                height: Math.max( appWindow.minimumCtrlHeight, implicitHeight )
+                width: content.width - 40 - appWindow.minimumCtrlHeight - pwdText.width
                 verticalAlignment: TextInput.AlignVCenter
             }
 
