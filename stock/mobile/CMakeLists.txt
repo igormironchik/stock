@@ -17,12 +17,12 @@ set( CMAKE_AUTOMOC ON )
 set( CMAKE_AUTORCC ON )
 set( CMAKE_AUTOUIC ON )
 
-find_package( Qt6Core REQUIRED )
-find_package( Qt6Network REQUIRED )
-find_package( Qt6Qml REQUIRED )
-find_package( Qt6Multimedia REQUIRED )
-find_package( Qt6Gui REQUIRED )
-find_package( Qt6Quick REQUIRED )
+find_package( Qt6Core 6.3.2 REQUIRED )
+find_package( Qt6Network 6.3.2 REQUIRED )
+find_package( Qt6Qml 6.3.2 REQUIRED )
+find_package( Qt6Multimedia 6.3.2 REQUIRED )
+find_package( Qt6Gui 6.3.2 REQUIRED )
+find_package( Qt6Quick 6.3.2 REQUIRED )
 
 add_definitions( -DCFGFILE_QT_SUPPORT -DCFGFILE_DISABLE_STL )
 
