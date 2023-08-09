@@ -1,3 +1,4 @@
 /**/*.user
 /**/*build*
 /**/cfgfile_generator_path
+/**/gradle*
