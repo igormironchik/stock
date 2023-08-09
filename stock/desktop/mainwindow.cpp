@@ -135,20 +135,20 @@ void MainWindowPrivate::init()
 	auto * file = q->menuBar()->addMenu( MainWindow::tr( "&File" ) );
 
 	file->addAction( QIcon( ":/img/application-exit_22x22.png" ),
-		MainWindow::tr( "&Quit" ), q, &MainWindow::quit,
-		QKeySequence( "Ctrl+Q" ) );
+		MainWindow::tr( "&Quit" ), QKeySequence( "Ctrl+Q" ),
+		q, &MainWindow::quit );
 
 	auto * edit = q->menuBar()->addMenu( MainWindow::tr( "&Edit" ) );
 
 	auto * add = edit->addAction( QIcon( ":/img/list-add_22x22.png" ),
-		MainWindow::tr( "Add Product and/or Place" ), q, &MainWindow::addProduct,
-		QKeySequence( "Ctrl+=" ) );
+		MainWindow::tr( "Add Product and/or Place" ), QKeySequence( "Ctrl+=" ),
+		q, &MainWindow::addProduct );
 
 	auto * opt = q->menuBar()->addMenu( MainWindow::tr( "&Options" ) );
 
 	opt->addAction( QIcon( ":/img/configure_22x22.png" ),
-		MainWindow::tr( "&Settings" ), q, &MainWindow::options,
-		QKeySequence( "Ctrl+O" ) );
+		MainWindow::tr( "&Settings" ),QKeySequence( "Ctrl+O" ),
+		q, &MainWindow::options );
 
 	auto * help = q->menuBar()->addMenu( MainWindow::tr( "&Help" ) );
 
