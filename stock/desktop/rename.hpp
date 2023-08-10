@@ -46,7 +46,7 @@ class RenameDlg Q_DECL_FINAL
 
 public:
 	RenameDlg( const QString & oldName, const QStringList & constraint,
-		QWidget * parent );
+		const QString & varName, QWidget * parent );
 	virtual ~RenameDlg();
 
 	//! \return New name.

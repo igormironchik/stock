@@ -194,7 +194,7 @@ ByPlaceView::changeCode()
 		const auto oldCode = d->m_model->data(
 			d->m_model->index( d->m_index.row(), 0, d->m_parentIndex ) ).toString();
 
-		RenameDlg dlg( oldCode, d->m_auxModel->codes(), this );
+		RenameDlg dlg( oldCode, d->m_auxModel->codes(), tr( "Code" ), this );
 		dlg.setWindowTitle( tr( "Change Product's Code..." ) );
 
 		if( dlg.exec() == QDialog::Accepted )
@@ -258,7 +258,7 @@ ByPlaceView::renamePlace()
 		const auto oldPlace = d->m_model->data(
 			d->m_model->index( index.row(), 0 ) ).toString();
 
-		RenameDlg dlg( oldPlace, d->m_model->places(), this );
+		RenameDlg dlg( oldPlace, d->m_model->places(), tr( "Place" ), this );
 		dlg.setWindowTitle( tr( "Rename Place..." ) );
 
 		if( dlg.exec() == QDialog::Accepted )

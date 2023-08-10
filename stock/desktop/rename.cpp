@@ -46,7 +46,7 @@ public:
 	}
 
 	//! Init.
-	void init( const QString & oldName );
+	void init( const QString & oldName, const QString & varName );
 
 	//! Constraint.
 	QStringList m_constraint;
@@ -59,11 +59,13 @@ public:
 }; // class RenameDlgPrivate
 
 void
-RenameDlgPrivate::init( const QString & oldName )
+RenameDlgPrivate::init( const QString & oldName, const QString & varName )
 {
 	m_ui.setupUi( q );
 
 	m_ui.m_old->setText( oldName );
+	m_ui.m_oldLabel->setText( RenameDlg::tr( "Old %1" ).arg( varName ) );
+	m_ui.m_newLabel->setText( RenameDlg::tr( "New %1" ).arg( varName ) );
 	m_ui.m_btns->button( QDialogButtonBox::Ok )->setEnabled( false );
 	m_ui.m_new->setFocus();
 
@@ -79,11 +81,11 @@ RenameDlgPrivate::init( const QString & oldName )
 //
 
 RenameDlg::RenameDlg( const QString & oldName, const QStringList & constraint,
-	QWidget * parent )
+	const QString & varName, QWidget * parent )
 	:	QDialog( parent )
 	,	d( new RenameDlgPrivate( constraint, this ) )
 {
-	d->init( oldName );
+	d->init( oldName, varName );
 }
 
 RenameDlg::~RenameDlg()
