@@ -166,6 +166,9 @@ Network::establishConnection()
 
 	d->m_sock->disconnectFromHost();
 
+	d->m_disconnectRequestedByUser = false;
+	emit disconnected( false );
+
 	d->m_udp->bind();
 
 	writeTellIpDatargam( d->m_udp, d->m_udpPort );

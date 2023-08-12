@@ -160,7 +160,8 @@ void
 QmlCppBridge::networkDisconnected( bool requestedByUser )
 {
 	emit disconnected( requestedByUser ? QString() :
-		tr( "Network error occured. Try to reconnect." ) );
+		tr( "Something went wrong on the server. "
+			"Check your password and try to reconnect." ) );
 }
 
 void
@@ -184,8 +185,7 @@ QmlCppBridge::disconnectRequested()
 void
 QmlCppBridge::serverError()
 {
-	emit disconnected( tr( "Something went wrong on the server. "
-		"Check your password and try to reconnect." ) );
+	networkDisconnected( false );
 }
 
 void
