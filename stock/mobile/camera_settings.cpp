@@ -32,6 +32,9 @@
 // cfgfile include.
 #include <cfgfile/all.hpp>
 
+// C++ include.
+#include <utility>
+
 
 namespace Stock {
 
@@ -342,7 +345,7 @@ CameraSettings::camSettings() const
 
 		if( it != m_resolutions.cend() )
 		{
-			for( const auto & s : qAsConst( it.value() ) )
+			for( const auto & s : std::as_const( it.value() ) )
 			{
 				if( s.resolution().width() == m_cfg.width() &&
 					s.resolution().height() == m_cfg.height() &&
@@ -426,7 +429,7 @@ CameraSettings::setCamName( const QString & name, bool notify )
 
 		QStringList resolutions;
 
-		for( const auto & s : qAsConst( m_resolutions[ name ] ) )
+		for( const auto & s : std::as_const( m_resolutions[ name ] ) )
 			resolutions.append( resolution( s ) );
 
 		m_camResolutions.setStringList( resolutions );
