@@ -31,6 +31,9 @@
 // Qt include.
 #include <QVector>
 
+// C++ include.
+#include <utility>
+
 
 namespace Stock {
 
@@ -199,7 +202,7 @@ Server::giveListOfProducts( const Stock::Messages::GiveListOfProducts & msg )
 		Stock::Messages::ListOfProducts list;
 		std::vector< Stock::Messages::Product > prods;
 
-		for( const auto & r : qAsConst( records ) )
+		for( const auto & r : std::as_const( records ) )
 		{
 			Stock::Messages::Product p;
 			p.set_code( r.m_code );

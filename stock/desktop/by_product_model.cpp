@@ -33,6 +33,7 @@
 
 // C++ include.
 #include <algorithm>
+#include <utility>
 
 
 namespace Stock {
@@ -189,7 +190,7 @@ ByProductModelPrivate::init()
 		}
 	}
 
-	for( const auto & r : qAsConst( empty ) )
+	for( const auto & r : std::as_const( empty ) )
 		addNewProduct( r.m_code, r.m_desc );
 
 	if( !records.isEmpty() || !empty.isEmpty() )
@@ -220,7 +221,7 @@ ByProductModelPrivate::totalCount( int index ) const
 {
 	quint64 total = 0;
 
-	for( const auto & p : qAsConst( m_data.at( index )->m_places ) )
+	for( const auto & p : std::as_const( m_data.at( index )->m_places ) )
 		total += p->m_count;
 
 	return total;
@@ -231,7 +232,7 @@ ByProductModelPrivate::topRow( IndexHelper * index ) const
 {
 	int i = 0;
 
-	for( const auto & p : qAsConst( m_data ) )
+	for( const auto & p : std::as_const( m_data ) )
 	{
 		if( &p->m_index == index )
 			return i;
@@ -267,7 +268,7 @@ ByProductModelPrivate::placeRow( Product * p, const QString & place ) const
 {
 	int i = 0;
 
-	for( const auto & onPlace : qAsConst( p->m_places ) )
+	for( const auto & onPlace : std::as_const( p->m_places ) )
 	{
 		if( onPlace->m_place == place )
 			return i;
@@ -329,7 +330,7 @@ ByProductModel::codes() const
 {
 	QStringList res;
 
-	for( const auto & p : qAsConst( d->m_data ) )
+	for( const auto & p : std::as_const( d->m_data ) )
 		res.append( p->m_code );
 
 	return res;
@@ -371,7 +372,7 @@ ByProductModel::records( const QString & code ) const
 
 	if( pr )
 	{
-		for( const auto & pl : qAsConst( pr->m_places ) )
+		for( const auto & pl : std::as_const( pr->m_places ) )
 			res.push_back( { code, pl->m_place, pl->m_count, pr->m_desc } );
 	}
 
@@ -726,7 +727,7 @@ ByProductModel::codeChanged( const QString & newCode, const QString & oldCode )
 {
 	int i = 0;
 
-	for( const auto & p : qAsConst( d->m_data ) )
+	for( const auto & p : std::as_const( d->m_data ) )
 	{
 		if( p->m_code == oldCode )
 		{
@@ -746,11 +747,11 @@ ByProductModel::codeChanged( const QString & newCode, const QString & oldCode )
 void
 ByProductModel::placeRenamed( const QString & newName, const QString & oldName )
 {
-	for( const auto & pr : qAsConst( d->m_data ) )
+	for( const auto & pr : std::as_const( d->m_data ) )
 	{
 		int i = 0;
 
-		for( const auto & pl : qAsConst( pr->m_places ) )
+		for( const auto & pl : std::as_const( pr->m_places ) )
 		{
 			if( pl->m_place == oldName )
 			{
@@ -773,11 +774,11 @@ ByProductModel::placeDeleted( const QString & place )
 {
 	int i = 0;
 
-	for( const auto & pr : qAsConst( d->m_data ) )
+	for( const auto & pr : std::as_const( d->m_data ) )
 	{
 		int j = 0;
 
-		for( const auto & pl : qAsConst( pr->m_places ) )
+		for( const auto & pl : std::as_const( pr->m_places ) )
 		{
 			if( pl->m_place == place )
 			{
