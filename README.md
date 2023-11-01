@@ -42,13 +42,13 @@ git submodule update --init --recursive
 
 # Build
 
-Firts of all you need to build desktop part of the Stock,
+Firts of all you need to build desktop part of the `Stock`,
 after it you can build mobile part, it's very important to build
 desktop part first.
 
-To build desktop part use stock.pro in the root directory.
+To build desktop part use `CMakeLists.txt` in the root directory.
 
-To build mobile part use stock/mobile/mobile.pro
+To build mobile part use `src/mobile/CMakeLists.txt`
 
 # Screenshots
 

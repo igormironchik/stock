@@ -18,7 +18,7 @@ add_subdirectory( 3rdparty/cfgfile/generator )
 set( BUILD_EXAMPLES OFF CACHE INTERNAL "" FORCE )
 add_subdirectory( 3rdparty/widgets )
 
-add_subdirectory( stock )
+add_subdirectory( src )
 
 set( CFGFILE_GENERATOR_EXECUTABLE
 	${CMAKE_CURRENT_BINARY_DIR}/3rdparty/cfgfile/generator/cfgfile.generator${CMAKE_EXECUTABLE_SUFFIX} )
