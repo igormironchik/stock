@@ -20,10 +20,10 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import QtQuick.Controls 2.2
-import QtQuick.Layouts 1.3
-import QtQuick 2.7
-import QtQuick.Window 2.2
+import QtQuick.Controls
+import QtQuick.Layouts
+import QtQuick
+import QtQuick.Window
 
 ApplicationWindow {
     id: appWindow
@@ -43,7 +43,6 @@ ApplicationWindow {
         id: menu
         x: menuButton.x - width + menuButton.width - 2
         y: toolBar.y + toolBar.height + 2
-        width: changePwdMenu.width
 
         MenuItem {
             id: changePwdMenu
