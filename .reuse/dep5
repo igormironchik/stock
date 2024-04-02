@@ -1,0 +1,40 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: stock
+Upstream-Contact: Igor Mironchik <igor.mironchik@gmail.com>
+Source: https://github.com/igormironchik/stock
+
+Files: .github/* .gitignore .gitmodules README.md CMakeLists.txt */*.txt */*.ico */*qrc */*.rc */*.ui */*.md */*.cfgfile */*.ts */*.qm */*.xml src/desktop/cfgfile_generator_path.in doc/*
+Copyright: 2016-2024 Igor Mironchik <igor.mironchik@gmail.com>
+License: GPL-3.0-or-later
+
+Files: src/desktop/img/*.png
+Copyright: 2007 Nuno Pinheiro <nuno@oxygen-icons.org>, 2007 David Vignoni <david@icon-king.com>, 2007 David Miller <miller@oxygen-icons.org>, Johann Ollivier Lapeyre <johann@oxygen-icons.org>, Kenneth Wimer <kwwii@bootsplash.org>, 2007 Riccardo Iaconelli <riccardo@oxygen-icons.org>
+License: LGPL-3.0-or-later
+
+Files: src/desktop/img/qt.png
+Copyright: 2023 The Qt Company Ltd and other contributors
+License: LGPL-3.0-or-later
+
+Files: src/mobile/img/*.png src/mobile/img/*.svg
+Copyright: none
+License: GPL-3.0-or-later
+
+Files: src/mobile/img/icon_*.png src/mobile/img/layer-visible*.png src/mobile/img/view-barcode*.png src/mobile/android/res/*/*.png
+Copyright: 2007 Nuno Pinheiro <nuno@oxygen-icons.org>, 2007 David Vignoni <david@icon-king.com>, 2007 David Miller <miller@oxygen-icons.org>, Johann Ollivier Lapeyre <johann@oxygen-icons.org>, Kenneth Wimer <kwwii@bootsplash.org>, 2007 Riccardo Iaconelli <riccardo@oxygen-icons.org>
+License: LGPL-3.0-or-later
+
+Files: src/mobile/3rdparty/qzxing/*
+Copyright: 2011 QZXing authors
+License: Apache-2.0
+
+Files: src/mobile/3rdparty/qzxing/zxing/*
+Copyright: 2013 ZXing authors
+License: Apache-2.0
+
+Files: src/mobile/3rdparty/qzxing/zxing/bigint/*
+Copyright: none
+License: CC0-1.0
+
+Files: 3rdparty/easy-encryption/*
+Copyright: 2018 Philippe Rémy
+License: MIT
