@@ -56,5 +56,6 @@ To build mobile part use `src/mobile/CMakeLists.txt`
 # Screenshots
 
 ![](doc/desktop.png)
-![](doc/connect.png)
-![](doc/actions.png)
+
+| ![](doc/connect.png) | ![](doc/actions.png) |
+| --- | --- |
