@@ -102,6 +102,11 @@ public:
 		if( !m_pwd.isEmpty() )
 			aesInit( m_pwd );
 	}
+	
+	~TcpSocketPrivate()
+	{
+		aesDeinit();
+	}
 
 	//! Parse messages. \return false on error.
 	bool parse();
