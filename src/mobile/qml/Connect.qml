@@ -122,6 +122,7 @@ ScrollView {
                 implicitWidth: pwdField.width
                 topInset: 0
                 bottomInset: 0
+                enabled: pwdField.text.length != 0
 
                 onClicked: {
                     showHide.checked = false

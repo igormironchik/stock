@@ -42,6 +42,8 @@ public:
 private slots:
 	//! Show/hide password.
 	void showHidePassword();
+	//! Host or password changed.
+	void hostPasswordChanged( const QString & );
 
 private:
 	friend class OptionsPrivate;

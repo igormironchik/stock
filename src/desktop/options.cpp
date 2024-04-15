@@ -12,6 +12,8 @@
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QToolButton>
+#include <QDialogButtonBox>
+#include <QPushButton>
 
 
 namespace Stock {
@@ -44,9 +46,15 @@ OptionsPrivate::init( const QString & host, quint16 port, const QString & pwd )
 	m_ui.m_host->setText( host );
 	m_ui.m_port->setValue( port );
 	m_ui.m_password->setText( pwd );
+	
+	q->hostPasswordChanged( {} );
 
 	QObject::connect( m_ui.m_showHidePwd, &QToolButton::clicked,
 		q, &Options::showHidePassword );
+	QObject::connect( m_ui.m_host, &QLineEdit::textChanged,
+		q, &Options::hostPasswordChanged );
+	QObject::connect( m_ui.m_password, &QLineEdit::textChanged,
+		q, &Options::hostPasswordChanged );
 }
 
 
@@ -96,6 +104,14 @@ Options::showHidePassword()
 		d->m_ui.m_password->setEchoMode( QLineEdit::Password );
 		d->m_ui.m_showHidePwd->setIcon( QIcon( ":/img/layer-visible-on_16x16.png" ) );
 	}
+}
+
+void
+Options::hostPasswordChanged( const QString & )
+{
+	const auto isOk = !d->m_ui.m_host->text().isEmpty() && !d->m_ui.m_password->text().isEmpty();
+	
+	d->m_ui.m_buttonBox->button( QDialogButtonBox::Ok )->setEnabled( isOk );	
 }
 
 } /* namespace Stock */
