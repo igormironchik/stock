@@ -217,8 +217,10 @@ public:
 	//! Decoding context.
 	EVP_CIPHER_CTX * m_dCtx = nullptr;
 	//! Salt.
-	unsigned char m_salt[ 8 ] = { 0x01, 0x06, 0x03, 0x0A, 0xFF, 0xAE, 0x01, 0x08 };
+	static const unsigned char m_salt[ 8 ];
 }; // class TcpSocketPrivate
+
+const unsigned char TcpSocketPrivate::m_salt[ 8 ] = { 0x01, 0x06, 0x03, 0x0A, 0xFF, 0xAE, 0x01, 0x08 };
 
 bool
 TcpSocketPrivate::parse()
