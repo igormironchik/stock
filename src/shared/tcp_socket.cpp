@@ -218,138 +218,143 @@ public:
 bool
 TcpSocketPrivate::parse()
 {
-	while( !m_buf.isEmpty() )
+	if( m_dCtx )
 	{
-		QDataStream s( m_buf.data() );
-		s.setVersion( QDataStream::Qt_5_9 );
-
-		quint64 magic = 0;
-		quint16 type = 0;
-		qint32 length = 0;
-
-		s >> magic >> type >> length;
-
-		if( s.status() != QDataStream::Ok )
-			return true;
-
-		if( magic != c_magic )
-			return false;
-
-		QByteArray msgData( length, 0 );
-
-		if( s.readRawData( msgData.data(), length ) != length )
-			return true;
-
-		msgData = aesDecrypt( QByteArray::fromBase64( msgData ) );
-
-		QTextStream msgStream( msgData );
-
-		switch( static_cast< MsgType > ( type ) )
+		while( !m_buf.isEmpty() )
 		{
-			case MsgType::AddProduct :
-			{
-				try {
-					Messages::tag_AddProduct< cfgfile::qstring_trait_t > tag;
-
-					cfgfile::read_cfgfile( tag, msgStream, QLatin1String( "Network Data" ) );
-
-					emit q->addProduct( tag.get_cfg() );
-				}
-				catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
-				{
-					return false;
-				}
-			}
-				break;
-
-			case MsgType::GiveListOfProducts :
-			{
-				try {
-					Messages::tag_GiveListOfProducts< cfgfile::qstring_trait_t > tag;
-
-					cfgfile::read_cfgfile( tag, msgStream, QLatin1String( "Network Data" ) );
-
-					emit q->giveListOfProducts( tag.get_cfg() );
-				}
-				catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
-				{
-					return false;
-				}
-			}
-				break;
-
-			case MsgType::ListOfProducts :
-			{
-				try {
-					Messages::tag_ListOfProducts< cfgfile::qstring_trait_t > tag;
-
-					cfgfile::read_cfgfile( tag, msgStream, QLatin1String( "Network Data" ) );
-
-					emit q->listOfProducts( tag.get_cfg() );
-				}
-				catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
-				{
-					return false;
-				}
-			}
-				break;
-
-			case MsgType::Error :
-			{
-				try {
-					Messages::tag_Error< cfgfile::qstring_trait_t > tag;
-
-					cfgfile::read_cfgfile( tag, msgStream, QLatin1String( "Network Data" ) );
-
-					emit q->error( tag.get_cfg() );
-				}
-				catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
-				{
-					return false;
-				}
-			}
-				break;
-
-			case MsgType::Hello :
-			{
-				try {
-					Messages::tag_Hello< cfgfile::qstring_trait_t > tag;
-
-					cfgfile::read_cfgfile( tag, msgStream, QLatin1String( "Network Data" ) );
-
-					emit q->hello( tag.get_cfg() );
-				}
-				catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
-				{
-					return false;
-				}
-			}
-				break;
-
-			case MsgType::Ok :
-			{
-				try {
-					Messages::tag_Ok< cfgfile::qstring_trait_t > tag;
-
-					cfgfile::read_cfgfile( tag, msgStream, QLatin1String( "Network Data" ) );
-
-					emit q->ok( tag.get_cfg() );
-				}
-				catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
-				{
-					return false;
-				}
-			}
-				break;
-
-			default :
+			QDataStream s( m_buf.data() );
+			s.setVersion( QDataStream::Qt_5_9 );
+	
+			quint64 magic = 0;
+			quint16 type = 0;
+			qint32 length = 0;
+	
+			s >> magic >> type >> length;
+	
+			if( s.status() != QDataStream::Ok )
+				return true;
+	
+			if( magic != c_magic )
 				return false;
+	
+			QByteArray msgData( length, 0 );
+	
+			if( s.readRawData( msgData.data(), length ) != length )
+				return true;
+	
+			msgData = aesDecrypt( QByteArray::fromBase64( msgData ) );
+	
+			QTextStream msgStream( msgData );
+	
+			switch( static_cast< MsgType > ( type ) )
+			{
+				case MsgType::AddProduct :
+				{
+					try {
+						Messages::tag_AddProduct< cfgfile::qstring_trait_t > tag;
+	
+						cfgfile::read_cfgfile( tag, msgStream, QLatin1String( "Network Data" ) );
+	
+						emit q->addProduct( tag.get_cfg() );
+					}
+					catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
+					{
+						return false;
+					}
+				}
+					break;
+	
+				case MsgType::GiveListOfProducts :
+				{
+					try {
+						Messages::tag_GiveListOfProducts< cfgfile::qstring_trait_t > tag;
+	
+						cfgfile::read_cfgfile( tag, msgStream, QLatin1String( "Network Data" ) );
+	
+						emit q->giveListOfProducts( tag.get_cfg() );
+					}
+					catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
+					{
+						return false;
+					}
+				}
+					break;
+	
+				case MsgType::ListOfProducts :
+				{
+					try {
+						Messages::tag_ListOfProducts< cfgfile::qstring_trait_t > tag;
+	
+						cfgfile::read_cfgfile( tag, msgStream, QLatin1String( "Network Data" ) );
+	
+						emit q->listOfProducts( tag.get_cfg() );
+					}
+					catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
+					{
+						return false;
+					}
+				}
+					break;
+	
+				case MsgType::Error :
+				{
+					try {
+						Messages::tag_Error< cfgfile::qstring_trait_t > tag;
+	
+						cfgfile::read_cfgfile( tag, msgStream, QLatin1String( "Network Data" ) );
+	
+						emit q->error( tag.get_cfg() );
+					}
+					catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
+					{
+						return false;
+					}
+				}
+					break;
+	
+				case MsgType::Hello :
+				{
+					try {
+						Messages::tag_Hello< cfgfile::qstring_trait_t > tag;
+	
+						cfgfile::read_cfgfile( tag, msgStream, QLatin1String( "Network Data" ) );
+	
+						emit q->hello( tag.get_cfg() );
+					}
+					catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
+					{
+						return false;
+					}
+				}
+					break;
+	
+				case MsgType::Ok :
+				{
+					try {
+						Messages::tag_Ok< cfgfile::qstring_trait_t > tag;
+	
+						cfgfile::read_cfgfile( tag, msgStream, QLatin1String( "Network Data" ) );
+	
+						emit q->ok( tag.get_cfg() );
+					}
+					catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
+					{
+						return false;
+					}
+				}
+					break;
+	
+				default :
+					return false;
+			}
+	
+			m_buf.remove( s.device()->pos() );
 		}
-
-		m_buf.remove( s.device()->pos() );
+		
+		return true;
 	}
-
-	return true;
+	
+	return false;
 }
 
 
@@ -415,33 +420,42 @@ template< typename MSG, typename TAG >
 void
 TcpSocket::sendMsg( const MSG & msg )
 {
-	try {
-		QByteArray data;
-		QTextStream stream( &data, QIODevice::WriteOnly );
-
-		TAG tag( msg );
-
-		cfgfile::write_cfgfile( tag, stream );
-		stream.flush();
-
-		data = d->aesEncrypt( data ).toBase64();
-
-		QByteArray msgData;
-		QDataStream s( &msgData, QIODevice::WriteOnly );
-		s.setVersion( QDataStream::Qt_5_9 );
-
-		s << c_magic << msgType< MSG > ()
-			<< static_cast< qint32 > ( data.size() );
-		s.writeRawData( data.constData(), data.size() );
-
-		writeData( msgData.constData(), msgData.size() );
-
-		flush();
+	if( d->m_eCtx )
+	{
+		try {
+			QByteArray data;
+			QTextStream stream( &data, QIODevice::WriteOnly );
+	
+			TAG tag( msg );
+	
+			cfgfile::write_cfgfile( tag, stream );
+			stream.flush();
+	
+			data = d->aesEncrypt( data ).toBase64();
+	
+			QByteArray msgData;
+			QDataStream s( &msgData, QIODevice::WriteOnly );
+			s.setVersion( QDataStream::Qt_5_9 );
+	
+			s << c_magic << msgType< MSG > ()
+				<< static_cast< qint32 > ( data.size() );
+			s.writeRawData( data.constData(), data.size() );
+	
+			writeData( msgData.constData(), msgData.size() );
+	
+			flush();
+		}
+		catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
+		{
+			d->m_buf.clear();
+	
+			disconnectFromHost();
+		}
 	}
-	catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
+	else
 	{
 		d->m_buf.clear();
-
+		
 		disconnectFromHost();
 	}
 }
