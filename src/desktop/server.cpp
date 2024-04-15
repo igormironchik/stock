@@ -111,7 +111,7 @@ std::vector< T > toStdVector( const QList< T > & list )
 void
 Server::incomingConnection( qintptr socketDescriptor )
 {
-	TcpSocket * socket = new TcpSocket( d->m_secret.toStdString(), this );
+	TcpSocket * socket = new TcpSocket( d->m_secret, this );
 
 	if( socket->setSocketDescriptor( socketDescriptor ) )
 	{

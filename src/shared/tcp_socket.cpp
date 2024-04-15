@@ -16,8 +16,9 @@
 // cfgfile include.
 #include <cfgfile/all.hpp>
 
-// easy-encryption include.
-#include <easy-encryption/encrypt.h>
+// OpenSSL include.
+#include <openssl/evp.h>
+#include <openssl/aes.h>
 
 
 namespace Stock {
@@ -94,21 +95,124 @@ static const int c_timeout = 15;
 
 class TcpSocketPrivate {
 public:
-	TcpSocketPrivate( const std::string & pwd, TcpSocket * parent )
+	TcpSocketPrivate( const QString & pwd, TcpSocket * parent )
 		:	m_pwd( pwd )
 		,	q( parent )
 	{
+		if( !m_pwd.isEmpty() )
+			aesInit( m_pwd );
 	}
 
 	//! Parse messages. \return false on error.
 	bool parse();
+	
+	//! Deinit AES if it's initialized.
+	void aesDeinit()
+	{
+		if( m_eCtx )
+		{
+			EVP_CIPHER_CTX_free( m_eCtx );
+			m_eCtx = nullptr;
+		}
+		
+		if( m_dCtx )
+		{
+			EVP_CIPHER_CTX_free(  m_dCtx );
+			m_dCtx = nullptr;
+		}
+	}
+	
+	/*!
+		Create a 256 bit key and IV using the supplied key_data. salt can be added for taste.
+		Fills in the encryption and decryption ctx objects and returns 0 on success
+	*/
+	int aesInit( const QString & pwd )
+	{
+		aesDeinit();
+		
+		const auto pd = pwd.toUtf8();
+		
+		const auto keyData = reinterpret_cast< const unsigned char * > ( pd.data() );
+		int keyDataLen = pd.size();
+		
+		int i, nrounds = 5;
+		unsigned char key[ 32 ], iv[ 32 ];
+		
+		/*
+			Gen key & IV for AES 256 CBC mode. A SHA1 digest is used to hash the supplied key material.
+			nrounds is the number of times the we hash the material. More rounds are more secure but
+			slower.
+		*/
+		i = EVP_BytesToKey( EVP_aes_256_cbc(), EVP_sha1(), m_salt, keyData, keyDataLen,
+			nrounds, key, iv );
+		
+		if( i != 32 )
+			return -1;
+		
+		m_eCtx = EVP_CIPHER_CTX_new();
+		EVP_EncryptInit_ex( m_eCtx, EVP_aes_256_cbc(), NULL, key, iv );
+		m_dCtx = EVP_CIPHER_CTX_new();
+		EVP_DecryptInit_ex( m_dCtx, EVP_aes_256_cbc(), NULL, key, iv );
+		
+		return 0;
+	}
+	
+	QByteArray aesEncrypt( const QByteArray & data )
+	{	
+		const auto plainText = reinterpret_cast< const unsigned char * > ( data.data() );
+		int len = data.size();
+		
+		/* max ciphertext len for a n bytes of plaintext is n + AES_BLOCK_SIZE -1 bytes */
+		int cLen = len + AES_BLOCK_SIZE;
+		int fLen = 0;
+		std::string cipherText( cLen, 0x00 );
+		
+		/* allows reusing of 'e' for multiple encryption cycles */
+		EVP_EncryptInit_ex( m_eCtx, NULL, NULL, NULL, NULL );
+		
+		/* update ciphertext, c_len is filled with the length of ciphertext generated,
+			len is the size of plaintext in bytes */
+		EVP_EncryptUpdate( m_eCtx, reinterpret_cast< unsigned char * > ( cipherText.data() ), &cLen,
+			plainText, len );
+		
+		/* update ciphertext with the final remaining bytes */
+		EVP_EncryptFinal_ex( m_eCtx, reinterpret_cast< unsigned char * > ( cipherText.data() ) + cLen,
+			&fLen );
+		
+		return QByteArray( cipherText.c_str(), cLen + fLen );
+	}
+	
+	QByteArray aesDecrypt( const QByteArray & data )
+	{
+		const auto cipherText = reinterpret_cast< const unsigned char * > ( data.data() );
+		int len = data.size();
+		
+		/* plaintext will always be equal to or lesser than length of ciphertext*/
+		int pLen = data.size();
+		int fLen = 0;
+		std::string plainText( pLen, 0x00 );
+		
+		EVP_DecryptInit_ex( m_dCtx, NULL, NULL, NULL, NULL );
+		EVP_DecryptUpdate( m_dCtx, reinterpret_cast< unsigned char * > ( plainText.data() ), &pLen,
+			cipherText, len );
+		EVP_DecryptFinal_ex( m_dCtx, reinterpret_cast< unsigned char * > ( plainText.data() ) + pLen,
+			&fLen );
+		
+		return QByteArray( plainText.c_str(), pLen + fLen );
+	}
 
 	//! Buffer.
 	Buffer m_buf;
 	//! Password.
-	std::string m_pwd;
+	QString m_pwd;
 	//! Parent.
 	TcpSocket * q;
+	//! Encoding context.
+	EVP_CIPHER_CTX * m_eCtx = nullptr;
+	//! Decoding context.
+	EVP_CIPHER_CTX * m_dCtx = nullptr;
+	//! Salt.
+	unsigned char m_salt[ 8 ] = { 0x01, 0x06, 0x03, 0x0A, 0xFF, 0xAE, 0x01, 0x08 };
 }; // class TcpSocketPrivate
 
 bool
@@ -136,12 +240,7 @@ TcpSocketPrivate::parse()
 		if( s.readRawData( msgData.data(), length ) != length )
 			return true;
 
-		auto str = std::string( msgData.constData(), msgData.length() );
-		const auto data = decrypt( str, m_pwd );
-
-		msgData.clear();
-		QByteArray b64( data.c_str(), data.size() );
-		msgData.append( QByteArray::fromBase64( b64 ) );
+		msgData = aesDecrypt( QByteArray::fromBase64( msgData ) );
 
 		QTextStream msgStream( msgData );
 
@@ -258,7 +357,7 @@ TcpSocketPrivate::parse()
 // TcpSocket
 //
 
-TcpSocket::TcpSocket( const std::string & pwd, QObject * parent )
+TcpSocket::TcpSocket( const QString & pwd, QObject * parent )
 	:	QTcpSocket( parent )
 	,	d( new TcpSocketPrivate( pwd, this ) )
 {
@@ -325,12 +424,7 @@ TcpSocket::sendMsg( const MSG & msg )
 		cfgfile::write_cfgfile( tag, stream );
 		stream.flush();
 
-		const auto b64 = data.toBase64();
-		auto str = std::string( b64.constData(), b64.length() );
-		auto encrypted = encrypt( str, d->m_pwd );
-
-		data.clear();
-		data.append( encrypted.c_str(), encrypted.size() );
+		data = d->aesEncrypt( data ).toBase64();
 
 		QByteArray msgData;
 		QDataStream s( &msgData, QIODevice::WriteOnly );
@@ -374,7 +468,10 @@ TcpSocket::timeout()
 void
 TcpSocket::setPwd( const QString & pwd )
 {
-	d->m_pwd = pwd.toStdString();
+	d->m_pwd = pwd;
+
+	if( !d->m_pwd.isEmpty() )	
+		d->aesInit( d->m_pwd );
 }
 
 } /* namespace Stock */

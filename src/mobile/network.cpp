@@ -72,7 +72,7 @@ static const int c_timeout = 15;
 void
 NetworkPrivate::init()
 {
-	m_sock = new TcpSocket( m_pwd.toStdString(), q );
+	m_sock = new TcpSocket( m_pwd, q );
 	m_udp = new QUdpSocket(	q );
 	m_timer = new QTimer( q );
 	m_timer->setSingleShot( true );

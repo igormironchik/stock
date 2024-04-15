@@ -10,6 +10,7 @@ find_package( Qt6Widgets REQUIRED )
 find_package( Qt6Gui REQUIRED )
 find_package( Qt6Network REQUIRED )
 find_package( Qt6Sql REQUIRED )
+find_package( OpenSSL 3 REQUIRED )
 
 add_definitions( -DCFGFILE_QT_SUPPORT )
 
@@ -107,6 +108,6 @@ include_directories( ${CMAKE_CURRENT_BINARY_DIR}
 
 add_executable( Stock.Desktop.App WIN32 ${SRC} )
 
-target_link_libraries( Stock.Desktop.App Qt6::Widgets Qt6::Gui Qt6::Network Qt6::Sql Qt6::Core )
+target_link_libraries( Stock.Desktop.App Qt6::Widgets Qt6::Gui Qt6::Network Qt6::Sql Qt6::Core OpenSSL::SSL )
 
 add_dependencies( Stock.Desktop.App cfgfile.generator )

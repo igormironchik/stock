@@ -23,6 +23,7 @@ find_package( Qt6Qml 6.3.2 REQUIRED )
 find_package( Qt6Multimedia 6.3.2 REQUIRED )
 find_package( Qt6Gui 6.3.2 REQUIRED )
 find_package( Qt6Quick 6.3.2 REQUIRED )
+find_package( OpenSSL 3 REQUIRED )
 
 add_definitions( -DCFGFILE_QT_SUPPORT -DCFGFILE_DISABLE_STL )
 
@@ -112,6 +113,7 @@ qt_add_executable( Stock.Mobile
 set_property( TARGET Stock.Mobile APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
 	${CMAKE_CURRENT_SOURCE_DIR}/android )
 
-target_link_libraries( Stock.Mobile PUBLIC qzxing Qt::Qml Qt::Quick Qt::Multimedia Qt::Gui Qt::Network Qt::Core )
+target_link_libraries( Stock.Mobile PUBLIC qzxing Qt::Qml Qt::Quick
+	Qt::Multimedia Qt::Gui Qt::Network Qt::Core OpenSSL::SSL )
 
 qt_finalize_executable( Stock.Mobile )
